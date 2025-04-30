@@ -32,6 +32,7 @@
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^3.1.2",
     "@vitest/eslint-plugin": "^1.1.43",
     "@vitest/expect": "^3.1.2",
     "@vitest/ui": "^3.1.2",
