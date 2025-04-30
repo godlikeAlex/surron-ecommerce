@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "test": "vitest",
+    "test": "vitest --ui",
     "lint": "eslint .",
     "preview": "vite preview",
     "prepare": "husky"
@@ -34,6 +34,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/eslint-plugin": "^1.1.43",
     "@vitest/expect": "^3.1.2",
+    "@vitest/ui": "^3.1.2",
     "eslint": "^9.22.0",
     "eslint-plugin-jest-dom": "^5.5.0",
     "eslint-plugin-react-hooks": "^5.2.0",
