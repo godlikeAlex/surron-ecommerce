@@ -12,6 +12,8 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@commercetools/platform-sdk": "^8.8.0",
+    "@commercetools/ts-client": "^3.3.0",
     "@mantine/core": "^7.17.5",
     "@mantine/form": "^7.17.5",
     "@mantine/hooks": "^7.17.5",

@@ -5,6 +5,7 @@ interface ImportMetaEnv {
   VAR_COMMERCE_TOOLS_CLIENT_ID: string;
   VAR_COMMERCE_TOOLS_CLIENT_SECRET: string;
   VAR_COMMERCE_TOOLS_REGION: string;
+  VAR_COMMERCE_TOOLS_SCOPES: string;
 }
 
 interface ImportMeta {
