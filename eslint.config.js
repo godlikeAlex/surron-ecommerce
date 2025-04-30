@@ -37,7 +37,7 @@ export default tseslint.config(
   },
   {
     extends: [
-      { ...jestDom.configs['flat/recommended'] },
+      jestDom.configs['flat/recommended'],
       testingLibrary.configs['flat/react'],
       vitest.configs.all,
     ],
