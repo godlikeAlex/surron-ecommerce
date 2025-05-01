@@ -1,4 +1,4 @@
-import { commerceToolsAPI } from '../api/commercetools-api';
+import { commerceToolsAPI } from '@/api/commercetools-api';
 
 export default class ProjectService {
   static getProject() {
