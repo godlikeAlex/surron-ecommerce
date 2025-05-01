@@ -1,13 +1,19 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig, mergeConfig } from 'vitest/config';
 
-export default defineConfig({
-  envPrefix: 'VAR_',
-  test: {
-    environment: 'jsdom',
-    setupFiles: './src/tests/setup.ts',
-    coverage: {
-      provider: 'v8',
-      reporter: 'text',
-    },
-  },
-});
+import viteConfig from './vite.config';
+
+export default defineConfig(
+  mergeConfig(
+    viteConfig,
+    defineConfig({
+      test: {
+        environment: 'jsdom',
+        setupFiles: './src/tests/setup.ts',
+        coverage: {
+          provider: 'v8',
+          reporter: 'text',
+        },
+      },
+    })
+  )
+);
