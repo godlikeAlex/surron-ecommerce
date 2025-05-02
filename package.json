@@ -7,9 +7,13 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "test": "vitest --ui",
+    "test:report": "vitest run",
+    "coverage": "vitest --ui --coverage.enabled=true",
     "lint": "eslint .",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "format": "prettier . -w -l -u",
+    "ci:format": "prettier . -c -u"
   },
   "dependencies": {
     "@commercetools/platform-sdk": "^8.8.0",
