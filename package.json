@@ -6,10 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "test": "vitest --ui",
+    "test": "vitest run",
+    "test:watch": "vitest --ui",
+    "coverage": "vitest run --coverage.enabled=true",
+    "coverage:watch": "vitest --ui --coverage.enabled=true --coverage.reporter=html",
     "lint": "eslint .",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "format": "prettier . -w -l -u",
+    "ci:format": "prettier . -c -u"
   },
   "dependencies": {
     "@commercetools/platform-sdk": "^8.8.0",
