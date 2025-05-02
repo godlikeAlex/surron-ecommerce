@@ -1,6 +1,6 @@
 export default {
   '*/**/*.{ts,tsx}': [
-    'npx prettier -w',
+    'npm run format',
     'eslint',
     () => 'tsc -p ./tsconfig.app.json --noEmit ',
   ],
