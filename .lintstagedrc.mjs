@@ -4,6 +4,5 @@ export default {
     'eslint',
     () => 'tsc -p ./tsconfig.app.json --noEmit ',
   ],
-  '*/**/*.{css,scss}': ['npm run format'],
-  '*.{json,md}': ['npm run format'],
+  '*.{css,scss,json,md,html}': ['npm run format'],
 };
