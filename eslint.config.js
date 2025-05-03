@@ -27,6 +27,11 @@ export default tseslint.config(
         ecmaFeatures: { jsx: true },
       },
     },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
     plugins: {
       react: reactPlugin,
       'react-hooks': reactHooks,
