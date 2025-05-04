@@ -6,7 +6,7 @@ import {
 
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 
-const { env } = import.meta;
+const env = import.meta.env;
 
 const projectKey = env.VAR_COMMERCE_TOOLS_PROJECT_KEY;
 const region = env.VAR_COMMERCE_TOOLS_REGION;
