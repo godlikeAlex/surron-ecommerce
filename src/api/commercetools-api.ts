@@ -14,7 +14,7 @@ const scopes = [env.VAR_COMMERCE_TOOLS_SCOPES];
 
 const authMiddlewareOptions: AuthMiddlewareOptions = {
   host: `https://auth.${region}.commercetools.com`,
-  projectKey: projectKey,
+  projectKey,
   credentials: {
     clientId: env.VAR_COMMERCE_TOOLS_CLIENT_ID,
     clientSecret: env.VAR_COMMERCE_TOOLS_CLIENT_SECRET,
@@ -38,5 +38,5 @@ const ctpClient = new ClientBuilder()
 export const commerceToolsAPI = createApiBuilderFromCtpClient(
   ctpClient
 ).withProjectKey({
-  projectKey: projectKey,
+  projectKey,
 });
