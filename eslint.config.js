@@ -40,11 +40,11 @@ export default tseslint.config(
     },
   },
   {
+    files: ['**/*.test.{ts,tsx}'],
     extends: [
       jestDom.configs['flat/recommended'],
       testingLibrary.configs['flat/react'],
       vitest.configs.all,
     ],
-    files: ['**/*.test.tsx', '**/*.test.ts'],
   }
 );
