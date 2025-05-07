@@ -9,7 +9,7 @@
     "test": "vitest run",
     "test:watch": "vitest --ui",
     "coverage": "vitest run --coverage.enabled=true",
-    "coverage:watch": "vitest --ui --coverage.enabled=true --coverage.reporter=html",
+    "coverage:watch": "vitest --ui --coverage.enabled=true",
     "lint": "eslint .",
     "preview": "vite preview",
     "prepare": "husky",
