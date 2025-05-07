@@ -1,8 +1,9 @@
 export default {
   '*/**/*.{ts,tsx}': [
-    'npm run format',
-    'eslint',
+    'prettier -w -l -u',
+    'eslint --fix',
     () => 'tsc -p ./tsconfig.app.json --noEmit ',
   ],
-  '*.{css,scss,json,md,html}': ['npm run format'],
+  '*.{css,scss}': ['stylelint --fix'],
+  '*.{css,scss,json,md,html}': ['prettier -w -l -u'],
 };

@@ -1,6 +1,6 @@
 import { Burger, Container, Group, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import classes from './Header.module.css';
+import classes from './Header.module.scss';
 
 const links = [{ link: '/Home', label: 'Home' }];
 
