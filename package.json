@@ -11,6 +11,7 @@
     "coverage": "vitest run --coverage.enabled=true",
     "coverage:watch": "vitest --ui --coverage.enabled=true",
     "lint": "eslint .",
+    "lint:styles": "stylelint \"**/*.{css,scss}\"",
     "preview": "vite preview",
     "prepare": "husky",
     "format": "prettier . -w -l -u",
