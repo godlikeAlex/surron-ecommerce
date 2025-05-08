@@ -69,7 +69,7 @@ const RegistrationForm = () => {
           return 'Разрешены только буквы.';
       },
       lastName: (lastName) => {
-        if (lastName.length === 0) return 'Имя должно быть заполнено.';
+        if (lastName.length === 0) return 'Фамилия должна быть заполнена.';
 
         if (!/^[A-Za-zА-Яа-яЁё]+$/.test(lastName))
           return 'Разрешены только буквы.';
@@ -122,15 +122,12 @@ const RegistrationForm = () => {
     <Center>
       <Box component="form" onSubmit={onSubmit(handleSubmit)}>
         <Flex
-          mih={50}
           gap="sm"
           justify="center"
           align="stretch"
           direction="column"
           wrap="wrap"
         >
-          <Divider my="lg" label={'Основная информация'} />
-
           <SimpleGrid cols={2}>
             <TextInput label="Имя" {...getInputProps('firstName')} />
             <TextInput label="Фамилия" {...getInputProps('lastName')} />
@@ -194,7 +191,14 @@ const RegistrationForm = () => {
             </Grid.Col>
           </Grid>
 
-          <Button type="submit">Зарегистрироваться</Button>
+          <Button
+            type="submit"
+            variant="filled"
+            color="rgba(0, 0, 0, 1)"
+            mt={'lg'}
+          >
+            Зарегистрироваться
+          </Button>
         </Flex>
       </Box>
     </Center>

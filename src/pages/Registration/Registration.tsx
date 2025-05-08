@@ -1,11 +1,12 @@
-import { Header } from '@/components';
 import { RegistrationForm } from './components';
+import { AuthLayout } from '@/layouts';
 
 const Registration = () => (
-  <>
-    <Header />
-    <RegistrationForm />
-  </>
+  <AuthLayout backgroundVariant="first">
+    <AuthLayout.Card title="Регистрация">
+      <RegistrationForm />
+    </AuthLayout.Card>
+  </AuthLayout>
 );
 
 export default Registration;
