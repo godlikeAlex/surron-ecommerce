@@ -1,0 +1,169 @@
+import {
+  Box,
+  Button,
+  Center,
+  Divider,
+  Flex,
+  Grid,
+  PasswordInput,
+  Select,
+  SimpleGrid,
+  TextInput,
+} from '@mantine/core';
+import { DatePickerInput } from '@mantine/dates';
+import { useForm, isEmail, matches, isNotEmpty } from '@mantine/form';
+import { IconAt, IconCalendar, IconLock } from '@tabler/icons-react';
+import dayjs from 'dayjs';
+
+interface FormValues {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth?: string;
+  country?: string;
+  address: {
+    street: string;
+    city: string;
+    postalCode: string;
+    country: undefined;
+  };
+}
+
+const RegistrationForm = () => {
+  const { onSubmit, getInputProps } = useForm<FormValues>({
+    mode: 'uncontrolled',
+    initialValues: {
+      email: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      dateOfBirth: undefined,
+      address: {
+        street: '',
+        city: '',
+        postalCode: '',
+        country: undefined,
+      },
+    },
+    validate: {
+      email: isEmail('Неверный Email'),
+      password: (password) => {
+        if (password.length < 8) return 'Пароль должен содержать 8 символов.';
+
+        if (!/[A-Z]/.test(password))
+          return 'Пароль должен содержать хотя-бы 1 заглавную букву.';
+
+        if (!/[a-z]/.test(password))
+          return 'Пароль должен содержать хотя-бы 1 строчную букву.';
+
+        if (!/[0-9]/.test(password))
+          return 'Пароль должен содержать хотя-бы 1 цифру';
+      },
+      firstName: (firstName) => {
+        if (firstName.length === 0) return 'Имя должно быть заполнено.';
+
+        if (!/^[A-Za-zА-Яа-яЁё]+$/.test(firstName))
+          return 'Разрешены только буквы.';
+      },
+      lastName: (lastName) => {
+        if (lastName.length === 0) return 'Имя должно быть заполнено.';
+
+        if (!/^[A-Za-zА-Яа-яЁё]+$/.test(lastName))
+          return 'Разрешены только буквы.';
+      },
+      dateOfBirth: (dateOfBirth) => {
+        if (!dateOfBirth) return 'Выберите дату.';
+
+        const yearsOfUser = dayjs(Date.now()).diff(dayjs(dateOfBirth), 'years');
+
+        if (yearsOfUser <= 13)
+          return 'Чтобы пользоваться нашим сайтом, вы должны быть старше 13 лет.';
+      },
+      address: {
+        street: isNotEmpty('Введите улицу'),
+        city: isNotEmpty('Введите название города'),
+        postalCode: matches(/^\d{5}-\d{3}$/, 'Неверный почтовый адрес.'),
+        country: isNotEmpty('Выберите вашу страну'),
+      },
+    },
+  });
+
+  const handleSubmit = (values: FormValues) => {
+    console.log(values);
+  };
+
+  return (
+    <Center>
+      <Box component="form" onSubmit={onSubmit(handleSubmit)}>
+        <Flex
+          mih={50}
+          gap="sm"
+          justify="center"
+          align="stretch"
+          direction="column"
+          wrap="wrap"
+        >
+          <Divider my="lg" label={'Основная информация'} />
+
+          <SimpleGrid cols={2}>
+            <TextInput label="Имя" {...getInputProps('firstName')} />
+            <TextInput label="Фамилия" {...getInputProps('lastName')} />
+          </SimpleGrid>
+
+          <TextInput
+            label="Email"
+            type="email"
+            leftSection={<IconAt />}
+            {...getInputProps('email')}
+          />
+
+          <PasswordInput
+            label="Пароль"
+            type="password"
+            leftSection={<IconLock />}
+            {...getInputProps('password')}
+          />
+
+          <DatePickerInput
+            label="Дата рождения"
+            leftSection={<IconCalendar />}
+            {...getInputProps('dateOfBirth')}
+          />
+
+          <Divider my="lg" label={'Адрес'} />
+
+          <Grid>
+            <Grid.Col span={12}>
+              <Select
+                label="Выберите страну"
+                placeholder="Выбрать страну"
+                data={['Россия 🇷🇺', 'Узбекистан 🇺🇿', 'Казахстан 🇰🇿']}
+                {...getInputProps('address.country')}
+              />
+            </Grid.Col>
+
+            <Grid.Col span={12}>
+              <TextInput label="Город" {...getInputProps('address.city')} />
+            </Grid.Col>
+
+            <Grid.Col span={6}>
+              <TextInput label="Улица" {...getInputProps('address.street')} />
+            </Grid.Col>
+
+            <Grid.Col span={6}>
+              <TextInput
+                label="Почтовый адрес"
+                {...getInputProps('address.postalCode')}
+              />
+            </Grid.Col>
+          </Grid>
+
+          <Button type="submit">Зарегистрироваться</Button>
+        </Flex>
+      </Box>
+    </Center>
+  );
+};
+
+export default RegistrationForm;
