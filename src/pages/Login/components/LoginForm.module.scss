@@ -1,0 +1,46 @@
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 100vh;
+  padding: 20px;
+
+  background-image: url('https://cdn.sur-ron.com/20250423/static/login-bg.f21d5ac4.jpg');
+  background-position: center;
+  background-size: cover;
+
+  .login-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    background-color: rgb(255 255 255 / 90%);
+
+    .login-title {
+      margin-bottom: 2rem;
+      color: #333;
+      text-align: center;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      .login-input {
+        margin-bottom: 1rem;
+      }
+
+      .login-button {
+        margin-top: 1rem;
+        color: #fff;
+        background-color: #000;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #333;
+        }
+      }
+    }
+  }
+}
