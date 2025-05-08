@@ -12,11 +12,16 @@ import {
   TextInput,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { useForm, isEmail, isNotEmpty } from '@mantine/form';
+import { useForm, isEmail, isNotEmpty, hasLength } from '@mantine/form';
 import { IconAt, IconCalendar, IconLock } from '@tabler/icons-react';
-import dayjs from 'dayjs';
 import { COUNTRIES } from '@/constants/countries';
-import { POSTAL_CODES } from '@/constants/postal-codes';
+import {
+  combineRules,
+  isCorrectPostalCode,
+  isDateDiffLessThan,
+  isOnlyLetters,
+  notMatches,
+} from '@/utils/mantine-validation';
 
 interface FormValues {
   email: string;
@@ -24,12 +29,11 @@ interface FormValues {
   firstName: string;
   lastName: string;
   dateOfBirth?: string;
-  country?: string;
   address: {
     street: string;
     city: string;
     postalCode: string;
-    country: undefined;
+    country?: string;
   };
 }
 
@@ -49,57 +53,45 @@ const RegistrationForm = () => {
       },
     },
     validate: {
-      email: isEmail('Неверный Email'),
-      password: (password) => {
-        if (password.length < 8) return 'Пароль должен содержать 8 символов.';
-
-        if (!/[A-Z]/.test(password))
-          return 'Пароль должен содержать хотя-бы 1 заглавную букву.';
-
-        if (!/[a-z]/.test(password))
-          return 'Пароль должен содержать хотя-бы 1 строчную букву.';
-
-        if (!/[0-9]/.test(password))
-          return 'Пароль должен содержать хотя-бы 1 цифру';
-      },
-      firstName: (firstName) => {
-        if (firstName.length === 0) return 'Имя должно быть заполнено.';
-
-        if (!/^[A-Za-zА-Яа-яЁё]+$/.test(firstName))
-          return 'Разрешены только буквы.';
-      },
-      lastName: (lastName) => {
-        if (lastName.length === 0) return 'Фамилия должна быть заполнена.';
-
-        if (!/^[A-Za-zА-Яа-яЁё]+$/.test(lastName))
-          return 'Разрешены только буквы.';
-      },
-      dateOfBirth: (dateOfBirth) => {
-        if (!dateOfBirth) return 'Выберите дату.';
-
-        const yearsOfUser = dayjs(Date.now()).diff(dayjs(dateOfBirth), 'years');
-
-        if (yearsOfUser <= 13)
-          return 'Чтобы пользоваться нашим сайтом, вы должны быть старше 13 лет.';
-      },
+      email: combineRules([
+        isNotEmpty('Укажите Email'),
+        isEmail('Неверный Email'),
+      ]),
+      password: combineRules([
+        hasLength({ min: 8 }, 'Пароль должен содержать 8 символов.'),
+        notMatches(
+          /[A-Z]/,
+          'Пароль должен содержать хотя-бы 1 заглавную букву.'
+        ),
+        notMatches(
+          /[a-z]/,
+          'Пароль должен содержать хотя-бы 1 строчную букву.'
+        ),
+        notMatches(/[0-9]/, 'Пароль должен содержать хотя-бы 1 цифру'),
+      ]),
+      firstName: combineRules([
+        isNotEmpty('Имя должно быть заполнено.'),
+        isOnlyLetters('Разрешены только буквы.'),
+      ]),
+      lastName: combineRules([
+        isNotEmpty('Фамилия должно быть заполнено.'),
+        isOnlyLetters('Разрешены только буквы.'),
+      ]),
+      dateOfBirth: combineRules([
+        isNotEmpty('Выберите дату.'),
+        isDateDiffLessThan(
+          { target: 13, unit: 'years' },
+          'Чтобы пользоваться нашим сайтом, вы должны быть старше 13 лет.'
+        ),
+      ]),
       address: {
         street: isNotEmpty('Введите улицу'),
         city: isNotEmpty('Введите название города'),
-        postalCode: (value, { address }) => {
-          const { country } = address;
-
-          if (!country) return false;
-
-          const targetPostalCode = POSTAL_CODES.find(
-            (postalCode) => postalCode.iso === country
-          );
-
-          if (!targetPostalCode) return true; // Если нет почтового кода, разрешаем любой
-
-          if (!targetPostalCode.regex.test(value)) {
-            return `Неверный адрес. ${targetPostalCode.countryName} имеет следующий формат ${targetPostalCode.format}`;
-          }
-        },
+        postalCode: (value, values) =>
+          isCorrectPostalCode(
+            (countryName, format) =>
+              `Неверный адрес. ${countryName} имеет следующий формат ${format}`
+          )(value, values.address.country),
         country: isNotEmpty('Выберите вашу страну'),
       },
     },
@@ -171,6 +163,7 @@ const RegistrationForm = () => {
                 label="Город"
                 disabled={!isCountrySelected}
                 {...getInputProps('address.city')}
+                {...(!isCountrySelected ? { error: undefined } : undefined)}
               />
             </Grid.Col>
 
@@ -179,6 +172,7 @@ const RegistrationForm = () => {
                 label="Улица"
                 disabled={!isCountrySelected}
                 {...getInputProps('address.street')}
+                {...(!isCountrySelected ? { error: undefined } : undefined)}
               />
             </Grid.Col>
 
@@ -187,6 +181,7 @@ const RegistrationForm = () => {
                 label="Почтовый адрес"
                 disabled={!isCountrySelected}
                 {...getInputProps('address.postalCode')}
+                {...(!isCountrySelected ? { error: undefined } : undefined)}
               />
             </Grid.Col>
           </Grid>
