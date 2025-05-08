@@ -1,0 +1,19 @@
+.auth {
+  &__section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 100vh;
+
+    background-position: bottom;
+    background-size: cover;
+  }
+
+  &__card {
+    width: 40.625rem;
+    max-width: 100%;
+    background-color: rgb(255 255 255 / 90%) !important;
+    backdrop-filter: blur(10px);
+  }
+}
