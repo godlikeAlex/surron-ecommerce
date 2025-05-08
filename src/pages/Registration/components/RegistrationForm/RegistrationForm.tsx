@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   Box,
   Button,
@@ -11,9 +12,11 @@ import {
   TextInput,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { useForm, isEmail, matches, isNotEmpty } from '@mantine/form';
+import { useForm, isEmail, isNotEmpty } from '@mantine/form';
 import { IconAt, IconCalendar, IconLock } from '@tabler/icons-react';
 import dayjs from 'dayjs';
+import { COUNTRIES } from '@/constants/countries';
+import { POSTAL_CODES } from '@/constants/postal-codes';
 
 interface FormValues {
   email: string;
@@ -31,8 +34,7 @@ interface FormValues {
 }
 
 const RegistrationForm = () => {
-  const { onSubmit, getInputProps } = useForm<FormValues>({
-    mode: 'uncontrolled',
+  const { onSubmit, getInputProps, values } = useForm<FormValues>({
     initialValues: {
       email: '',
       password: '',
@@ -83,11 +85,34 @@ const RegistrationForm = () => {
       address: {
         street: isNotEmpty('Введите улицу'),
         city: isNotEmpty('Введите название города'),
-        postalCode: matches(/^\d{5}-\d{3}$/, 'Неверный почтовый адрес.'),
+        postalCode: (value, { address }) => {
+          const { country } = address;
+
+          if (!country) return false;
+
+          const targetPostalCode = POSTAL_CODES.find(
+            (postalCode) => postalCode.iso === country
+          );
+
+          if (!targetPostalCode) return true; // Если нет почтового кода, разрешаем любой
+
+          if (!targetPostalCode.regex.test(value)) {
+            return `Неверный адрес. ${targetPostalCode.countryName} имеет следующий формат ${targetPostalCode.format}`;
+          }
+        },
         country: isNotEmpty('Выберите вашу страну'),
       },
     },
   });
+
+  const isCountrySelected = Boolean(values.address.country);
+
+  const countries = useMemo(() => {
+    return COUNTRIES.map(({ code, name, flag }) => ({
+      value: code,
+      label: `${flag} ${name}`,
+    }));
+  }, []);
 
   const handleSubmit = (values: FormValues) => {
     console.log(values);
@@ -138,22 +163,32 @@ const RegistrationForm = () => {
               <Select
                 label="Выберите страну"
                 placeholder="Выбрать страну"
-                data={['Россия 🇷🇺', 'Узбекистан 🇺🇿', 'Казахстан 🇰🇿']}
+                searchable
+                data={countries}
                 {...getInputProps('address.country')}
               />
             </Grid.Col>
 
             <Grid.Col span={12}>
-              <TextInput label="Город" {...getInputProps('address.city')} />
+              <TextInput
+                label="Город"
+                disabled={!isCountrySelected}
+                {...getInputProps('address.city')}
+              />
             </Grid.Col>
 
             <Grid.Col span={6}>
-              <TextInput label="Улица" {...getInputProps('address.street')} />
+              <TextInput
+                label="Улица"
+                disabled={!isCountrySelected}
+                {...getInputProps('address.street')}
+              />
             </Grid.Col>
 
             <Grid.Col span={6}>
               <TextInput
                 label="Почтовый адрес"
+                disabled={!isCountrySelected}
                 {...getInputProps('address.postalCode')}
               />
             </Grid.Col>
