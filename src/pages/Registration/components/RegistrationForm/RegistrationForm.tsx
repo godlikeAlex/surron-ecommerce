@@ -56,6 +56,7 @@ const RegistrationForm = () => {
       email: combineRules([
         isNotEmpty('Укажите Email'),
         isEmail('Неверный Email'),
+        notMatches(/[ \t]+$/, 'Неверный Email'),
       ]),
       password: combineRules([
         hasLength({ min: 8 }, 'Пароль должен содержать 8 символов.'),
