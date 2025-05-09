@@ -9,11 +9,11 @@ interface Props {
 
 const AuthCard = ({ children, title }: Props) => (
   <Card
+    bg={'transparent'}
     shadow="sm"
     padding="lg"
     radius={'md'}
     className={classes.authCard}
-    withBorder
   >
     <Center>
       <Title order={1} mb={'lg'}>
