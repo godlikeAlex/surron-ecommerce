@@ -192,6 +192,20 @@ describe('login form component', () => {
 
     consoleSpy.mockRestore();
   });
+
+  it('should have working registration link', async () => {
+    expect.hasAssertions();
+
+    render(<LoginForm />);
+
+    const registerLink = screen.getByRole('link', {
+      name: /зарегистрироваться/i,
+    });
+
+    expect(registerLink).toHaveAttribute('href', '/registration');
+
+    await userEvent.click(registerLink);
+  });
 });
 
 describe('login form exports', () => {

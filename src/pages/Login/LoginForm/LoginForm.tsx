@@ -1,7 +1,16 @@
 import { useForm } from '@mantine/form';
-import { TextInput, PasswordInput, Button, Title, Card } from '@mantine/core';
+import {
+  TextInput,
+  PasswordInput,
+  Button,
+  Title,
+  Card,
+  Anchor,
+  Text,
+} from '@mantine/core';
 import { IconAt, IconLock } from '@tabler/icons-react';
 import classes from './LoginForm.module.scss';
+import { Link } from 'react-router';
 
 export const LoginForm = () => {
   const form = useForm({
@@ -87,6 +96,13 @@ export const LoginForm = () => {
           >
             Войти
           </Button>
+
+          <Text mt="sm" ta="center">
+            Нет аккаунта?{' '}
+            <Anchor component={Link} to="/registration">
+              Зарегистрироваться
+            </Anchor>
+          </Text>
         </form>
       </Card>
     </div>
