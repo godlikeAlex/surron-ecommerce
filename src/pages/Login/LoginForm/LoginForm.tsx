@@ -50,15 +50,16 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className={classes['login-container']}>
-      <Card className={classes['login-card']}>
-        <Title order={2} className={classes['login-title']}>
+    <div className={classes.loginContainer}>
+      <Card className={classes.loginCard}>
+        <Title order={2} className={classes.loginTitle}>
           Вход в систему
         </Title>
 
         <form
           onSubmit={form.onSubmit(handleSubmit)}
-          className={classes['login-form']}
+          className={classes.loginForm}
+          data-testid="login-form"
         >
           <TextInput
             label="Email"
@@ -66,7 +67,7 @@ export const LoginForm = () => {
             leftSection={<IconAt size={16} />}
             withAsterisk
             {...form.getInputProps('email')}
-            classNames={{ root: classes['login-input'] }}
+            classNames={{ root: classes.loginInput }}
           />
 
           <PasswordInput
@@ -75,13 +76,13 @@ export const LoginForm = () => {
             leftSection={<IconLock size={16} />}
             withAsterisk
             {...form.getInputProps('password')}
-            classNames={{ root: classes['login-input'] }}
+            classNames={{ root: classes.loginInput }}
           />
 
           <Button
             type="submit"
             fullWidth
-            className={classes['login-button']}
+            className={classes.loginButton}
             disabled={!form.isValid()}
           >
             Войти
