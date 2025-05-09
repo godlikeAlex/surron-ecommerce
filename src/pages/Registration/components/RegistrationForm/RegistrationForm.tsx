@@ -60,12 +60,12 @@ const RegistrationForm = () => {
       password: combineRules([
         hasLength({ min: 8 }, 'Пароль должен содержать 8 символов.'),
         notMatches(
-          /[A-Z]/,
-          'Пароль должен содержать хотя-бы 1 заглавную букву.'
+          /[A-ZА-Я]/,
+          'Пароль должен содержать хотя-бы 1 заглавную букву. (A-Z, А-Я)'
         ),
         notMatches(
-          /[a-z]/,
-          'Пароль должен содержать хотя-бы 1 строчную букву.'
+          /[a-zа-я]/,
+          'Пароль должен содержать хотя-бы 1 строчную букву. (a-z, а-я)'
         ),
         notMatches(/[0-9]/, 'Пароль должен содержать хотя-бы 1 цифру'),
       ]),
@@ -86,7 +86,10 @@ const RegistrationForm = () => {
       ]),
       address: {
         street: isNotEmpty('Введите улицу'),
-        city: isNotEmpty('Введите название города'),
+        city: combineRules([
+          isNotEmpty('Введите название города'),
+          isOnlyLetters('Город должен содержать только буквы'),
+        ]),
         postalCode: (value, values) =>
           isCorrectPostalCode(
             (countryName, format) =>
