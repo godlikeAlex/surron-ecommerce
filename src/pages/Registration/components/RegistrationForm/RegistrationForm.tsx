@@ -12,7 +12,13 @@ import {
   TextInput,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { useForm, isEmail, isNotEmpty, hasLength } from '@mantine/form';
+import {
+  useForm,
+  isEmail,
+  isNotEmpty,
+  hasLength,
+  matches,
+} from '@mantine/form';
 import { IconAt, IconCalendar, IconLock } from '@tabler/icons-react';
 import { COUNTRIES } from '@/constants/countries';
 import {
@@ -54,9 +60,12 @@ const RegistrationForm = () => {
     },
     validate: {
       email: combineRules([
-        isNotEmpty('Укажите Email'),
-        isEmail('Неверный Email'),
-        notMatches(/[ \t]+$/, 'Неверный Email'),
+        isNotEmpty('Введите верный email (user@example.com)'),
+        isEmail('Введите верный email (user@example.com)'),
+        matches(
+          /^(?!\.)(?!.*\.\.)[a-z0-9._-]+(?=@)/,
+          'Введите верный email (user@example.com)'
+        ),
       ]),
       password: combineRules([
         hasLength({ min: 8 }, 'Пароль должен содержать 8 символов.'),
@@ -99,6 +108,7 @@ const RegistrationForm = () => {
         country: isNotEmpty('Выберите вашу страну'),
       },
     },
+    validateInputOnChange: true,
   });
 
   const isCountrySelected = Boolean(values.address.country);
@@ -131,7 +141,7 @@ const RegistrationForm = () => {
 
           <TextInput
             label="Email"
-            type="email"
+            // type="email"
             leftSection={<IconAt />}
             {...getInputProps('email')}
           />
