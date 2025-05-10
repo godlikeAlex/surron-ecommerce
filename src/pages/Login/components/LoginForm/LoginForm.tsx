@@ -1,4 +1,4 @@
-import { useForm } from '@mantine/form';
+import { isEmail, useForm } from '@mantine/form';
 import {
   TextInput,
   PasswordInput,
@@ -34,7 +34,10 @@ export const LoginForm = () => {
         if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
           return 'Некорректный формат email (пример: user@example.com)';
         }
-        return null;
+
+        return isEmail('Некорректный формат email (пример: user@example.com)')(
+          value
+        );
       },
       password: (value) => {
         const trimmed = value.trim();
