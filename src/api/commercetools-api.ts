@@ -5,6 +5,7 @@ import {
 } from '@commercetools/ts-client';
 
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
+import { MyTokenCache } from './MyTokenCache';
 
 const env = import.meta.env;
 
@@ -23,20 +24,65 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
   httpClient: fetch,
 };
 
+type User = {
+  username: string;
+  password: string;
+};
+
+const getAuthMiddlewareOptions = () => ({
+  ...authMiddlewareOptions,
+  tokenCache: new MyTokenCache(),
+});
+
+const getPasswordAuthMiddlewareOptions = (user: User) => ({
+  ...authMiddlewareOptions,
+  credentials: { ...authMiddlewareOptions.credentials, user },
+  tokenCache: new MyTokenCache(),
+});
+
+const getRefreshAuthMiddlewareOptions = (refreshToken: string) => ({
+  ...authMiddlewareOptions,
+  refreshToken,
+  tokenCache: new MyTokenCache(),
+});
+
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
   host: `https://api.${region}.commercetools.com`,
   httpClient: fetch,
 };
 
-const ctpClient = new ClientBuilder()
-  .withProjectKey(projectKey)
-  .withClientCredentialsFlow(authMiddlewareOptions)
-  .withHttpMiddleware(httpMiddlewareOptions)
-  .withLoggerMiddleware()
-  .build();
+export const getAnonymousApiRoot = () => {
+  const ctpClient = new ClientBuilder()
+    .withProjectKey(projectKey)
+    .withAnonymousSessionFlow(getAuthMiddlewareOptions())
+    .withHttpMiddleware(httpMiddlewareOptions)
+    .withLoggerMiddleware()
+    .build();
+  return createApiBuilderFromCtpClient(ctpClient).withProjectKey({
+    projectKey,
+  });
+};
 
-export const commerceToolsAPI = createApiBuilderFromCtpClient(
-  ctpClient
-).withProjectKey({
-  projectKey,
-});
+export const getPasswordApiRoot = (user: User) => {
+  const ctpClient = new ClientBuilder()
+    .withProjectKey(projectKey)
+    .withPasswordFlow(getPasswordAuthMiddlewareOptions(user))
+    .withHttpMiddleware(httpMiddlewareOptions)
+    .withLoggerMiddleware()
+    .build();
+  return createApiBuilderFromCtpClient(ctpClient).withProjectKey({
+    projectKey,
+  });
+};
+
+export const getRefreshTokenRoot = (refreshToken: string) => {
+  const ctpClient = new ClientBuilder()
+    .withProjectKey(projectKey)
+    .withRefreshTokenFlow(getRefreshAuthMiddlewareOptions(refreshToken))
+    .withHttpMiddleware(httpMiddlewareOptions)
+    .withLoggerMiddleware()
+    .build();
+  return createApiBuilderFromCtpClient(ctpClient).withProjectKey({
+    projectKey,
+  });
+};
