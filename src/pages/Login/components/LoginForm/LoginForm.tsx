@@ -91,12 +91,7 @@ export const LoginForm = () => {
             classNames={{ root: classes.loginInput }}
           />
 
-          <Button
-            type="submit"
-            fullWidth
-            className={classes.loginButton}
-            disabled={!form.isValid()}
-          >
+          <Button type="submit" fullWidth className={classes.loginButton}>
             Войти
           </Button>
 
