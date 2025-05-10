@@ -1,3 +1,4 @@
+import { apiRootStore } from '@/store/apiRootStore';
 import { TokenCache, TokenStore } from '@commercetools/ts-client';
 
 export class MyTokenCache implements TokenCache {
@@ -17,5 +18,6 @@ export class MyTokenCache implements TokenCache {
 
   public set(tokenStore: TokenStore) {
     this.#tokenStore = tokenStore;
+    apiRootStore().setRefreshToken(tokenStore.refreshToken);
   }
 }
