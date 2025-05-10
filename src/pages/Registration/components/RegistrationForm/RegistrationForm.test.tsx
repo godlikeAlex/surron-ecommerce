@@ -1,8 +1,33 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, userEvent } from '@/tests/utils';
 import RegistrationForm from './RegistrationForm';
 import { UserEvent } from '@testing-library/user-event';
 import { COUNTRIES } from '@/constants/countries';
+import React from 'react';
+import dayjs from 'dayjs';
+
+vi.mock('@mantine/dates', async (importOriginal) => {
+  const { DatePickerInput } =
+    await importOriginal<typeof import('@mantine/dates')>();
+
+  return {
+    DatePickerInput: (props: React.ComponentProps<typeof DatePickerInput>) => (
+      <DatePickerInput
+        {...props}
+        {...{
+          popoverProps: {
+            withinPortal: false,
+            transitionProps: { duration: 0 },
+          },
+          modalProps: {
+            withinPortal: false,
+            transitionProps: { duration: 0 },
+          },
+        }}
+      />
+    ),
+  };
+});
 
 async function selectCountry(user: UserEvent) {
   const [country] = COUNTRIES;
@@ -160,6 +185,27 @@ describe('validation component RegistrationForm', () => {
 
       await expect(
         screen.findByText('Выберите дату.')
+      ).resolves.toBeInTheDocument();
+    });
+
+    it('shows dateOfBirth validation error when entered under 13 years', async () => {
+      expect.hasAssertions();
+
+      render(<RegistrationForm />);
+      const user = userEvent.setup();
+
+      await user.click(screen.getByLabelText(/дата рождения/i));
+
+      const buttonCurrentDate = screen.getByLabelText(
+        new RegExp(dayjs().format('D MMMM YYYY'), 'i')
+      );
+
+      await user.click(buttonCurrentDate);
+
+      await expect(
+        screen.findByText(
+          'Чтобы пользоваться нашим сайтом, вы должны быть старше 13 лет.'
+        )
       ).resolves.toBeInTheDocument();
     });
   });
