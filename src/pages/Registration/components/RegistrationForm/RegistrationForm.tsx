@@ -85,17 +85,17 @@ const RegistrationForm = () => {
         ),
       ]),
       address: {
-        street: isNotEmpty('Введите улицу'),
+        street: isNotEmpty('Введите улицу.'),
         city: combineRules([
-          isNotEmpty('Введите название города'),
-          isOnlyLetters('Город должен содержать только буквы'),
+          isNotEmpty('Введите название города.'),
+          isOnlyLetters('Город должен содержать только буквы.'),
         ]),
         postalCode: (value, values) =>
           isCorrectPostalCode(
             (countryName, format) =>
               `Неверный адрес. ${countryName} имеет следующий формат ${format}`
           )(value, values.address.country),
-        country: isNotEmpty('Выберите вашу страну'),
+        country: isNotEmpty('Выберите вашу страну.'),
       },
     },
     validateInputOnChange: true,
@@ -116,7 +116,11 @@ const RegistrationForm = () => {
 
   return (
     <Center>
-      <Box component="form" onSubmit={onSubmit(handleSubmit)}>
+      <Box
+        component="form"
+        onSubmit={onSubmit(handleSubmit)}
+        data-testid="registration-form"
+      >
         <Flex
           gap="sm"
           justify="center"
@@ -125,13 +129,22 @@ const RegistrationForm = () => {
           wrap="wrap"
         >
           <SimpleGrid cols={2}>
-            <TextInput label="Имя" {...getInputProps('firstName')} />
-            <TextInput label="Фамилия" {...getInputProps('lastName')} />
+            <TextInput
+              label="Имя"
+              {...getInputProps('firstName')}
+              withAsterisk
+            />
+            <TextInput
+              label="Фамилия"
+              {...getInputProps('lastName')}
+              withAsterisk
+            />
           </SimpleGrid>
 
           <TextInput
             label="Email"
-            // type="email"
+            type="email"
+            withAsterisk
             leftSection={<IconAt />}
             {...getInputProps('email')}
           />
@@ -139,12 +152,14 @@ const RegistrationForm = () => {
           <PasswordInput
             label="Пароль"
             type="password"
+            withAsterisk
             leftSection={<IconLock />}
             {...getInputProps('password')}
           />
 
           <DatePickerInput
             label="Дата рождения"
+            withAsterisk
             leftSection={<IconCalendar />}
             {...getInputProps('dateOfBirth')}
           />
@@ -155,6 +170,7 @@ const RegistrationForm = () => {
             <Grid.Col span={12}>
               <Select
                 label="Страна"
+                withAsterisk
                 placeholder="Выбрать страну"
                 searchable
                 data={countries}
@@ -165,6 +181,7 @@ const RegistrationForm = () => {
             <Grid.Col span={12}>
               <TextInput
                 label="Город"
+                withAsterisk
                 disabled={!isCountrySelected}
                 {...getInputProps('address.city')}
                 {...(!isCountrySelected ? { error: undefined } : undefined)}
@@ -174,6 +191,7 @@ const RegistrationForm = () => {
             <Grid.Col span={6}>
               <TextInput
                 label="Улица"
+                withAsterisk
                 disabled={!isCountrySelected}
                 {...getInputProps('address.street')}
                 {...(!isCountrySelected ? { error: undefined } : undefined)}
@@ -183,6 +201,7 @@ const RegistrationForm = () => {
             <Grid.Col span={6}>
               <TextInput
                 label="Почтовый адрес"
+                withAsterisk
                 disabled={!isCountrySelected}
                 {...getInputProps('address.postalCode')}
                 {...(!isCountrySelected ? { error: undefined } : undefined)}
