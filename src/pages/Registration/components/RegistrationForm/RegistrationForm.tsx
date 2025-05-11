@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import {
+  Anchor,
   Box,
   Button,
   Center,
@@ -10,6 +11,7 @@ import {
   Select,
   SimpleGrid,
   TextInput,
+  Text,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm, isEmail, isNotEmpty, hasLength } from '@mantine/form';
@@ -23,6 +25,7 @@ import {
   notMatches,
 } from '@/utils/mantine-validation';
 import AuthService from '@/services/AuthService';
+import { Link } from 'react-router';
 
 interface FormValues {
   email: string;
@@ -220,6 +223,13 @@ const RegistrationForm = () => {
           >
             Зарегистрироваться
           </Button>
+
+          <Text mt="sm" ta="center">
+            Уже зарегистрированы?{' '}
+            <Anchor component={Link} to="/login">
+              Войти
+            </Anchor>
+          </Text>
         </Flex>
       </Box>
     </Center>
