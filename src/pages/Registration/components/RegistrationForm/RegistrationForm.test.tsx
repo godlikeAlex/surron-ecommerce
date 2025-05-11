@@ -5,6 +5,10 @@ import { UserEvent } from '@testing-library/user-event';
 import { COUNTRIES } from '@/constants/countries';
 import React from 'react';
 import dayjs from 'dayjs';
+import AuthService from '@/services/AuthService';
+import { DatePickerInput } from '@mantine/dates';
+
+const authServiceSpy = vi.spyOn(AuthService, 'register');
 
 vi.mock('@mantine/dates', async (importOriginal) => {
   const { DatePickerInput } =
@@ -61,6 +65,82 @@ describe('component RegistrationForm', () => {
     expect(emailInput).toBeInTheDocument();
     expect(passwordInput).toBeInTheDocument();
     expect(birthdayInput).toBeInTheDocument();
+  });
+
+  it('should not invoke submit handler when validation not passed', () => {
+    expect.hasAssertions();
+
+    render(<RegistrationForm />);
+
+    const form = screen.getByTestId('registration-form');
+
+    fireEvent.submit(form);
+
+    expect(authServiceSpy).not.toHaveBeenCalled();
+  });
+
+  it('should invoke submit handler when validation passed', async () => {
+    expect.hasAssertions();
+
+    const MantineDates = await import('@mantine/dates');
+    const spyDatePickerInput = vi
+      .spyOn(MantineDates, 'DatePickerInput')
+      .mockImplementation(
+        ({
+          value,
+          label,
+          error,
+          onChange: onChangeInput,
+        }: React.ComponentProps<typeof DatePickerInput>) => (
+          <>
+            <label htmlFor="mock-input-date">{label}</label>
+            <input
+              id="mock-input-date"
+              value={value?.toString()}
+              onChange={(event) =>
+                onChangeInput && onChangeInput(event.target.value)
+              }
+              type="text"
+            />
+            {error}
+          </>
+        )
+      );
+
+    render(<RegistrationForm />);
+
+    try {
+      const form = screen.getByTestId('registration-form');
+      const user = userEvent.setup();
+
+      const firstNameInput = screen.getByLabelText(/имя/i);
+      const lastNameInput = screen.getByLabelText(/фамилия/i);
+      const emailInput = screen.getByLabelText(/email/i);
+      const passwordInput = screen.getByLabelText(/пароль/i);
+      const dateOfBirth = screen.getByLabelText(/дата рождения/i);
+
+      const street = screen.getByLabelText(/улица/i);
+      const cityInput = screen.getByLabelText(/город/i);
+      const postalAddressInput = screen.getByLabelText(/почтовый адрес/i);
+
+      await user.type(emailInput, 'user@example.com');
+      await user.type(firstNameInput, 'Aleksandr');
+      await user.type(lastNameInput, 'Yurkovskiy');
+      await user.type(passwordInput, '123456Sss');
+      await user.type(dateOfBirth, '2001-05-05');
+
+      await selectCountry(user);
+
+      await user.type(street, 'Улица Гагарина');
+      await user.type(cityInput, 'Самарканд');
+      await user.type(postalAddressInput, '666 666');
+
+      fireEvent.submit(form);
+
+      expect(authServiceSpy).toHaveBeenCalledWith();
+    } finally {
+      spyDatePickerInput.mockRestore();
+    }
   });
 
   it('should render address inputs', () => {

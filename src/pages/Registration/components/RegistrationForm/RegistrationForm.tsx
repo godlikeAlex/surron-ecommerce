@@ -22,6 +22,7 @@ import {
   isOnlyLetters,
   notMatches,
 } from '@/utils/mantine-validation';
+import AuthService from '@/services/AuthService';
 
 interface FormValues {
   email: string;
@@ -111,6 +112,8 @@ const RegistrationForm = () => {
   }, []);
 
   const handleSubmit = (values: FormValues) => {
+    AuthService.register();
+
     console.log(values);
   };
 
