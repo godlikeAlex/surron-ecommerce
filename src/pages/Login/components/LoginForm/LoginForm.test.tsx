@@ -15,14 +15,23 @@ describe('login form component', () => {
     expect(screen.getByRole('button', { name: 'Войти' })).toBeInTheDocument();
   });
 
-  it('disables submit button when fields are empty', () => {
-    expect.assertions(1);
+  it('shows errors when submit button pressed whit empty email and password fields', async () => {
+    expect.hasAssertions();
 
     render(<LoginForm />);
+    const user = userEvent.setup();
 
     const submitButton = screen.getByRole('button', { name: 'Войти' });
 
-    expect(submitButton).toBeDisabled();
+    await user.click(submitButton);
+
+    await expect(
+      screen.findByText('Email должен содержать @')
+    ).resolves.toBeInTheDocument();
+
+    await expect(
+      screen.findByText('Пароль должен быть не менее 8 символов')
+    ).resolves.toBeInTheDocument();
   });
 
   it('shows error for invalid email format', async () => {
@@ -37,7 +46,6 @@ describe('login form component', () => {
     await expect(
       screen.findByText('Email должен содержать @')
     ).resolves.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Войти' })).toBeDisabled();
 
     await user.clear(emailInput);
     await user.type(emailInput, 'invalid-email@@');
@@ -45,7 +53,6 @@ describe('login form component', () => {
     await expect(
       screen.findByText('Должен быть ровно один символ @')
     ).resolves.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Войти' })).toBeDisabled();
   });
 
   it('shows error for email with leading/trailing spaces', async () => {
