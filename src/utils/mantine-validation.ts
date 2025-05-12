@@ -44,7 +44,7 @@ export const isDateDiffLessThan =
 
     const diff = dayjs(Date.now()).diff(dayjs(value), unit);
 
-    if (diff <= target) return error;
+    if (diff < target) return error;
   };
 
 export const isCorrectPostalCode =
