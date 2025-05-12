@@ -143,11 +143,13 @@ const RegistrationForm = () => {
           <SimpleGrid cols={2}>
             <TextInput
               label="Имя"
+              placeholder="Введите имя"
               {...getInputProps('firstName')}
               withAsterisk
             />
             <TextInput
               label="Фамилия"
+              placeholder="Введите фамилию"
               {...getInputProps('lastName')}
               withAsterisk
             />
@@ -155,6 +157,7 @@ const RegistrationForm = () => {
 
           <TextInput
             label="Email"
+            placeholder="user@example.com"
             type="email"
             withAsterisk
             leftSection={<IconAt />}
@@ -163,6 +166,7 @@ const RegistrationForm = () => {
 
           <PasswordInput
             label="Пароль"
+            placeholder="Введите пароль"
             type="password"
             withAsterisk
             leftSection={<IconLock />}
@@ -171,6 +175,7 @@ const RegistrationForm = () => {
 
           <DatePickerInput
             label="Дата рождения"
+            placeholder="Выберите дату рождения"
             withAsterisk
             leftSection={<IconCalendar />}
             {...getInputProps('dateOfBirth')}
@@ -182,8 +187,8 @@ const RegistrationForm = () => {
             <Grid.Col span={12}>
               <Select
                 label="Страна"
+                placeholder="Выберите страну"
                 withAsterisk
-                placeholder="Выбрать страну"
                 searchable
                 data={countries}
                 {...getInputProps('address.country')}
@@ -193,6 +198,7 @@ const RegistrationForm = () => {
             <Grid.Col span={12}>
               <TextInput
                 label="Город"
+                placeholder="Введите город"
                 withAsterisk
                 disabled={!isCountrySelected}
                 {...getInputProps('address.city')}
@@ -203,6 +209,7 @@ const RegistrationForm = () => {
             <Grid.Col span={6}>
               <TextInput
                 label="Улица"
+                placeholder="Введите улицу"
                 withAsterisk
                 disabled={!isCountrySelected}
                 {...getInputProps('address.street')}
@@ -213,6 +220,7 @@ const RegistrationForm = () => {
             <Grid.Col span={6}>
               <TextInput
                 label="Почтовый адрес"
+                placeholder="Введите почтовый адрес"
                 withAsterisk
                 disabled={!isCountrySelected}
                 {...getInputProps('address.postalCode')}
