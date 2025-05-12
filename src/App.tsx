@@ -1,5 +1,5 @@
 import { Route, Routes, BrowserRouter } from 'react-router';
-import { Login, Home, NotFound } from '@/pages';
+import { Home, Login, NotFound, Registration } from '@/pages';
 
 const App = () => {
   return (
@@ -8,6 +8,7 @@ const App = () => {
         <Route index element={<Home />} />
         <Route path="*" element={<NotFound />} />
         <Route path="login" element={<Login />} />
+        <Route path="/registration" element={<Registration />} />
       </Routes>
     </BrowserRouter>
   );
