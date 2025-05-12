@@ -9,8 +9,8 @@ import { create } from 'zustand';
 type ApiRootState = {
   apiRoot: ByProjectKeyRequestBuilder;
   isLoggedIn: boolean;
-  refreshToken: string | undefined;
-  setRefreshToken: (token: string | undefined) => void;
+  refreshToken?: string;
+  setRefreshToken: (token?: string) => void;
   setLogin: (email: string, password: string) => void;
   setLogout: () => void;
 };
