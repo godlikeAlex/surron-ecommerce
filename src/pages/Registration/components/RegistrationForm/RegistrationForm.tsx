@@ -106,7 +106,10 @@ const RegistrationForm = () => {
       validateInputOnChange: true,
     });
 
-  watch('address.country', () => validateField('address.postalCode'));
+  watch(
+    'address.country',
+    () => values.address.postalCode && validateField('address.postalCode')
+  );
 
   const isCountrySelected = Boolean(values.address.country);
 
