@@ -42,68 +42,71 @@ interface FormValues {
 }
 
 const RegistrationForm = () => {
-  const { onSubmit, getInputProps, values } = useForm<FormValues>({
-    initialValues: {
-      email: '',
-      password: '',
-      firstName: '',
-      lastName: '',
-      dateOfBirth: undefined,
-      address: {
-        street: '',
-        city: '',
-        postalCode: '',
-        country: undefined,
+  const { onSubmit, getInputProps, values, watch, validateField } =
+    useForm<FormValues>({
+      initialValues: {
+        email: '',
+        password: '',
+        firstName: '',
+        lastName: '',
+        dateOfBirth: undefined,
+        address: {
+          street: '',
+          city: '',
+          postalCode: '',
+          country: undefined,
+        },
       },
-    },
-    validate: {
-      email: combineRules([
-        isNotEmpty('Введите верный email (user@example.com)'),
-        isEmail('Введите верный email (user@example.com)'),
-      ]),
-      password: combineRules([
-        hasLength({ min: 8 }, 'Пароль должен содержать 8 символов.'),
-        notMatches(
-          /[A-Z]/,
-          'Пароль должен содержать хотя-бы 1 заглавную букву. (A-Z)'
-        ),
-        notMatches(
-          /[a-z]/,
-          'Пароль должен содержать хотя-бы 1 строчную букву. (a-z)'
-        ),
-        notMatches(/[0-9]/, 'Пароль должен содержать хотя-бы 1 цифру'),
-      ]),
-      firstName: combineRules([
-        isNotEmpty('Имя должно быть заполнено.'),
-        isOnlyLetters('Разрешены только буквы.'),
-      ]),
-      lastName: combineRules([
-        isNotEmpty('Фамилия должно быть заполнено.'),
-        isOnlyLetters('Разрешены только буквы.'),
-      ]),
-      dateOfBirth: combineRules([
-        isNotEmpty('Выберите дату.'),
-        isDateDiffLessThan(
-          { target: 13, unit: 'years' },
-          'Чтобы пользоваться нашим сайтом, вы должны быть старше 13 лет.'
-        ),
-      ]),
-      address: {
-        street: isNotEmpty('Введите улицу.'),
-        city: combineRules([
-          isNotEmpty('Введите название города.'),
-          isOnlyLetters('Город должен содержать только буквы.'),
+      validate: {
+        email: combineRules([
+          isNotEmpty('Введите верный email (user@example.com)'),
+          isEmail('Введите верный email (user@example.com)'),
         ]),
-        postalCode: (value, values) =>
-          isCorrectPostalCode(
-            (countryName, format) =>
-              `Неверный адрес. ${countryName} имеет следующий формат ${format}`
-          )(value, values.address.country),
-        country: isNotEmpty('Выберите вашу страну.'),
+        password: combineRules([
+          hasLength({ min: 8 }, 'Пароль должен содержать 8 символов.'),
+          notMatches(
+            /[A-Z]/,
+            'Пароль должен содержать хотя-бы 1 заглавную букву. (A-Z)'
+          ),
+          notMatches(
+            /[a-z]/,
+            'Пароль должен содержать хотя-бы 1 строчную букву. (a-z)'
+          ),
+          notMatches(/[0-9]/, 'Пароль должен содержать хотя-бы 1 цифру'),
+        ]),
+        firstName: combineRules([
+          isNotEmpty('Имя должно быть заполнено.'),
+          isOnlyLetters('Разрешены только буквы.'),
+        ]),
+        lastName: combineRules([
+          isNotEmpty('Фамилия должно быть заполнено.'),
+          isOnlyLetters('Разрешены только буквы.'),
+        ]),
+        dateOfBirth: combineRules([
+          isNotEmpty('Выберите дату.'),
+          isDateDiffLessThan(
+            { target: 13, unit: 'years' },
+            'Чтобы пользоваться нашим сайтом, вы должны быть старше 13 лет.'
+          ),
+        ]),
+        address: {
+          street: isNotEmpty('Введите улицу.'),
+          city: combineRules([
+            isNotEmpty('Введите название города.'),
+            isOnlyLetters('Город должен содержать только буквы.'),
+          ]),
+          postalCode: (value, values) =>
+            isCorrectPostalCode(
+              (countryName, format) =>
+                `Неверный адрес. ${countryName} имеет следующий формат ${format}`
+            )(value, values.address.country),
+          country: isNotEmpty('Выберите вашу страну.'),
+        },
       },
-    },
-    validateInputOnChange: true,
-  });
+      validateInputOnChange: true,
+    });
+
+  watch('address.country', () => validateField('address.postalCode'));
 
   const isCountrySelected = Boolean(values.address.country);
 
