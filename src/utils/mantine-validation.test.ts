@@ -5,6 +5,8 @@ import {
   isDateDiffLessThan,
   isOnlyLetters,
   notMatches,
+  validateEmail,
+  validatePassword,
 } from './mantine-validation';
 import { COUNTRIES } from '@/constants/countries';
 import { isNotEmpty } from '@mantine/form';
@@ -134,5 +136,135 @@ describe('isCorrectPostalCode validation mantine fn', () => {
     const result = isCorrectPostalCode(() => message)('123123', country.code);
 
     expect(result).toStrictEqual(message);
+  });
+});
+
+describe('validateEmail function', () => {
+  it('should return nothing for valid email', () => {
+    expect.hasAssertions();
+
+    const result = validateEmail('example@user.com');
+
+    expect(result).toBeNull();
+  });
+
+  it('shows error for invalid email format', () => {
+    expect.hasAssertions();
+
+    const errorMessage = 'Должен быть ровно один символ @';
+
+    const result = validateEmail('invalid-email@@');
+
+    expect(result).toBe(errorMessage);
+  });
+
+  it('shows error for email with leading/trailing spaces', () => {
+    expect.hasAssertions();
+
+    const errorMessage = 'Уберите пробелы в начале или конце email';
+
+    const result = validateEmail(' user@example.com ');
+
+    expect(result).toBe(errorMessage);
+  });
+
+  it('shows error for email without domain', () => {
+    expect.hasAssertions();
+
+    const errorMessage = 'Укажите домен после @';
+
+    const result = validateEmail('user@');
+
+    expect(result).toBe(errorMessage);
+  });
+
+  it('shows error for email when domain starts with dot(.)', () => {
+    expect.hasAssertions();
+
+    const errorMessage = 'Домен не может начинаться с точки';
+
+    const result = validateEmail('user@.example');
+
+    expect(result).toBe(errorMessage);
+  });
+
+  it('shows error for email when domain ends with dot(.)', () => {
+    expect.hasAssertions();
+
+    const errorMessage = 'Домен не может заканчиваться точкой';
+
+    const result = validateEmail('user@example.');
+
+    expect(result).toBe(errorMessage);
+  });
+});
+
+describe('validatePassword function', () => {
+  it('should return nothing for valid email password', () => {
+    expect.hasAssertions();
+
+    const result = validatePassword('12345678Az$');
+
+    expect(result).toBeNull();
+  });
+
+  it('should return error for password with leading/trailing spaces', () => {
+    expect.hasAssertions();
+
+    const errorMessage = 'Уберите пробелы в начале или конце пароля';
+
+    const result = validatePassword(' validPass123! ');
+
+    expect(result).toBe(errorMessage);
+  });
+
+  it('should return error for password with length less than 8', () => {
+    expect.hasAssertions();
+
+    const errorMessage = 'Пароль должен быть не менее 8 символов';
+
+    const result = validatePassword('12345');
+
+    expect(result).toBe(errorMessage);
+  });
+
+  it('should return error for password without symbol [A-Z]', () => {
+    expect.hasAssertions();
+
+    const errorMessage = 'Добавьте хотя бы одну заглавную букву (A-Z)';
+
+    const result = validatePassword('12345678');
+
+    expect(result).toBe(errorMessage);
+  });
+
+  it('should return error for password without symbol [a-z]', () => {
+    expect.hasAssertions();
+
+    const errorMessage = 'Добавьте хотя бы одну строчную букву (a-z)';
+
+    const result = validatePassword('12345678A');
+
+    expect(result).toBe(errorMessage);
+  });
+
+  it('should return error for password without symbol [0-9]', () => {
+    expect.hasAssertions();
+
+    const errorMessage = 'Добавьте хотя бы одну цифру (0-9)';
+
+    const result = validatePassword('AAAAAAAAz');
+
+    expect(result).toBe(errorMessage);
+  });
+
+  it('should return error for password without symbol [!@#$%^&*]', () => {
+    expect.hasAssertions();
+
+    const errorMessage = 'Добавьте хотя бы один спецсимвол (!@#$%^&*)';
+
+    const result = validatePassword('12345678Az');
+
+    expect(result).toBe(errorMessage);
   });
 });
