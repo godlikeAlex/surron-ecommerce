@@ -47,21 +47,20 @@ export const isDateDiffLessThan =
     if (diff < target) return error;
   };
 
-export const isCorrectPostalCode =
-  (error: (countryName: string, format: string) => React.ReactNode) =>
-  (value: unknown, currentCountryCode?: string) => {
-    if (typeof value !== 'string') return;
+export const validatePostalCode = (
+  value: string,
+  currentCountryCode?: string
+) => {
+  const targetPostalCode = POSTAL_CODES.find(
+    (postalCode) => postalCode.iso === currentCountryCode
+  );
 
-    const targetPostalCode = POSTAL_CODES.find(
-      (postalCode) => postalCode.iso === currentCountryCode
-    );
+  if (!targetPostalCode) return true; // Если нет почтового кода, разрешаем любой
 
-    if (!targetPostalCode) return true; // Если нет почтового кода, разрешаем любой
-
-    if (!targetPostalCode.regex.test(value)) {
-      return error(targetPostalCode.countryName, targetPostalCode.format);
-    }
-  };
+  if (!targetPostalCode.regex.test(value)) {
+    return `Неверный адрес. ${targetPostalCode.countryName} имеет следующий формат ${targetPostalCode.format}`;
+  }
+};
 
 export const validateEmail = (value: string) => {
   const trimmed = value.trim();

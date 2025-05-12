@@ -1,7 +1,7 @@
 import { expect, it, describe } from 'vitest';
 import {
   combineRules,
-  isCorrectPostalCode,
+  validatePostalCode,
   isDateDiffLessThan,
   isOnlyLetters,
   notMatches,
@@ -10,6 +10,7 @@ import {
 } from './mantine-validation';
 import { COUNTRIES } from '@/constants/countries';
 import { isNotEmpty } from '@mantine/form';
+import { POSTAL_CODES } from '@/constants/postal-codes';
 
 describe('combineRules mantine fn', () => {
   it('should return undefined when validation passed', () => {
@@ -118,10 +119,7 @@ describe('isCorrectPostalCode validation mantine fn', () => {
 
     const [country] = COUNTRIES;
 
-    const result = isCorrectPostalCode(() => 'error message')(
-      '123 123',
-      country.code
-    );
+    const result = validatePostalCode('123 123', country.code);
 
     expect(result).toBeUndefined();
   });
@@ -130,10 +128,13 @@ describe('isCorrectPostalCode validation mantine fn', () => {
     expect.hasAssertions();
 
     const [country] = COUNTRIES;
+    const targetPostalCode = POSTAL_CODES.find(
+      (postalCode) => postalCode.iso === country.code
+    );
 
-    const message = `Wrong format for ${country.code}`;
+    const message = `Неверный адрес. ${targetPostalCode!.countryName} имеет следующий формат ${targetPostalCode!.format}`;
 
-    const result = isCorrectPostalCode(() => message)('123123', country.code);
+    const result = validatePostalCode('123123', country.code);
 
     expect(result).toStrictEqual(message);
   });
