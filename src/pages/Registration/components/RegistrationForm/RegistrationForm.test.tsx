@@ -151,7 +151,7 @@ describe('component RegistrationForm', () => {
     const cityInput = screen.getByLabelText(/город/i);
     const street = screen.getByLabelText(/улица/i);
     const postalAddressInput = screen.getByLabelText(/почтовый адрес/i);
-    const countryInput = screen.getByPlaceholderText(/Выбрать страну/i);
+    const countryInput = screen.getByPlaceholderText(/Выберите страну/i);
 
     expect(cityInput).toBeInTheDocument();
     expect(street).toBeInTheDocument();
