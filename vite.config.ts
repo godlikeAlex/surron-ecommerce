@@ -15,4 +15,11 @@ export default defineConfig({
     },
   },
   envPrefix: 'VAR_',
+  build: {
+    rollupOptions: {
+      input: {
+        main: './index.html'
+      }
+    }
+  },
 });
