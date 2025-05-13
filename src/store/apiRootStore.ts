@@ -17,7 +17,7 @@ type ApiRootState = {
 
 const initialApiRoot = getAnonymousApiRoot();
 
-const useApiRootStore = create<ApiRootState>((set, get) => ({
+export const useApiRootStore = create<ApiRootState>((set, get) => ({
   apiRoot: initialApiRoot,
   isLoggedIn: false,
   refreshToken: undefined,

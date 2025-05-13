@@ -1,4 +1,4 @@
-import { apiRootStore } from '@/store/apiRootStore';
+import { useApiRootStore } from '@/store/apiRootStore';
 import { Navigate, Outlet } from 'react-router';
 
 type ProtectedRoutesProps = {
@@ -10,7 +10,8 @@ export const ProtectedRoutes = ({
   requiredLoginState,
   redirectedPath = '/',
 }: ProtectedRoutesProps) => {
-  if (apiRootStore().isLoggedIn !== requiredLoginState) {
+  const isLoggedIn = useApiRootStore((state) => state.isLoggedIn);
+  if (isLoggedIn !== requiredLoginState) {
     return <Navigate to={redirectedPath} replace />;
   }
   return <Outlet />;
