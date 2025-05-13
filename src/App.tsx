@@ -1,5 +1,6 @@
 import { Route, Routes, BrowserRouter } from 'react-router';
 import { Home, Login, NotFound, Registration } from '@/pages';
+import { ProtectedRoutes } from './utils/ProtectedRoutes';
 
 const App = () => {
   return (
@@ -7,8 +8,10 @@ const App = () => {
       <Routes>
         <Route index element={<Home />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="login" element={<Login />} />
-        <Route path="/registration" element={<Registration />} />
+        <Route element={<ProtectedRoutes requiredLoginState={false} />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/registration" element={<Registration />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
