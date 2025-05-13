@@ -14,7 +14,7 @@ import { useForm } from '@mantine/form';
 import { validateEmail, validatePassword } from '@/utils/mantine-validation';
 import classes from './LoginForm.module.scss';
 import { IconAlertCircle, IconAt, IconLock } from '@tabler/icons-react';
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 import { useApiRootStore } from '@/store/apiRootStore';
 import { useState } from 'react';
 
@@ -41,7 +41,6 @@ export const LoginForm = () => {
   const { logIn } = useApiRootStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   const form = useForm<AuthFormValues>({
     initialValues: { email: '', password: '' },
@@ -60,7 +59,6 @@ export const LoginForm = () => {
     try {
       const me = await logIn(values);
       console.log({ me });
-      await navigate('/');
     } catch (error) {
       handleAuthError(error);
     } finally {
