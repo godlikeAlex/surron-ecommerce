@@ -9,7 +9,7 @@ const App = () => {
         <Route index element={<Home />} />
         <Route path="*" element={<NotFound />} />
         <Route element={<ProtectedRoutes requiredLoginState={false} />}>
-          <Route path="/login" element={<Login />}></Route>
+          <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
         </Route>
       </Routes>
