@@ -126,7 +126,7 @@ describe('component RegistrationForm', () => {
       await user.type(emailInput, 'user@example.com');
       await user.type(firstNameInput, 'Aleksandr');
       await user.type(lastNameInput, 'Yurkovskiy');
-      await user.type(passwordInput, '123456Sss');
+      await user.type(passwordInput, '123456Sss$');
       await user.type(dateOfBirth, '2001-05-05');
 
       await selectCountry(user);
@@ -180,49 +180,78 @@ describe('component RegistrationForm', () => {
 
 describe('validation component RegistrationForm', () => {
   describe('email', () => {
-    it('shows email validation error when is empty', async () => {
+    it('shows error for invalid email format', async () => {
       expect.hasAssertions();
 
       render(<RegistrationForm />);
-
-      const form = screen.getByTestId('registration-form');
-
-      fireEvent.submit(form);
-
-      await expect(
-        screen.findByText('Введите верный email (user@example.com)')
-      ).resolves.toBeInTheDocument();
-    });
-
-    it('shows error when email is invalid', async () => {
-      expect.hasAssertions();
-
-      render(<RegistrationForm />);
+      const user = userEvent.setup();
 
       const emailInput = screen.getByLabelText(/email/i);
 
-      const user = userEvent.setup();
-
-      await user.type(emailInput, 'w@rong@c.q');
+      await user.type(emailInput, 'invalid-email');
 
       await expect(
-        screen.findByText('Введите верный email (user@example.com)')
+        screen.findByText('Email должен содержать @')
+      ).resolves.toBeInTheDocument();
+
+      await user.clear(emailInput);
+      await user.type(emailInput, 'invalid-email@@');
+
+      await expect(
+        screen.findByText('Должен быть ровно один символ @')
       ).resolves.toBeInTheDocument();
     });
-  });
 
-  it('shows password validation error when is empty', async () => {
-    expect.hasAssertions();
+    it('shows error for email with leading/trailing spaces', async () => {
+      expect.hasAssertions();
 
-    render(<RegistrationForm />);
+      render(<RegistrationForm />);
+      const user = userEvent.setup();
 
-    const form = screen.getByTestId('registration-form');
+      const emailInput = screen.getByLabelText(/email/i);
 
-    fireEvent.submit(form);
+      await user.type(emailInput, '  user@example.com  ');
 
-    await expect(
-      screen.findByText('Пароль должен содержать 8 символов.')
-    ).resolves.toBeInTheDocument();
+      await expect(
+        screen.findByText('Уберите пробелы в начале или конце email')
+      ).resolves.toBeInTheDocument();
+    });
+
+    it('shows error for email without domain', async () => {
+      expect.hasAssertions();
+
+      render(<RegistrationForm />);
+      const user = userEvent.setup();
+
+      const emailInput = screen.getByLabelText(/email/i);
+      await user.type(emailInput, 'user@');
+
+      await expect(
+        screen.findByText('Укажите домен после @')
+      ).resolves.toBeInTheDocument();
+    });
+
+    it('shows error for email with invalid domain format', async () => {
+      expect.hasAssertions();
+
+      render(<RegistrationForm />);
+      const user = userEvent.setup();
+
+      const emailInput = screen.getByLabelText(/email/i);
+
+      await user.type(emailInput, 'user@example.');
+
+      await expect(
+        screen.findByText('Домен не может заканчиваться точкой')
+      ).resolves.toBeInTheDocument();
+
+      await user.clear(emailInput);
+      await user.type(emailInput, 'user@.example');
+
+      await expect(
+        screen.findByText('Домен не может начинаться с точки')
+      ).resolves.toBeInTheDocument();
+    });
   });
 
   it('shows firstName validation error when is empty', async () => {
@@ -235,7 +264,7 @@ describe('validation component RegistrationForm', () => {
     fireEvent.submit(form);
 
     await expect(
-      screen.findByText('Имя должно быть заполнено.')
+      screen.findByText('Имя должно быть заполнено')
     ).resolves.toBeInTheDocument();
   });
 
@@ -249,7 +278,7 @@ describe('validation component RegistrationForm', () => {
     fireEvent.submit(form);
 
     await expect(
-      screen.findByText('Фамилия должно быть заполнено.')
+      screen.findByText('Фамилия должна быть заполнена')
     ).resolves.toBeInTheDocument();
   });
 
@@ -264,7 +293,7 @@ describe('validation component RegistrationForm', () => {
       fireEvent.submit(form);
 
       await expect(
-        screen.findByText('Выберите дату.')
+        screen.findByText('Выберите дату')
       ).resolves.toBeInTheDocument();
     });
 
@@ -284,7 +313,7 @@ describe('validation component RegistrationForm', () => {
 
       await expect(
         screen.findByText(
-          'Чтобы пользоваться нашим сайтом, вы должны быть старше 13 лет.'
+          'Чтобы пользоваться нашим сайтом, вы должны быть старше 13 лет'
         )
       ).resolves.toBeInTheDocument();
     });
@@ -301,7 +330,7 @@ describe('validation component RegistrationForm', () => {
       fireEvent.submit(form);
 
       await expect(
-        screen.findByText('Выберите вашу страну.')
+        screen.findByText('Выберите вашу страну')
       ).resolves.toBeInTheDocument();
     });
 
@@ -318,7 +347,7 @@ describe('validation component RegistrationForm', () => {
       fireEvent.submit(form);
 
       await expect(
-        screen.findByText('Введите улицу.')
+        screen.findByText('Введите улицу')
       ).resolves.toBeInTheDocument();
     });
 
@@ -335,7 +364,7 @@ describe('validation component RegistrationForm', () => {
       fireEvent.submit(form);
 
       await expect(
-        screen.findByText('Введите название города.')
+        screen.findByText('Введите название города')
       ).resolves.toBeInTheDocument();
     });
 
@@ -360,71 +389,59 @@ describe('validation component RegistrationForm', () => {
   });
 
   describe('password', () => {
-    it('shows error when password length less than 8', async () => {
+    it('shows error for password with leading/trailing spaces', async () => {
       expect.hasAssertions();
 
       render(<RegistrationForm />);
-
-      const passwordInput = screen.getByLabelText(/пароль/i);
-
       const user = userEvent.setup();
 
-      await user.type(passwordInput, '1234');
+      const passwordInput = screen.getByLabelText(/пароль/i);
+      await user.type(passwordInput, ' validPass123! ');
 
       await expect(
-        screen.findByText('Пароль должен содержать 8 символов.')
+        screen.findByText('Уберите пробелы в начале или конце пароля')
       ).resolves.toBeInTheDocument();
     });
 
-    it('shows error when password not contains (A-Z)', async () => {
+    it('shows password requirements errors for weak password', async () => {
       expect.hasAssertions();
 
       render(<RegistrationForm />);
-
-      const passwordInput = screen.getByLabelText(/пароль/i);
-
       const user = userEvent.setup();
 
-      await user.type(passwordInput, '12345678');
+      const passwordInput = screen.getByLabelText(/пароль/i);
+      await user.type(passwordInput, 'simple');
 
       await expect(
-        screen.findByText(
-          'Пароль должен содержать хотя-бы 1 заглавную букву. (A-Z)'
-        )
+        screen.findByText('Пароль должен быть не менее 8 символов')
       ).resolves.toBeInTheDocument();
-    });
 
-    it('shows error when password not contains (a-z)', async () => {
-      expect.hasAssertions();
-
-      render(<RegistrationForm />);
-
-      const passwordInput = screen.getByLabelText(/пароль/i);
-
-      const user = userEvent.setup();
-
-      await user.type(passwordInput, '12345678A');
+      await user.clear(passwordInput);
+      await user.type(passwordInput, 'simplepa');
 
       await expect(
-        screen.findByText(
-          'Пароль должен содержать хотя-бы 1 строчную букву. (a-z)'
-        )
+        screen.findByText('Добавьте хотя бы одну заглавную букву (A-Z)')
       ).resolves.toBeInTheDocument();
-    });
 
-    it('shows error when password not contains (0-9)', async () => {
-      expect.hasAssertions();
-
-      render(<RegistrationForm />);
-
-      const passwordInput = screen.getByLabelText(/пароль/i);
-
-      const user = userEvent.setup();
-
-      await user.type(passwordInput, 'AAAAAAAa');
+      await user.clear(passwordInput);
+      await user.type(passwordInput, 'SIMPLEPASS');
 
       await expect(
-        screen.findByText('Пароль должен содержать хотя-бы 1 цифру')
+        screen.findByText('Добавьте хотя бы одну строчную букву (a-z)')
+      ).resolves.toBeInTheDocument();
+
+      await user.clear(passwordInput);
+      await user.type(passwordInput, 'simplePass');
+
+      await expect(
+        screen.findByText('Добавьте хотя бы одну цифру (0-9)')
+      ).resolves.toBeInTheDocument();
+
+      await user.clear(passwordInput);
+      await user.type(passwordInput, 'simplePass1');
+
+      await expect(
+        screen.findByText('Добавьте хотя бы один спецсимвол (!@#$%^&*)')
       ).resolves.toBeInTheDocument();
     });
   });

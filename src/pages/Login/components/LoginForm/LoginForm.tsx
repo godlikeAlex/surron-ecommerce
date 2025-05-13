@@ -1,4 +1,3 @@
-import { isEmail, useForm } from '@mantine/form';
 import {
   TextInput,
   PasswordInput,
@@ -7,52 +6,20 @@ import {
   Card,
   Anchor,
   Text,
+  Box,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { IconAt, IconLock } from '@tabler/icons-react';
-import classes from './LoginForm.module.scss';
 import { Link } from 'react-router';
+import { validateEmail, validatePassword } from '@/utils/mantine-validation';
+import classes from './LoginForm.module.scss';
 
 export const LoginForm = () => {
   const form = useForm({
     initialValues: { email: '', password: '' },
     validate: {
-      email: (value) => {
-        const trimmed = value.trim();
-        if (trimmed !== value)
-          return 'Уберите пробелы в начале или конце email';
-        if (!value.includes('@')) return 'Email должен содержать @';
-        if (value.split('@').length !== 2)
-          return 'Должен быть ровно один символ @';
-
-        const [, domain] = value.split('@');
-        if (!domain) return 'Укажите домен после @';
-        if (!domain.includes('.'))
-          return 'Домен должен содержать точку (например: example.com)';
-        if (domain.startsWith('.')) return 'Домен не может начинаться с точки';
-        if (domain.endsWith('.')) return 'Домен не может заканчиваться точкой';
-
-        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
-          return 'Некорректный формат email (пример: user@example.com)';
-        }
-
-        return isEmail('Некорректный формат email (пример: user@example.com)')(
-          value
-        );
-      },
-      password: (value) => {
-        const trimmed = value.trim();
-        if (trimmed !== value)
-          return 'Уберите пробелы в начале или конце пароля';
-        if (value.length < 8) return 'Пароль должен быть не менее 8 символов';
-        if (!/[A-Z]/.test(value))
-          return 'Добавьте хотя бы одну заглавную букву (A-Z)';
-        if (!/[a-z]/.test(value))
-          return 'Добавьте хотя бы одну строчную букву (a-z)';
-        if (!/[0-9]/.test(value)) return 'Добавьте хотя бы одну цифру (0-9)';
-        if (!/[!@#$%^&*]/.test(value))
-          return 'Добавьте хотя бы один спецсимвол (!@#$%^&*)';
-        return null;
-      },
+      email: (email) => validateEmail(email),
+      password: (password) => validatePassword(password),
     },
     validateInputOnChange: true,
   });
@@ -62,13 +29,14 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className={classes.loginContainer}>
+    <Box className={classes.loginContainer}>
       <Card className={classes.loginCard}>
         <Title order={2} className={classes.loginTitle}>
           Вход в систему
         </Title>
 
-        <form
+        <Box
+          component="form"
           onSubmit={form.onSubmit(handleSubmit)}
           className={classes.loginForm}
           data-testid="login-form"
@@ -101,8 +69,8 @@ export const LoginForm = () => {
               Зарегистрироваться
             </Anchor>
           </Text>
-        </form>
+        </Box>
       </Card>
-    </div>
+    </Box>
   );
 };

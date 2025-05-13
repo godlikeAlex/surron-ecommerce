@@ -14,15 +14,16 @@ import {
   Text,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { useForm, isEmail, isNotEmpty, hasLength } from '@mantine/form';
+import { useForm, isNotEmpty } from '@mantine/form';
 import { IconAt, IconCalendar, IconLock } from '@tabler/icons-react';
 import { COUNTRIES } from '@/constants/countries';
 import {
   combineRules,
-  isCorrectPostalCode,
   isDateDiffLessThan,
   isOnlyLetters,
-  notMatches,
+  validateEmail,
+  validatePassword,
+  validatePostalCode,
 } from '@/utils/mantine-validation';
 import AuthService from '@/services/AuthService';
 import { Link } from 'react-router';
@@ -58,49 +59,32 @@ const RegistrationForm = () => {
         },
       },
       validate: {
-        email: combineRules([
-          isNotEmpty('Введите верный email (user@example.com)'),
-          isEmail('Введите верный email (user@example.com)'),
-        ]),
-        password: combineRules([
-          hasLength({ min: 8 }, 'Пароль должен содержать 8 символов.'),
-          notMatches(
-            /[A-Z]/,
-            'Пароль должен содержать хотя-бы 1 заглавную букву. (A-Z)'
-          ),
-          notMatches(
-            /[a-z]/,
-            'Пароль должен содержать хотя-бы 1 строчную букву. (a-z)'
-          ),
-          notMatches(/[0-9]/, 'Пароль должен содержать хотя-бы 1 цифру'),
-        ]),
+        email: (email) => validateEmail(email),
+        password: (password) => validatePassword(password),
         firstName: combineRules([
-          isNotEmpty('Имя должно быть заполнено.'),
-          isOnlyLetters('Разрешены только буквы.'),
+          isNotEmpty('Имя должно быть заполнено'),
+          isOnlyLetters('Разрешены только буквы'),
         ]),
         lastName: combineRules([
-          isNotEmpty('Фамилия должно быть заполнено.'),
-          isOnlyLetters('Разрешены только буквы.'),
+          isNotEmpty('Фамилия должна быть заполнена'),
+          isOnlyLetters('Разрешены только буквы'),
         ]),
         dateOfBirth: combineRules([
-          isNotEmpty('Выберите дату.'),
+          isNotEmpty('Выберите дату'),
           isDateDiffLessThan(
             { target: 13, unit: 'years' },
-            'Чтобы пользоваться нашим сайтом, вы должны быть старше 13 лет.'
+            'Чтобы пользоваться нашим сайтом, вы должны быть старше 13 лет'
           ),
         ]),
         address: {
-          street: isNotEmpty('Введите улицу.'),
+          street: isNotEmpty('Введите улицу'),
           city: combineRules([
-            isNotEmpty('Введите название города.'),
-            isOnlyLetters('Город должен содержать только буквы.'),
+            isNotEmpty('Введите название города'),
+            isOnlyLetters('Город должен содержать только буквы'),
           ]),
-          postalCode: (value, values) =>
-            isCorrectPostalCode(
-              (countryName, format) =>
-                `Неверный адрес. ${countryName} имеет следующий формат ${format}`
-            )(value, values.address.country),
-          country: isNotEmpty('Выберите вашу страну.'),
+          postalCode: (postalCode, { address }) =>
+            validatePostalCode(postalCode, address.country),
+          country: isNotEmpty('Выберите вашу страну'),
         },
       },
       validateInputOnChange: true,
@@ -158,7 +142,6 @@ const RegistrationForm = () => {
           <TextInput
             label="Email"
             placeholder="user@example.com"
-            type="email"
             withAsterisk
             leftSection={<IconAt />}
             {...getInputProps('email')}
