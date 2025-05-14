@@ -3,7 +3,7 @@ import { Box } from '@mantine/core';
 import AuthCard from './AuthCard';
 
 import authBg1 from '@/assets/backgrounds/auth-bg-1.webp';
-import authBg2 from '@/assets/backgrounds/auth-bg-2.webp';
+import authBg2 from '@/assets/backgrounds/auth-bg-2.jpg';
 
 import classes from './AuthLayout.module.scss';
 

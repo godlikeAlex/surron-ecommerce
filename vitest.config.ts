@@ -13,7 +13,7 @@ export default defineConfig(
           provider: 'v8',
           reporter: ['html', 'text'],
         },
-        globals: true
+        globals: true,
       },
     })
   )

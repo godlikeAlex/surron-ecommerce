@@ -2,8 +2,6 @@ import {
   TextInput,
   PasswordInput,
   Button,
-  Title,
-  Card,
   Anchor,
   Text,
   Box,
@@ -85,68 +83,60 @@ export const LoginForm = () => {
   };
 
   return (
-    <Box className={classes.loginContainer}>
-      <Card className={classes.loginCard}>
-        <Title order={2} className={classes.loginTitle}>
-          Вход в систему
-        </Title>
-
-        {formError && (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            title="Ошибка входа"
-            color="red"
-            mb="md"
-          >
-            {formError}
-          </Alert>
-        )}
-
-        <Box
-          component="form"
-          onSubmit={form.onSubmit(handleSubmit)}
-          className={classes.loginForm}
-          data-testid="login-form"
+    <Box
+      component="form"
+      onSubmit={form.onSubmit(handleSubmit)}
+      className={classes.loginForm}
+      data-testid="login-form"
+    >
+      {formError && (
+        <Alert
+          icon={<IconAlertCircle />}
+          title="Ошибка входа"
+          color="red"
+          mb="sm"
         >
-          <TextInput
-            label="Email"
-            placeholder="user@example.com"
-            leftSection={<IconAt size={16} />}
-            withAsterisk
-            {...form.getInputProps('email')}
-            classNames={{
-              root: classes.loginInput,
-            }}
-          />
+          {formError}
+        </Alert>
+      )}
 
-          <PasswordInput
-            label="Пароль"
-            placeholder="Введите пароль"
-            leftSection={<IconLock size={16} />}
-            withAsterisk
-            {...form.getInputProps('password')}
-            classNames={{
-              root: classes.loginInput,
-            }}
-          />
+      <TextInput
+        label="Email"
+        placeholder="user@example.com"
+        leftSection={<IconAt />}
+        withAsterisk
+        {...form.getInputProps('email')}
+        classNames={{
+          root: classes.loginInput,
+        }}
+      />
 
-          <Button
-            type="submit"
-            fullWidth
-            className={classes.loginButton}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? <Loader size="sm" color="white" /> : 'Войти'}
-          </Button>
+      <PasswordInput
+        label="Пароль"
+        placeholder="Введите пароль"
+        leftSection={<IconLock />}
+        withAsterisk
+        {...form.getInputProps('password')}
+        classNames={{
+          root: classes.loginInput,
+        }}
+      />
 
-          <Text mt="sm" ta="center">
-            Нет аккаунта?{' '}
-            <Anchor component={Link} to="/registration">
-              Зарегистрироваться
-            </Anchor>
-          </Text>
-        </Box>
-      </Card>
+      <Button
+        type="submit"
+        fullWidth
+        className={classes.loginButton}
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? <Loader size="sm" color="white" /> : 'Войти'}
+      </Button>
+
+      <Text mt="sm" ta="center">
+        Нет аккаунта?{' '}
+        <Anchor component={Link} to="/registration">
+          Зарегистрироваться
+        </Anchor>
+      </Text>
     </Box>
   );
 };

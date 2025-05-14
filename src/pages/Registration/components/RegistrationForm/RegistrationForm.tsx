@@ -27,6 +27,7 @@ import {
 } from '@/utils/mantine-validation';
 import AuthService from '@/services/AuthService';
 import { Link } from 'react-router';
+import classes from './RegistrationForm.module.scss';
 
 interface FormValues {
   email: string;
@@ -116,6 +117,7 @@ const RegistrationForm = () => {
         component="form"
         onSubmit={onSubmit(handleSubmit)}
         data-testid="registration-form"
+        className={classes.registrationForm}
       >
         <Flex
           gap="sm"
@@ -214,9 +216,9 @@ const RegistrationForm = () => {
 
           <Button
             type="submit"
-            variant="filled"
-            color="rgba(0, 0, 0, 1)"
+            fullWidth
             mt={'lg'}
+            className={classes.registrationButton}
           >
             Зарегистрироваться
           </Button>

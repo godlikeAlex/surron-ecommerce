@@ -1,11 +1,14 @@
+import { AuthLayout } from '@/layouts';
 import { LoginForm } from './components/LoginForm';
-import { Header } from '@/components';
 
 export const Login = () => {
   return (
     <>
-      <Header />
-      <LoginForm />
+      <AuthLayout backgroundVariant="second">
+        <AuthLayout.Card title="Вход в систему" titleOrder={2}>
+          <LoginForm />
+        </AuthLayout.Card>
+      </AuthLayout>
     </>
   );
 };
