@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   Anchor,
   Box,
@@ -6,14 +5,13 @@ import {
   Center,
   Divider,
   Flex,
-  Grid,
   PasswordInput,
-  Select,
   SimpleGrid,
   TextInput,
   Text,
   Loader,
   Alert,
+  Checkbox,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm, isNotEmpty } from '@mantine/form';
@@ -23,7 +21,6 @@ import {
   IconCalendar,
   IconLock,
 } from '@tabler/icons-react';
-import { COUNTRIES } from '@/constants/countries';
 import {
   combineRules,
   isDateDiffLessThan,
@@ -36,6 +33,10 @@ import { Link } from 'react-router';
 import { useSignupUser } from './useSignupUser';
 import { ServerErrorValidation } from '@/errors/ServerErrorValidation';
 import { useApiRootStore } from '@/store/apiRootStore';
+import {
+  AddressPickerInputs,
+  AddressPicker,
+} from '@/pages/Registration/components/AddressPicker';
 import classes from './RegistrationForm.module.scss';
 
 export interface FormValues {
@@ -44,26 +45,18 @@ export interface FormValues {
   firstName: string;
   lastName: string;
   dateOfBirth?: string;
-  address: {
-    street: string;
-    city: string;
-    postalCode: string;
-    country?: string;
+  address: AddressPickerInputs & {
+    useAsDefault: boolean;
+    useAsBilling: boolean;
   };
+  billing: AddressPickerInputs & { useAsDefault: boolean };
 }
 
 const RegistrationForm = () => {
   const signupUser = useSignupUser();
   const store = useApiRootStore();
 
-  const {
-    onSubmit,
-    getInputProps,
-    values,
-    watch,
-    validateField,
-    setFieldError,
-  } = useForm<FormValues>({
+  const form = useForm<FormValues>({
     initialValues: {
       email: '',
       password: '',
@@ -75,7 +68,24 @@ const RegistrationForm = () => {
         city: '',
         postalCode: '',
         country: undefined,
+        useAsDefault: false,
+        useAsBilling: false,
       },
+      billing: {
+        street: '',
+        city: '',
+        postalCode: '',
+        country: undefined,
+        useAsDefault: false,
+      },
+    },
+    onValuesChange: (values) => {
+      if (values.address.useAsBilling) {
+        form.setFieldValue('billing.country', values.address.country);
+        form.setFieldValue('billing.city', values.address.city);
+        form.setFieldValue('billing.street', values.address.street);
+        form.setFieldValue('billing.postalCode', values.address.postalCode);
+      }
     },
     validate: {
       email: (email) => validateEmail(email),
@@ -105,23 +115,19 @@ const RegistrationForm = () => {
           validatePostalCode(postalCode, address.country),
         country: isNotEmpty('Выберите вашу страну'),
       },
+      billing: {
+        street: isNotEmpty('Введите улицу'),
+        city: combineRules([
+          isNotEmpty('Введите название города'),
+          isOnlyLetters('Город должен содержать только буквы'),
+        ]),
+        postalCode: (postalCode, { billing }) =>
+          validatePostalCode(postalCode, billing.country),
+        country: isNotEmpty('Выберите вашу страну'),
+      },
     },
     validateInputOnChange: true,
   });
-
-  watch(
-    'address.country',
-    () => values.address.postalCode && validateField('address.postalCode')
-  );
-
-  const isCountrySelected = Boolean(values.address.country);
-
-  const countries = useMemo(() => {
-    return COUNTRIES.map(({ code, name, flag }) => ({
-      value: code,
-      label: `${flag} ${name}`,
-    }));
-  }, []);
 
   const handleSubmit = async (values: FormValues) => {
     try {
@@ -133,7 +139,7 @@ const RegistrationForm = () => {
     } catch (error) {
       if (error instanceof ServerErrorValidation) {
         error.response.errors.forEach(({ field, message }) => {
-          if (field && field in values) setFieldError(field, message);
+          if (field && field in values) form.setFieldError(field, message);
         });
       }
     }
@@ -143,7 +149,7 @@ const RegistrationForm = () => {
     <Center>
       <Box
         component="form"
-        onSubmit={onSubmit(handleSubmit)}
+        onSubmit={form.onSubmit(handleSubmit)}
         data-testid="registration-form"
         className={classes.registrationForm}
       >
@@ -169,14 +175,14 @@ const RegistrationForm = () => {
               label="Имя"
               placeholder="Введите имя"
               withAsterisk
-              {...getInputProps('firstName')}
+              {...form.getInputProps('firstName')}
               disabled={signupUser.isPending}
             />
             <TextInput
               label="Фамилия"
               placeholder="Введите фамилию"
               withAsterisk
-              {...getInputProps('lastName')}
+              {...form.getInputProps('lastName')}
               disabled={signupUser.isPending}
             />
           </SimpleGrid>
@@ -186,7 +192,7 @@ const RegistrationForm = () => {
             placeholder="user@example.com"
             leftSection={<IconAt />}
             withAsterisk
-            {...getInputProps('email')}
+            {...form.getInputProps('email')}
             disabled={signupUser.isPending}
           />
 
@@ -196,7 +202,7 @@ const RegistrationForm = () => {
             type="password"
             withAsterisk
             leftSection={<IconLock />}
-            {...getInputProps('password')}
+            {...form.getInputProps('password')}
             disabled={signupUser.isPending}
           />
 
@@ -205,58 +211,42 @@ const RegistrationForm = () => {
             placeholder="Выберите дату рождения"
             withAsterisk
             leftSection={<IconCalendar />}
-            {...getInputProps('dateOfBirth')}
+            {...form.getInputProps('dateOfBirth')}
             disabled={signupUser.isPending}
           />
 
-          <Divider my="lg" label={'Адрес'} />
+          <Divider my="lg" label={'Адрес доставки'} />
 
-          <Grid>
-            <Grid.Col span={12}>
-              <Select
-                label="Страна"
-                placeholder="Выберите страну"
-                withAsterisk
-                searchable
-                data={countries}
-                {...getInputProps('address.country')}
-                disabled={signupUser.isPending}
-              />
-            </Grid.Col>
+          <AddressPicker
+            path="address"
+            form={form}
+            disabled={signupUser.isPending}
+          />
 
-            <Grid.Col span={12}>
-              <TextInput
-                label="Город"
-                placeholder="Введите город"
-                withAsterisk
-                disabled={!isCountrySelected || signupUser.isPending}
-                {...getInputProps('address.city')}
-                {...(!isCountrySelected ? { error: undefined } : undefined)}
-              />
-            </Grid.Col>
+          <Checkbox
+            label="Установить как адрес по умолчанию"
+            {...form.getInputProps('address.useAsDefault')}
+            disabled={signupUser.isPending}
+          />
+          <Checkbox
+            label="Использовать адрес для выставления счета"
+            disabled={signupUser.isPending}
+            {...form.getInputProps('address.useAsBilling')}
+          />
 
-            <Grid.Col span={6}>
-              <TextInput
-                label="Улица"
-                placeholder="Введите улицу"
-                withAsterisk
-                disabled={!isCountrySelected || signupUser.isPending}
-                {...getInputProps('address.street')}
-                {...(!isCountrySelected ? { error: undefined } : undefined)}
-              />
-            </Grid.Col>
+          <Divider my="lg" label={'Адрес для выставления счета'} />
 
-            <Grid.Col span={6}>
-              <TextInput
-                label="Почтовый адрес"
-                placeholder="Введите почтовый адрес"
-                withAsterisk
-                disabled={!isCountrySelected || signupUser.isPending}
-                {...getInputProps('address.postalCode')}
-                {...(!isCountrySelected ? { error: undefined } : undefined)}
-              />
-            </Grid.Col>
-          </Grid>
+          <AddressPicker
+            path="billing"
+            form={form}
+            disabled={form.values.address.useAsBilling || signupUser.isPending}
+          />
+
+          <Checkbox
+            label="Установить по умолчанию"
+            {...form.getInputProps('billing.useAsDefault')}
+            disabled={signupUser.isPending}
+          />
 
           <Button
             type="submit"
