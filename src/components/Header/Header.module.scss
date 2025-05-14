@@ -1,3 +1,13 @@
+:root {
+  --color-white: rgba(255 255 255 / 100%);
+  --color-white-transparent: rgba(255 255 255 / 90%);
+  --color-yellow-surron: rgba(249 224 0 / 100%);
+  --color-yellow-surron-transparent: rgba(249 224 0 / 30%);
+  --color-black: rgba(0 0 0 / 100%);
+  --color-dark-gray: rgba(51 51 51 / 100%);
+  --transition: 0.3s ease;
+}
+
 .header {
   position: fixed;
   z-index: 888;
@@ -6,10 +16,8 @@
 
   width: 100%;
   height: 56px;
-  border-bottom: 1px solid
-    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
 
-  background-color: var(--mantine-color-body);
+  background-color: var(--color-white-transparent);
 }
 
 .inner {
@@ -20,13 +28,6 @@
 }
 
 .link {
-  @mixin hover {
-    background-color: light-dark(
-      var(--mantine-color-gray-0),
-      var(--mantine-color-dark-6)
-    );
-  }
-
   display: block;
 
   padding: 8px 12px;
@@ -37,6 +38,16 @@
   line-height: 1;
   color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
   text-decoration: none;
+
+  transition: background-color var(--transition);
+
+  &:hover {
+    background-color: var(--color-yellow-surron-transparent);
+  }
+
+  [data-mantine-color-scheme] &[data-active='true'] {
+    background-color: var(--color-yellow-surron);
+  }
 }
 
 .link-label {
@@ -44,5 +55,39 @@
 }
 
 .logo {
-  width: 35px;
+  display: inline-block;
+  object-fit: contain;
+}
+
+[data-active='true'] {
+  pointer-events: none;
+  background-color: aqua;
+}
+
+.fullscreen-menu {
+  min-height: calc(100dvh - 76px);
+
+  & .link,
+  & .logout-button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.header .logout-button,
+.fullscreen-menu .logout-button {
+  height: 32px;
+  padding: 8px 12px;
+
+  font-size: var(--mantine-font-size-sm);
+  line-height: 1;
+  color: var(--color-white);
+
+  background-color: var(--color-black);
+
+  transition: background-color var(--transition);
+
+  &:hover {
+    background-color: var(--color-dark-gray);
+  }
 }
