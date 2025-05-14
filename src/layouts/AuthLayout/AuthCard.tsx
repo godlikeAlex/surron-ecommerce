@@ -1,22 +1,17 @@
 import React from 'react';
-import { Card, Center, Title } from '@mantine/core';
+import { Card, Center, Title, TitleOrder } from '@mantine/core';
 import classes from './AuthLayout.module.scss';
 
 interface Props {
   children: React.ReactNode;
   title: string;
+  titleOrder?: TitleOrder;
 }
 
-const AuthCard = ({ children, title }: Props) => (
-  <Card
-    bg={'transparent'}
-    shadow="sm"
-    padding="lg"
-    radius={'md'}
-    className={classes.authCard}
-  >
+const AuthCard = ({ children, title, titleOrder = 1 }: Props) => (
+  <Card bg={'transparent'} padding="lg" className={classes.authCard}>
     <Center>
-      <Title order={1} mb={'lg'}>
+      <Title order={titleOrder} mb={'lg'}>
         {title}
       </Title>
     </Center>
