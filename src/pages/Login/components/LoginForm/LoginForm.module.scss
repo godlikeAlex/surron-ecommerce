@@ -32,12 +32,22 @@
       }
 
       .login-button {
+        position: relative;
+
         margin-top: 1rem;
+
         color: #fff;
+
         background-color: #000;
+
         transition: background-color 0.3s ease;
 
         &:hover {
+          background-color: #333;
+        }
+
+        &:disabled {
+          opacity: 1;
           background-color: #333;
         }
       }

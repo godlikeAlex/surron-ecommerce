@@ -24,7 +24,7 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
   httpClient: fetch,
 };
 
-type User = {
+export type User = {
   username: string;
   password: string;
 };
@@ -82,6 +82,7 @@ export const getRefreshTokenRoot = (refreshToken: string) => {
     .withHttpMiddleware(httpMiddlewareOptions)
     .withLoggerMiddleware()
     .build();
+
   return createApiBuilderFromCtpClient(ctpClient).withProjectKey({
     projectKey,
   });
