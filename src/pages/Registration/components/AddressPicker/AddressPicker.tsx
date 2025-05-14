@@ -4,10 +4,10 @@ import { UseFormReturnType } from '@mantine/form';
 import { useMemo } from 'react';
 
 export type AddressPickerInputs = {
-  street: string;
+  streetName: string;
   city: string;
   postalCode: string;
-  country?: string;
+  country: string;
 };
 
 interface Props<T> {
@@ -70,7 +70,7 @@ export const AddressPicker = <T,>({
           placeholder="Введите улицу"
           withAsterisk
           disabled={dependedInputsDisabled}
-          {...form.getInputProps(`${path}.street`)}
+          {...form.getInputProps(`${path}.streetName`)}
           {...(dependedInputsDisabled ? { error: undefined } : undefined)}
         />
       </Grid.Col>

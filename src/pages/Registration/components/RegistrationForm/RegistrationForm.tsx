@@ -55,7 +55,6 @@ export interface FormValues {
 const RegistrationForm = () => {
   const signupUser = useSignupUser();
   const store = useApiRootStore();
-
   const form = useForm<FormValues>({
     initialValues: {
       email: '',
@@ -64,18 +63,18 @@ const RegistrationForm = () => {
       lastName: '',
       dateOfBirth: undefined,
       address: {
-        street: '',
+        streetName: '',
         city: '',
         postalCode: '',
-        country: undefined,
+        country: '',
         useAsDefault: false,
         useAsBilling: false,
       },
       billing: {
-        street: '',
+        streetName: '',
         city: '',
         postalCode: '',
-        country: undefined,
+        country: '',
         useAsDefault: false,
       },
     },
@@ -83,7 +82,7 @@ const RegistrationForm = () => {
       if (values.address.useAsBilling) {
         form.setFieldValue('billing.country', values.address.country);
         form.setFieldValue('billing.city', values.address.city);
-        form.setFieldValue('billing.street', values.address.street);
+        form.setFieldValue('billing.streetName', values.address.streetName);
         form.setFieldValue('billing.postalCode', values.address.postalCode);
       }
     },
@@ -106,7 +105,7 @@ const RegistrationForm = () => {
         ),
       ]),
       address: {
-        street: isNotEmpty('Введите улицу'),
+        streetName: isNotEmpty('Введите улицу'),
         city: combineRules([
           isNotEmpty('Введите название города'),
           isOnlyLetters('Город должен содержать только буквы'),
@@ -116,7 +115,7 @@ const RegistrationForm = () => {
         country: isNotEmpty('Выберите вашу страну'),
       },
       billing: {
-        street: isNotEmpty('Введите улицу'),
+        streetName: isNotEmpty('Введите улицу'),
         city: combineRules([
           isNotEmpty('Введите название города'),
           isOnlyLetters('Город должен содержать только буквы'),
