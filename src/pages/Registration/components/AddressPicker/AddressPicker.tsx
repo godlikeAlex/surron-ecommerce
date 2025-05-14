@@ -45,6 +45,7 @@ export const AddressPicker = <T,>({
         <Select
           label="Страна"
           placeholder="Выберите страну"
+          data-testid={`${path}-country`}
           withAsterisk
           searchable
           data={countries}
@@ -57,6 +58,7 @@ export const AddressPicker = <T,>({
         <TextInput
           label="Город"
           placeholder="Введите город"
+          data-testid={`${path}-city`}
           withAsterisk
           disabled={dependedInputsDisabled}
           {...form.getInputProps(`${path}.city`)}
@@ -68,6 +70,7 @@ export const AddressPicker = <T,>({
         <TextInput
           label="Улица"
           placeholder="Введите улицу"
+          data-testid={`${path}-street`}
           withAsterisk
           disabled={dependedInputsDisabled}
           {...form.getInputProps(`${path}.streetName`)}
@@ -79,6 +82,7 @@ export const AddressPicker = <T,>({
         <TextInput
           label="Почтовый адрес"
           placeholder="Введите почтовый адрес"
+          data-testid={`${path}-postalCode`}
           withAsterisk
           disabled={dependedInputsDisabled}
           {...form.getInputProps(`${path}.postalCode`)}
