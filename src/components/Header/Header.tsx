@@ -60,7 +60,14 @@ const Header = () => {
     <Box component="header" className={classes.header}>
       <Container size="md">
         <Box className={classes.inner}>
-          <Flex gap={10} justify="center" align="center">
+          <Flex
+            component={Link}
+            to={'/'}
+            gap={10}
+            justify="center"
+            align="center"
+            className={classes.logoLink}
+          >
             <Image src={logo} className={classes.logo} w={28} />
             <Title order={4}>Surron Ecommerce</Title>
           </Flex>
