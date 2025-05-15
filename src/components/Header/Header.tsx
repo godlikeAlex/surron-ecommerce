@@ -42,10 +42,9 @@ const Header = () => {
     );
   });
 
-  console.log(opened);
-
   const handleLogout = useCallback(() => {
     apiRootStore().setLogout();
+    void apiRootStore().obtainToken();
   }, []);
 
   const logoutButton = isLoggedIn && (
