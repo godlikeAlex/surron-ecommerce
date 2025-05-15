@@ -221,7 +221,7 @@ const RegistrationForm = () => {
           />
 
           <Checkbox
-            label="Установить как адрес по умолчанию"
+            label="Установить как адрес доставки по умолчанию"
             {...form.getInputProps('address.useAsDefault')}
             disabled={signupUser.isPending}
           />
@@ -240,7 +240,7 @@ const RegistrationForm = () => {
           />
 
           <Checkbox
-            label="Установить по умолчанию"
+            label="Установить как адрес для выставления счета по умолчанию"
             {...form.getInputProps('billing.useAsDefault')}
             disabled={signupUser.isPending}
           />
