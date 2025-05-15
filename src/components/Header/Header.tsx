@@ -72,8 +72,8 @@ const Header = () => {
           <Modal
             opened={opened}
             onClose={toggle}
-            title="This is a fullscreen modal"
             fullScreen
+            withCloseButton={false}
             radius={0}
             transitionProps={{ transition: 'fade', duration: 300 }}
             onClick={toggle}
