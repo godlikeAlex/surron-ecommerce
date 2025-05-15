@@ -182,26 +182,26 @@ const RegistrationForm = () => {
               {...form.getInputProps('lastName')}
               disabled={signupUser.isPending}
             />
+
+            <TextInput
+              label="Email"
+              placeholder="user@example.com"
+              leftSection={<IconAt />}
+              withAsterisk
+              {...form.getInputProps('email')}
+              disabled={signupUser.isPending}
+            />
+
+            <PasswordInput
+              label="Пароль"
+              placeholder="Введите пароль"
+              type="password"
+              withAsterisk
+              leftSection={<IconLock />}
+              {...form.getInputProps('password')}
+              disabled={signupUser.isPending}
+            />
           </SimpleGrid>
-
-          <TextInput
-            label="Email"
-            placeholder="user@example.com"
-            leftSection={<IconAt />}
-            withAsterisk
-            {...form.getInputProps('email')}
-            disabled={signupUser.isPending}
-          />
-
-          <PasswordInput
-            label="Пароль"
-            placeholder="Введите пароль"
-            type="password"
-            withAsterisk
-            leftSection={<IconLock />}
-            {...form.getInputProps('password')}
-            disabled={signupUser.isPending}
-          />
 
           <DatePickerInput
             label="Дата рождения"
@@ -212,7 +212,7 @@ const RegistrationForm = () => {
             disabled={signupUser.isPending}
           />
 
-          <Divider my="lg" label={'Адрес доставки'} />
+          <Divider my="sm" label={'Адрес доставки'} />
 
           <AddressPicker
             path="address"
@@ -231,7 +231,7 @@ const RegistrationForm = () => {
             {...form.getInputProps('address.useAsBilling')}
           />
 
-          <Divider my="lg" label={'Адрес для выставления счета'} />
+          <Divider my="sm" label={'Адрес для выставления счета'} />
 
           <AddressPicker
             path="billing"

@@ -41,7 +41,7 @@ export const AddressPicker = <T,>({
 
   return (
     <Grid>
-      <Grid.Col span={12}>
+      <Grid.Col span={6}>
         <Select
           label="Страна"
           placeholder="Выберите страну"
@@ -54,7 +54,7 @@ export const AddressPicker = <T,>({
         />
       </Grid.Col>
 
-      <Grid.Col span={12}>
+      <Grid.Col span={6}>
         <TextInput
           label="Город"
           placeholder="Введите город"
