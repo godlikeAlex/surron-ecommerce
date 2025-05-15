@@ -3,7 +3,7 @@ import { AuthLayout } from '@/layouts';
 
 export const Registration = () => (
   <>
-    <AuthLayout backgroundVariant="first">
+    <AuthLayout>
       <AuthLayout.Card title="Регистрация">
         <RegistrationForm />
       </AuthLayout.Card>
