@@ -10,7 +10,7 @@ describe('component AuthLayout', () => {
 
     const children = 'Hello world';
 
-    render(<AuthLayout backgroundVariant="first">{children}</AuthLayout>);
+    render(<AuthLayout>{children}</AuthLayout>);
 
     expect(screen.getByText(children)).toBeInTheDocument();
   });
@@ -19,7 +19,7 @@ describe('component AuthLayout', () => {
     expect.hasAssertions();
 
     render(
-      <AuthLayout backgroundVariant="first">
+      <AuthLayout>
         <form name="registration"></form>
       </AuthLayout>
     );
