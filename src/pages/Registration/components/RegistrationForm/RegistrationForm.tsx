@@ -153,7 +153,7 @@ const RegistrationForm = () => {
         {signupUser.error && (
           <Alert
             title="Ошибка регистрации"
-            icon={<IconAlertCircle size={16} />}
+            icon={<IconAlertCircle />}
             color="red"
             mb="md"
           >
