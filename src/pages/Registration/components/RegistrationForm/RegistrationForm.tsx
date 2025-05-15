@@ -32,7 +32,6 @@ import {
 import { Link } from 'react-router';
 import { useSignupUser } from './useSignupUser';
 import { ServerErrorValidation } from '@/errors/ServerErrorValidation';
-import { useApiRootStore } from '@/store/apiRootStore';
 import {
   AddressPickerInputs,
   AddressPicker,
@@ -54,7 +53,6 @@ export interface FormValues {
 
 const RegistrationForm = () => {
   const signupUser = useSignupUser();
-  const store = useApiRootStore();
   const form = useForm<FormValues>({
     initialValues: {
       email: '',
@@ -132,9 +130,7 @@ const RegistrationForm = () => {
     try {
       const result = await signupUser.handleSignup(values);
 
-      console.log(result, 'RESULT');
-
-      store.setLogin(values.email, values.password);
+      console.log('SIGNUP USER RESULT', result);
     } catch (error) {
       if (error instanceof ServerErrorValidation) {
         error.response.errors.forEach(({ field, message }) => {
