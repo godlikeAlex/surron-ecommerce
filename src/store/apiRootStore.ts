@@ -10,7 +10,6 @@ import {
 } from '@commercetools/platform-sdk';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { checkStorage } from './storage/apiRootStorage';
 
 export type StorageApiRoot = {
   state: {
@@ -26,46 +25,25 @@ type ApiRootState = {
   setRefreshToken: (token?: string) => void;
   setLogin: (email: string, password: string) => void;
   setLogout: () => void;
-  fromStorage: (value: StorageApiRoot) => void;
-  obtainToken: () => Promise<void>;
   logIn: (user: { email: string; password: string }) => Promise<Customer>;
+  handleRehydrateStorage: () => void;
 };
 
-export const LOCAL_STORAGE_KEY =
-  'surronc-commerce_Lorenzo-StJohn_Milena-Belianova_godlikeAlex';
+export const LOCAL_STORAGE_KEY = 'surronc-commerce';
 
-const storageItem = checkStorage();
-
-const initialApiRoot = storageItem
-  ? getRefreshTokenRoot(storageItem.state.refreshToken)
-  : getAnonymousApiRoot();
-
-const initialIsLoggedIn = storageItem ? storageItem.state.isLoggedIn : false;
-
-const initialRefreshToken = storageItem
-  ? storageItem.state.refreshToken
-  : undefined;
+const initialAnonymousApiRoot = getAnonymousApiRoot();
 
 export const useApiRootStore = create<ApiRootState>()(
   persist(
     (set, get) => ({
-      apiRoot: initialApiRoot,
-      isLoggedIn: initialIsLoggedIn,
-      refreshToken: initialRefreshToken,
+      apiRoot: initialAnonymousApiRoot,
+      isLoggedIn: false,
+      refreshToken: undefined,
 
-      fromStorage: (value) => {
-        set({
-          isLoggedIn: value.state.isLoggedIn,
-          refreshToken: value.state.refreshToken,
-          apiRoot: getRefreshTokenRoot(value.state.refreshToken),
-        });
-      },
-
-      obtainToken: async () => {
-        try {
-          await get().apiRoot.categories().get().execute();
-        } catch (error) {
-          if (error) console.log();
+      handleRehydrateStorage: () => {
+        const token = get().refreshToken;
+        if (token) {
+          set({ apiRoot: getRefreshTokenRoot(token) });
         }
       },
 
@@ -80,6 +58,11 @@ export const useApiRootStore = create<ApiRootState>()(
           refreshToken: undefined,
           apiRoot: getPasswordApiRoot({ username: email, password }),
         });
+        try {
+          void get().apiRoot.categories().get().execute();
+        } catch (error) {
+          if (error) console.log();
+        }
       },
 
       setLogout: () => {
@@ -88,6 +71,11 @@ export const useApiRootStore = create<ApiRootState>()(
           refreshToken: undefined,
           apiRoot: getAnonymousApiRoot(),
         });
+        try {
+          void get().apiRoot.categories().get().execute();
+        } catch (error) {
+          if (error) console.log();
+        }
       },
 
       logIn: async ({ email, password }: AuthFormValues): Promise<Customer> => {
@@ -112,6 +100,9 @@ export const useApiRootStore = create<ApiRootState>()(
         isLoggedIn: state.isLoggedIn,
         refreshToken: state.refreshToken,
       }),
+      onRehydrateStorage: (state) => {
+        return () => state.handleRehydrateStorage();
+      },
     }
   )
 );

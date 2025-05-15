@@ -43,8 +43,7 @@ const Header = () => {
   });
 
   const handleLogout = useCallback(() => {
-    apiRootStore().setLogout();
-    void apiRootStore().obtainToken();
+    void apiRootStore().setLogout();
   }, []);
 
   const logoutButton = isLoggedIn && (
