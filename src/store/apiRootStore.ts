@@ -11,13 +11,6 @@ import {
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type StorageApiRoot = {
-  state: {
-    isLoggedIn: boolean;
-    refreshToken: string;
-  };
-};
-
 type ApiRootState = {
   apiRoot: ByProjectKeyRequestBuilder;
   isLoggedIn: boolean;
