@@ -8,7 +8,7 @@ import { ClientResponse } from '@commercetools/ts-client';
 import { CustomerSignInResult } from '@commercetools/platform-sdk';
 
 export const useSignupUser = () => {
-  const { apiRoot, setLogin } = useApiRootStore();
+  const apiRoot = useApiRootStore((state) => state.apiRoot);
 
   const { isPending, error, isError, mutateAsync } = useMutation<
     ClientResponse<CustomerSignInResult>,
@@ -42,8 +42,6 @@ export const useSignupUser = () => {
             },
           })
           .execute();
-
-        setLogin(values.email, values.password);
 
         return result;
       } catch (error: unknown) {

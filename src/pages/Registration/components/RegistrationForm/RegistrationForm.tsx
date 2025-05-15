@@ -37,6 +37,7 @@ import {
   AddressPicker,
 } from '@/pages/Registration/components/AddressPicker';
 import classes from './RegistrationForm.module.scss';
+import { useApiRootStore } from '@/store/apiRootStore';
 
 export interface FormValues {
   email: string;
@@ -53,6 +54,7 @@ export interface FormValues {
 
 const RegistrationForm = () => {
   const signupUser = useSignupUser();
+  const setLogin = useApiRootStore((state) => state.setLogin);
   const form = useForm<FormValues>({
     initialValues: {
       email: '',
@@ -129,7 +131,7 @@ const RegistrationForm = () => {
   const handleSubmit = async (values: FormValues) => {
     try {
       const result = await signupUser.handleSignup(values);
-
+      setLogin(values.email, values.password);
       console.log('SIGNUP USER RESULT', result);
     } catch (error) {
       if (error instanceof ServerErrorValidation) {
