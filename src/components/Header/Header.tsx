@@ -42,8 +42,6 @@ const Header = () => {
     );
   });
 
-  console.log(opened);
-
   const handleLogout = useCallback(() => {
     apiRootStore().setLogout();
   }, []);
@@ -60,7 +58,7 @@ const Header = () => {
 
   return (
     <header className={classes.header}>
-      <Container size="md">
+      <Container size="xl">
         <div className={classes.inner}>
           <Flex gap={10} justify="center" align="center">
             <Image src={logo} className={classes.logo} w={28} />
