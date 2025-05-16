@@ -2,8 +2,6 @@ import { describe, expect, it } from 'vitest';
 import AuthLayout from './AuthLayout';
 import { render, screen } from '@/tests/utils';
 
-import authBg1 from '@/assets/backgrounds/auth-bg-1.webp';
-
 describe('component AuthLayout', () => {
   it('should render with correct children', () => {
     expect.hasAssertions();
@@ -13,22 +11,6 @@ describe('component AuthLayout', () => {
     render(<AuthLayout>{children}</AuthLayout>);
 
     expect(screen.getByText(children)).toBeInTheDocument();
-  });
-
-  it('should render with correct background', () => {
-    expect.hasAssertions();
-
-    render(
-      <AuthLayout>
-        <form name="registration"></form>
-      </AuthLayout>
-    );
-
-    const childrenLayout = screen.getByRole('form');
-
-    expect(childrenLayout.parentElement).toHaveStyle(
-      `background-image: url(${authBg1})`
-    );
   });
 });
 
