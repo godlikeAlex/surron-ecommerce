@@ -1,4 +1,8 @@
 .root {
+  display: flex;
+  align-items: center;
+
+  min-height: 100vh;
   padding-top: 80px;
   padding-bottom: 80px;
 
