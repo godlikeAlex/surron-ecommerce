@@ -2,8 +2,15 @@ import { Route, Routes, BrowserRouter } from 'react-router';
 import { Home, Login, NotFound, Registration } from '@/pages';
 import { ProtectedRoutes } from './utils/ProtectedRoutes';
 import { MainLayout } from './layouts';
+import { useEffect } from 'react';
+import { apiRootStorageHandleEvent } from './store/storage/apiRootStorage';
 
 const App = () => {
+  useEffect(() => {
+    const apiRootStorageListener = apiRootStorageHandleEvent();
+    return apiRootStorageListener;
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
