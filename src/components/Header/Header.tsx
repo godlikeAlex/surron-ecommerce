@@ -117,7 +117,7 @@ const Header = () => {
           </Group>
 
           <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
-          
+
           <Modal
             opened={opened}
             onClose={toggle}
@@ -126,7 +126,6 @@ const Header = () => {
             radius={0}
             transitionProps={{ transition: 'fade', duration: 300 }}
             hiddenFrom="sm"
-            withCloseButton={false}
           >
             <Flex
               gap={10}
