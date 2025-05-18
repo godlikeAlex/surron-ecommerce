@@ -32,7 +32,7 @@ const links = [
   { path: '/hyper-bee', label: 'HYPER BEE' },
   { path: '/light-bee', label: 'LIGHT BEE' },
   { path: '/ultra-bee', label: 'ULTRA BEE' },
-  { path: '/shop', label: 'Магазин' },
+  { path: '/catalog', label: 'Магазин' },
   { path: '/about', label: 'О нас' },
 ];
 
@@ -42,9 +42,10 @@ const Header = () => {
   const isLoggedIn = useApiRootStore((state) => state.isLoggedIn);
   const theme = useMantineTheme();
 
-  const isSmallScreen = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-  const isMediumScreen = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
   const isLargeScreen = useMediaQuery(`(max-width: ${theme.breakpoints.lg})`);
+  const isBetweenSmAndMd = useMediaQuery(
+    `(min-width: ${theme.breakpoints.sm}) and (max-width: ${theme.breakpoints.md})`
+  );
 
   const getLinkComponent = (link: LinkType, className: string) => {
     return (
@@ -62,8 +63,7 @@ const Header = () => {
 
   const linkComponents = links.map((link) => {
     if (
-      isMediumScreen &&
-      !isSmallScreen &&
+      isBetweenSmAndMd &&
       ['/hyper-bee', '/light-bee', '/ultra-bee'].includes(link.path)
     ) {
       return null;

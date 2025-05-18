@@ -145,12 +145,6 @@
 
 .fullscreen-menu {
   min-height: calc(100dvh - 76px);
-
-  & .link,
-  & .logout-button {
-    width: 100%;
-    text-align: center;
-  }
 }
 
 .header .logout-button,
