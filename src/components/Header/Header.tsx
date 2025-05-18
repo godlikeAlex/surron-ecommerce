@@ -8,13 +8,14 @@ import {
   Button,
   Modal,
   useMantineTheme,
+  Box,
 } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import classes from './Header.module.scss';
 import { Link, useLocation } from 'react-router';
 import logo from '@/assets/logo.png';
 import { apiRootStore, useApiRootStore } from '@/store/apiRootStore';
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 
 type LinkType = {
   path: string;
@@ -39,7 +40,6 @@ const Header = () => {
   const location = useLocation();
   const [opened, { toggle }] = useDisclosure(false);
   const isLoggedIn = useApiRootStore((state) => state.isLoggedIn);
-  const burgerRef = useRef(null);
   const theme = useMantineTheme();
 
   const isSmallScreen = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
@@ -78,7 +78,7 @@ const Header = () => {
   });
 
   const handleLogout = useCallback(() => {
-    apiRootStore().setLogout();
+    void apiRootStore().setLogout();
   }, []);
 
   const logoutButton = isLoggedIn && (
@@ -92,9 +92,9 @@ const Header = () => {
   );
 
   return (
-    <header className={classes.header}>
+    <Box component="header" className={classes.header}>
       <Container size="xl">
-        <div className={classes.inner}>
+        <Box className={classes.inner}>
           <Flex
             gap={10}
             justify="center"
@@ -104,6 +104,7 @@ const Header = () => {
             className={classes.logo}
           >
             <Image src={logo} className={classes.logoImg} w={28} />
+
             <Title order={4}>Surron Ecommerce</Title>
           </Flex>
           <Group gap={isLargeScreen ? 0 : 22} visibleFrom="sm">
@@ -115,17 +116,13 @@ const Header = () => {
             {logoutButton}
           </Group>
 
-          <Burger
-            opened={opened}
-            onClick={toggle}
-            size="sm"
-            hiddenFrom="sm"
-            ref={burgerRef}
-          />
+          <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
+          
           <Modal
             opened={opened}
             onClose={toggle}
             fullScreen
+            withCloseButton={false}
             radius={0}
             transitionProps={{ transition: 'fade', duration: 300 }}
             hiddenFrom="sm"
@@ -143,9 +140,9 @@ const Header = () => {
               {logoutButton}
             </Flex>
           </Modal>
-        </div>
+        </Box>
       </Container>
-    </header>
+    </Box>
   );
 };
 

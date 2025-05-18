@@ -1,14 +1,21 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, userEvent } from '@/tests/utils';
-import RegistrationForm from './RegistrationForm';
+import RegistrationForm, { FormValues } from './RegistrationForm';
 import { UserEvent } from '@testing-library/user-event';
 import { COUNTRIES } from '@/constants/countries';
 import React from 'react';
 import dayjs from 'dayjs';
-import AuthService from '@/services/AuthService';
 import { DatePickerInput } from '@mantine/dates';
 
-const authServiceSpy = vi.spyOn(AuthService, 'register');
+const handleSignupMock = vi.fn<(data: FormValues) => Promise<void>>();
+
+vi.mock('./useSignupUser', () => ({
+  useSignupUser: () => ({
+    handleSignup: handleSignupMock,
+    isPending: false,
+    error: false,
+  }),
+}));
 
 vi.mock('@mantine/dates', async (importOriginal) => {
   const { DatePickerInput } =
@@ -33,11 +40,14 @@ vi.mock('@mantine/dates', async (importOriginal) => {
   };
 });
 
-async function selectCountry(user: UserEvent) {
+async function selectCountry(user: UserEvent, path: string) {
   const [country] = COUNTRIES;
 
-  await user.click(screen.getByRole('textbox', { name: 'Страна' }));
-  await user.click(screen.getByText(`${country.flag} ${country.name}`));
+  // await user.click(screen.getByRole('textbox', { name: 'Страна' }));
+  await user.click(screen.getByTestId(`${path}-country`));
+  for (const option of screen.getAllByText(`${country.flag} ${country.name}`)) {
+    await user.click(option);
+  }
 }
 
 describe('component RegistrationForm', () => {
@@ -76,7 +86,7 @@ describe('component RegistrationForm', () => {
 
     fireEvent.submit(form);
 
-    expect(authServiceSpy).not.toHaveBeenCalled();
+    expect(handleSignupMock).not.toHaveBeenCalled();
   });
 
   it('should invoke submit handler when validation passed', async () => {
@@ -119,9 +129,9 @@ describe('component RegistrationForm', () => {
       const passwordInput = screen.getByLabelText(/пароль/i);
       const dateOfBirth = screen.getByLabelText(/дата рождения/i);
 
-      const street = screen.getByLabelText(/улица/i);
-      const cityInput = screen.getByLabelText(/город/i);
-      const postalAddressInput = screen.getByLabelText(/почтовый адрес/i);
+      const street = screen.getByTestId('address-street');
+      const cityInput = screen.getByTestId('address-city');
+      const postalAddressInput = screen.getByTestId('address-postalCode');
 
       await user.type(emailInput, 'user@example.com');
       await user.type(firstNameInput, 'Aleksandr');
@@ -129,15 +139,40 @@ describe('component RegistrationForm', () => {
       await user.type(passwordInput, '123456Sss$');
       await user.type(dateOfBirth, '2001-05-05');
 
-      await selectCountry(user);
+      await selectCountry(user, 'address');
 
       await user.type(street, 'Улица Гагарина');
       await user.type(cityInput, 'Самарканд');
       await user.type(postalAddressInput, '666 666');
 
+      await user.click(
+        screen.getByLabelText(/использовать адрес для выставления счета/i)
+      );
+
       fireEvent.submit(form);
 
-      expect(authServiceSpy).toHaveBeenCalledWith();
+      expect(handleSignupMock).toHaveBeenCalledWith({
+        address: {
+          city: 'Самарканд',
+          country: 'UZ',
+          postalCode: '666 666',
+          streetName: 'Улица Гагарина',
+          useAsBilling: true,
+          useAsDefault: false,
+        },
+        billing: {
+          city: 'Самарканд',
+          country: 'UZ',
+          postalCode: '666 666',
+          streetName: 'Улица Гагарина',
+          useAsDefault: false,
+        },
+        dateOfBirth: '2001-05-05',
+        email: 'user@example.com',
+        firstName: 'Aleksandr',
+        lastName: 'Yurkovskiy',
+        password: '123456Sss$',
+      });
     } finally {
       spyDatePickerInput.mockRestore();
     }
@@ -148,10 +183,10 @@ describe('component RegistrationForm', () => {
 
     render(<RegistrationForm />);
 
-    const cityInput = screen.getByLabelText(/город/i);
-    const street = screen.getByLabelText(/улица/i);
-    const postalAddressInput = screen.getByLabelText(/почтовый адрес/i);
-    const countryInput = screen.getByPlaceholderText(/Выберите страну/i);
+    const countryInput = screen.getByTestId('address-country');
+    const street = screen.getByTestId('address-street');
+    const cityInput = screen.getByTestId('address-city');
+    const postalAddressInput = screen.getByTestId('address-postalCode');
 
     expect(cityInput).toBeInTheDocument();
     expect(street).toBeInTheDocument();
@@ -159,7 +194,23 @@ describe('component RegistrationForm', () => {
     expect(postalAddressInput).toBeInTheDocument();
   });
 
-  it('street, city, postal code is disabled when country empty', () => {
+  it('should render billing address inputs', () => {
+    expect.hasAssertions();
+
+    render(<RegistrationForm />);
+
+    const countryInput = screen.getByTestId('billing-country');
+    const street = screen.getByTestId('billing-street');
+    const cityInput = screen.getByTestId('billing-city');
+    const postalAddressInput = screen.getByTestId('billing-postalCode');
+
+    expect(cityInput).toBeInTheDocument();
+    expect(street).toBeInTheDocument();
+    expect(countryInput).toBeInTheDocument();
+    expect(postalAddressInput).toBeInTheDocument();
+  });
+
+  it('shipping address street, city, postal code is disabled when country empty', () => {
     expect.hasAssertions();
 
     render(<RegistrationForm />);
@@ -168,9 +219,27 @@ describe('component RegistrationForm', () => {
 
     fireEvent.submit(form);
 
-    const street = screen.getByLabelText(/улица/i);
-    const cityInput = screen.getByLabelText(/город/i);
-    const postalAddressInput = screen.getByLabelText(/почтовый адрес/i);
+    const street = screen.getByTestId('address-street');
+    const cityInput = screen.getByTestId('address-city');
+    const postalAddressInput = screen.getByTestId('address-postalCode');
+
+    expect(cityInput).toBeDisabled();
+    expect(postalAddressInput).toBeDisabled();
+    expect(street).toBeDisabled();
+  });
+
+  it('billing address street, city, postal code is disabled when country empty', () => {
+    expect.hasAssertions();
+
+    render(<RegistrationForm />);
+
+    const form = screen.getByTestId('registration-form');
+
+    fireEvent.submit(form);
+
+    const street = screen.getByTestId('billing-street');
+    const cityInput = screen.getByTestId('billing-city');
+    const postalAddressInput = screen.getByTestId('billing-postalCode');
 
     expect(cityInput).toBeDisabled();
     expect(postalAddressInput).toBeDisabled();
@@ -320,7 +389,7 @@ describe('validation component RegistrationForm', () => {
   });
 
   describe('address', () => {
-    it('shows country validation error when is empty', async () => {
+    it('shows both country validation error when is empty', async () => {
       expect.hasAssertions();
 
       render(<RegistrationForm />);
@@ -330,8 +399,8 @@ describe('validation component RegistrationForm', () => {
       fireEvent.submit(form);
 
       await expect(
-        screen.findByText('Выберите вашу страну')
-      ).resolves.toBeInTheDocument();
+        screen.findAllByText('Выберите вашу страну')
+      ).resolves.toHaveLength(2);
     });
 
     it('shows street validation error when is empty', async () => {
@@ -339,12 +408,12 @@ describe('validation component RegistrationForm', () => {
 
       render(<RegistrationForm />);
 
-      const form = screen.getByTestId('registration-form');
+      const streetInput = screen.getByTestId('address-street');
       const user = userEvent.setup();
 
-      await selectCountry(user);
-
-      fireEvent.submit(form);
+      await selectCountry(user, 'address');
+      await user.type(streetInput, 'test');
+      await user.clear(streetInput);
 
       await expect(
         screen.findByText('Введите улицу')
@@ -356,12 +425,12 @@ describe('validation component RegistrationForm', () => {
 
       render(<RegistrationForm />);
 
-      const form = screen.getByTestId('registration-form');
+      const cityInput = screen.getByTestId('address-city');
       const user = userEvent.setup();
 
-      await selectCountry(user);
-
-      fireEvent.submit(form);
+      await selectCountry(user, 'address');
+      await user.type(cityInput, 'test');
+      await user.clear(cityInput);
 
       await expect(
         screen.findByText('Введите название города')
@@ -373,12 +442,79 @@ describe('validation component RegistrationForm', () => {
 
       render(<RegistrationForm />);
 
-      const form = screen.getByTestId('registration-form');
+      const postalCodeInput = screen.getByTestId('address-postalCode');
       const user = userEvent.setup();
 
-      await selectCountry(user);
+      await selectCountry(user, 'address');
+      await user.type(postalCodeInput, 'test');
+
+      await expect(
+        screen.findByText(
+          'Неверный адрес. Узбекистан имеет следующий формат NNN NNN'
+        )
+      ).resolves.toBeInTheDocument();
+    });
+  });
+
+  describe('billing address', () => {
+    it('shows both country validation error when is empty', async () => {
+      expect.hasAssertions();
+
+      render(<RegistrationForm />);
+
+      const form = screen.getByTestId('registration-form');
 
       fireEvent.submit(form);
+
+      await expect(
+        screen.findAllByText('Выберите вашу страну')
+      ).resolves.toHaveLength(2);
+    });
+
+    it('shows street validation error when is empty', async () => {
+      expect.hasAssertions();
+
+      render(<RegistrationForm />);
+
+      const streetInput = screen.getByTestId('billing-street');
+      const user = userEvent.setup();
+
+      await selectCountry(user, 'billing');
+      await user.type(streetInput, 'test');
+      await user.clear(streetInput);
+
+      await expect(
+        screen.findByText('Введите улицу')
+      ).resolves.toBeInTheDocument();
+    });
+
+    it('shows city validation error when is empty', async () => {
+      expect.hasAssertions();
+
+      render(<RegistrationForm />);
+
+      const cityInput = screen.getByTestId('billing-city');
+      const user = userEvent.setup();
+
+      await selectCountry(user, 'billing');
+      await user.type(cityInput, 'test');
+      await user.clear(cityInput);
+
+      await expect(
+        screen.findByText('Введите название города')
+      ).resolves.toBeInTheDocument();
+    });
+
+    it('shows postalCode validation error when is empty', async () => {
+      expect.hasAssertions();
+
+      render(<RegistrationForm />);
+
+      const postalCodeInput = screen.getByTestId('billing-postalCode');
+      const user = userEvent.setup();
+
+      await selectCountry(user, 'billing');
+      await user.type(postalCodeInput, 'test');
 
       await expect(
         screen.findByText(
