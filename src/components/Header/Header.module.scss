@@ -16,6 +16,7 @@
 
   width: 100%;
   height: 56px;
+  border-bottom: 1px solid #f7f7f7;
 
   background-color: var(--color-white-transparent);
 }
@@ -90,4 +91,9 @@
   &:hover {
     background-color: var(--color-dark-gray);
   }
+}
+
+.logo-link {
+  color: var(--mantine-color-dark);
+  text-decoration: none;
 }

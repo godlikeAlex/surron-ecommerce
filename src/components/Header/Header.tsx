@@ -7,13 +7,14 @@ import {
   Title,
   Button,
   Modal,
+  Box,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './Header.module.scss';
 import { Link, useLocation } from 'react-router';
 import logo from '@/assets/logo.png';
 import { apiRootStore, useApiRootStore } from '@/store/apiRootStore';
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 
 const links = [
   { link: '/', label: 'Главная' },
@@ -25,7 +26,6 @@ const Header = () => {
   const location = useLocation();
   const [opened, { toggle }] = useDisclosure(false);
   const isLoggedIn = useApiRootStore((state) => state.isLoggedIn);
-  const burgerRef = useRef(null);
 
   const items = links.map((link) => {
     if (isLoggedIn && link.link === '/registration') return;
@@ -57,10 +57,17 @@ const Header = () => {
   );
 
   return (
-    <header className={classes.header}>
+    <Box component="header" className={classes.header}>
       <Container size="md">
-        <div className={classes.inner}>
-          <Flex gap={10} justify="center" align="center">
+        <Box className={classes.inner}>
+          <Flex
+            component={Link}
+            to={'/'}
+            gap={10}
+            justify="center"
+            align="center"
+            className={classes.logoLink}
+          >
             <Image src={logo} className={classes.logo} w={28} />
             <Title order={4}>Surron Ecommerce</Title>
           </Flex>
@@ -68,18 +75,12 @@ const Header = () => {
             {items}
             {logoutButton}
           </Group>
-          <Burger
-            opened={opened}
-            onClick={toggle}
-            size="sm"
-            hiddenFrom="sm"
-            ref={burgerRef}
-          />
+          <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
           <Modal
             opened={opened}
             onClose={toggle}
-            title="This is a fullscreen modal"
             fullScreen
+            withCloseButton={false}
             radius={0}
             transitionProps={{ transition: 'fade', duration: 300 }}
             onClick={toggle}
@@ -97,9 +98,9 @@ const Header = () => {
               {logoutButton}
             </Flex>
           </Modal>
-        </div>
+        </Box>
       </Container>
-    </header>
+    </Box>
   );
 };
 
