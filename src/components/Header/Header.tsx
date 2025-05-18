@@ -47,7 +47,10 @@ const Header = () => {
     `(min-width: ${theme.breakpoints.sm}) and (max-width: ${theme.breakpoints.md})`
   );
 
-  const getLinkComponent = (link: LinkType, className: string) => {
+  const getLinkComponent = (
+    link: LinkType,
+    className: keyof typeof classes
+  ) => {
     return (
       <Link
         to={link.path}

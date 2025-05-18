@@ -1,3 +1,38 @@
+:root {
+  --color-white: rgba(255 255 255 / 100%);
+  --color-yellow-surron-darker: #d4b300;
+  --transition: 0.3s ease;
+}
+
 .hero-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+  justify-content: center;
+
   height: 100vh;
+  padding: 76px 20px 20px;
+}
+
+.hero-container p {
+  line-height: 1em;
+}
+
+.hero-link {
+  padding: 8px 12px;
+  border: 2px solid var(--color-yellow-surron-darker);
+  border-radius: var(--mantine-radius-sm);
+
+  font-size: var(--mantine-font-size-md);
+  font-weight: 500;
+  color: var(--color-yellow-surron-darker);
+  text-decoration: none;
+
+  transition: var(--transition);
+
+  &:hover {
+    color: var(--color-white);
+    background-color: var(--color-yellow-surron-darker);
+  }
 }
