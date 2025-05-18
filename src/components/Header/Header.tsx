@@ -68,12 +68,12 @@ const Header = () => {
     ) {
       return null;
     }
-    if (isLoggedIn && link.path === '/registration') return;
-    if (isLoggedIn && link.path === '/login') return;
     return getLinkComponent(link, 'link');
   });
 
   const buttonComponents = buttons.map((button) => {
+    if (isLoggedIn && button.path === '/registration') return;
+    if (isLoggedIn && button.path === '/login') return;
     return getLinkComponent(button, 'button');
   });
 
