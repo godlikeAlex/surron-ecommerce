@@ -1,11 +1,5 @@
-import { Header } from '@/components';
 import { HeroSection } from './components';
 
-const Home = () => (
-  <>
-    <Header />
-    <HeroSection />
-  </>
-);
+const Home = () => <HeroSection />;
 
 export default Home;
