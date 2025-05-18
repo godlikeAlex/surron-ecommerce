@@ -1,16 +1,19 @@
-import { Box, Center, Text } from '@mantine/core';
+import { Flex, Center, Text } from '@mantine/core';
 import classes from './HeroSection.module.scss';
 
-const HeroSection = () => {
+export const HeroSection = () => {
   return (
-    <Box className={classes.heroContainer}>
+    <Flex className={classes.heroContainer} justify="center" align="center">
       <Center>
-        <Text size="xl" fw={900} variant="gradient">
-          Welcome to our website
+        <Text
+          size="34"
+          fw={900}
+          variant="gradient"
+          gradient={{ from: 'pink', to: 'yellow', deg: 90 }}
+        >
+          Добро пожаловать на сайт
         </Text>
       </Center>
-    </Box>
+    </Flex>
   );
 };
-
-export default HeroSection;

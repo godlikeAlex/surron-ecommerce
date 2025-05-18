@@ -1,9 +1,12 @@
 import { Route, Routes, BrowserRouter } from 'react-router';
-import { Home, Login, NotFound, Registration } from '@/pages';
+import { About, Catalog, Home, Login, NotFound, Registration } from '@/pages';
 import { ProtectedRoutes } from './utils/ProtectedRoutes';
 import { MainLayout } from './layouts';
 import { useEffect } from 'react';
 import { apiRootStorageHandleEvent } from './store/storage/apiRootStorage';
+import { HyperBee } from './pages/HyperBee';
+import { LightBee } from './pages/LightBee';
+import { UltraBee } from './pages/UltraBee';
 
 const App = () => {
   useEffect(() => {
@@ -16,6 +19,11 @@ const App = () => {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
+          <Route path="/catalog" element={<Catalog />} />
+          <Route path="/hyper-bee" element={<HyperBee />} />
+          <Route path="/light-bee" element={<LightBee />} />
+          <Route path="/ultra-bee" element={<UltraBee />} />
+          <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
           <Route element={<ProtectedRoutes requiredLoginState={false} />}>
             <Route path="/login" element={<Login />} />
