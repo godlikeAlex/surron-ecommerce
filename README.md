@@ -47,14 +47,12 @@
         CommerceTools.
       </li>
 	  <li>
-        In order for Stylelint to work, the corresponding plugin must be installed in VS Code. Also add the following to your settings.json (if you haven't done this already): "stylelint.validate":
-		<br><code>["css", "scss", "sass", "less"]</code>
+        In order for Stylelint to work, the corresponding plugin must be installed in VS Code. Also add the following to your settings.json (if you haven't done this already):
+		<br><code>"stylelint.validate": ["css", "scss", "sass", "less"]</code>
       </li>
 	  <li>
 	  In order for SCSS modules to work properly you need to add corresponding settings in VS Code. The easiest way to do this is to just add the the following to your settings.json (read more  <a href="https://github.com/mrmckeb/typescript-plugin-css-modules?tab=readme-ov-file#visual-studio-code">here</a>):
-	  <br><code>{
-  	  "typescript.tsserver.pluginPaths": ["typescript-plugin-css-modules"]
-	  }</code>
+	  <br><code>{"typescript.tsserver.pluginPaths": ["typescript-plugin-css-modules"]}</code>
 	  </li>
       <li>
         Launch the project (the developer mode launch option is specified, other
