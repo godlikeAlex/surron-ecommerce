@@ -1,11 +1,59 @@
-import { Flex, Title } from '@mantine/core';
+import { useState } from 'react';
+import { useApiRootStore } from '@/store/apiRootStore';
+import { Container, Grid, Loader, Pagination, SimpleGrid } from '@mantine/core';
+import { useQuery } from '@tanstack/react-query';
+import { ProductCard } from '@/pages/Catalog/components';
+import classes from './Catalog.module.scss';
+
+const PRODUCTS_PER_PAGE = 6;
 
 export const Catalog = () => {
+  const [page, setPage] = useState(1);
+
+  const apiRoot = useApiRootStore((state) => state.apiRoot);
+
+  const { data, isPending, isError } = useQuery({
+    queryKey: ['catalog', page],
+    queryFn: () => {
+      return apiRoot
+        .productProjections()
+        .get({
+          queryArgs: {
+            limit: PRODUCTS_PER_PAGE,
+            offset: PRODUCTS_PER_PAGE * (page - 1),
+          },
+        })
+        .execute();
+    },
+  });
+
   return (
-    <Flex justify="center" align="center" style={{ height: '100vh' }}>
-      <Title order={1} c="dark.9">
-        Наш магазин
-      </Title>
-    </Flex>
+    <Container className={classes.catalogContainer} size="xl">
+      <Grid>
+        <Grid.Col span={3}>Sidebar</Grid.Col>
+        <Grid.Col span={9}>
+          {isPending ? (
+            <Loader />
+          ) : isError ? (
+            <h1>Error!</h1>
+          ) : (
+            <>
+              <SimpleGrid cols={3}>
+                {data.body.results.map(({ ...product }) => (
+                  <ProductCard key={product.id} {...product} />
+                ))}
+              </SimpleGrid>
+
+              <Pagination
+                value={page}
+                onChange={setPage}
+                total={Math.ceil((data?.body.total || 1) / PRODUCTS_PER_PAGE)}
+                mt={'lg'}
+              />
+            </>
+          )}
+        </Grid.Col>
+      </Grid>
+    </Container>
   );
 };
