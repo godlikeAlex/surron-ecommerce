@@ -38,6 +38,7 @@ import {
 } from '@/pages/Registration/components/AddressPicker';
 import classes from './RegistrationForm.module.scss';
 import { useApiRootStore } from '@/store/apiRootStore';
+import { notifications } from '@mantine/notifications';
 
 export interface FormValues {
   email: string;
@@ -132,6 +133,13 @@ const RegistrationForm = () => {
     try {
       const result = await signupUser.handleSignup(values);
       setLogin(values.email, values.password);
+      notifications.show({
+        title: '👋🏻 Добро пожаловать!',
+        message: 'Вы успешно зарегистрировались.',
+        autoClose: 7000,
+        withCloseButton: true,
+        withBorder: true,
+      });
       console.log('SIGNUP USER RESULT', result);
     } catch (error) {
       if (error instanceof ServerErrorValidation) {
