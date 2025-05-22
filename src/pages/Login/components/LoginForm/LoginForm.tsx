@@ -15,6 +15,7 @@ import { IconAlertCircle, IconAt, IconLock } from '@tabler/icons-react';
 import { Link } from 'react-router';
 import { useApiRootStore } from '@/store/apiRootStore';
 import { useState } from 'react';
+import { notifications } from '@mantine/notifications';
 
 export type AuthFormValues = {
   email: string;
@@ -56,6 +57,13 @@ export const LoginForm = () => {
 
     try {
       const me = await logIn(values);
+      notifications.show({
+        title: '👋🏻 С возвращением!',
+        message: 'Рады видеть вас снова.',
+        autoClose: 7000,
+        withCloseButton: true,
+        withBorder: true,
+      });
       console.log({ me });
     } catch (error) {
       handleAuthError(error);
