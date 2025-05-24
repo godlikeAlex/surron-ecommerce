@@ -7,6 +7,7 @@ import { apiRootStorageHandleEvent } from './store/storage/apiRootStorage';
 import { HyperBee } from './pages/HyperBee';
 import { LightBee } from './pages/LightBee';
 import { UltraBee } from './pages/UltraBee';
+import { ProductDetail } from './pages/ProductDetail';
 
 const App = () => {
   useEffect(() => {
@@ -19,10 +20,11 @@ const App = () => {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
-          <Route path="/catalog" element={<Catalog />} />
           <Route path="/hyper-bee" element={<HyperBee />} />
           <Route path="/light-bee" element={<LightBee />} />
           <Route path="/ultra-bee" element={<UltraBee />} />
+          <Route path="/catalog" element={<Catalog />} />
+          <Route path="/products/:key" element={<ProductDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
           <Route element={<ProtectedRoutes requiredLoginState={false} />}>

@@ -13,6 +13,7 @@ import '@mantine/notifications/styles.css';
 import '@mantine/dates/styles.css';
 import 'dayjs/locale/ru';
 import './main.scss';
+import '@mantine/carousel/styles.css';
 
 const queryClient = new QueryClient();
 
