@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useApiRootStore } from '@/store/apiRootStore';
 import { Container, Grid, Loader, Pagination, SimpleGrid } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import { ProductCard } from '@/pages/Catalog/components';
+import { ProductCard, SidebarFilters } from '@/pages/Catalog/components';
+import { useCategories } from '@/pages/Catalog/hooks/useCategories';
 import classes from './Catalog.module.scss';
 
 const PRODUCTS_PER_PAGE = 6;
@@ -27,10 +28,17 @@ export const Catalog = () => {
     },
   });
 
+  const { categories, isPending: categoriesIsPending } = useCategories();
+
   return (
     <Container className={classes.catalogContainer} size="xl">
       <Grid>
-        <Grid.Col span={3}>Sidebar</Grid.Col>
+        <Grid.Col span={3}>
+          <SidebarFilters
+            categories={categories}
+            categoriesLoading={categoriesIsPending}
+          />
+        </Grid.Col>
         <Grid.Col span={9}>
           {isPending ? (
             <Loader />
