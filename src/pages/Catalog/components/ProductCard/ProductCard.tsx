@@ -2,6 +2,7 @@ import { ProductProjection } from '@commercetools/platform-sdk';
 import {
   Card,
   Divider,
+  Flex,
   Group,
   Image,
   NumberFormatter,
@@ -59,13 +60,32 @@ export const ProductCard = ({
         </Text>
       </Group>
 
-      <Text fw={700} fz={'md'}>
-        <NumberFormatter
-          value={price.value.centAmount / 100 || 0}
-          thousandSeparator
-          suffix=" ₽"
-        />
-      </Text>
+      <Flex align="center">
+        {price.discounted ? (
+          <Text fw={700} c="red" fz="md">
+            <NumberFormatter
+              value={price.discounted.value.centAmount / 100 || 0}
+              thousandSeparator
+              suffix=" ₽"
+              style={{ paddingRight: 5 }}
+            />
+          </Text>
+        ) : null}
+
+        <Text
+          fw={700}
+          td={price.discounted && 'line-through'}
+          c={price.discounted && 'dimmed'}
+          fz={price.discounted ? 'xs' : 'md'}
+        >
+          <NumberFormatter
+            value={price.value.centAmount / 100 || 0}
+            thousandSeparator
+            suffix=" ₽"
+          />
+        </Text>
+      </Flex>
+
       <Divider my={'md'} />
 
       <Text c="dimmed" size="xs">
