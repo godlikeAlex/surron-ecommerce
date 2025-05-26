@@ -7,12 +7,13 @@ export type Category = {
   id: string;
   name: string;
   slug: string;
+  isActive: boolean;
   key?: string;
   children: Category[];
   parent?: CategoryReference;
 };
 
-export const useCategories = () => {
+export const useCategories = (selectedCategories: string[]) => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
 
   const categoriesQuery = useQuery({
@@ -20,7 +21,7 @@ export const useCategories = () => {
     queryFn: () => apiRoot.categories().get().execute(),
   });
 
-  const categories: Category[] = useMemo(() => {
+  const [categories = [], activeCategories = []] = useMemo(() => {
     if (!categoriesQuery.data) return [];
 
     const fetchedCategories = categoriesQuery.data?.body.results || [];
@@ -33,13 +34,17 @@ export const useCategories = () => {
         slug: category.slug['ru'],
         key: category.key,
         children: [],
+        isActive: selectedCategories.includes(category.slug['ru']),
         parent: category.parent,
       });
     }
 
     const tree: Category[] = [];
+    const activeCategories: Category[] = [];
 
     mapCategories.forEach((category) => {
+      if (category.isActive) activeCategories.push(category);
+
       if (!category.parent) return tree.push(category);
 
       const parentCategory = mapCategories.get(category.parent.id);
@@ -49,11 +54,14 @@ export const useCategories = () => {
       parentCategory.children.push(category);
     });
 
-    return tree;
-  }, [categoriesQuery.data]);
+    return [tree, activeCategories];
+  }, [categoriesQuery.data, selectedCategories]);
 
   return {
     categories,
+    activeCategories,
     isPending: categoriesQuery.isPending,
+    isIncorectCategoriesPath:
+      selectedCategories.length !== activeCategories?.length,
   };
 };

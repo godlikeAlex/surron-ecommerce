@@ -19,7 +19,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
-          <Route path="/catalog" element={<Catalog />} />
+          <Route path="/catalog/*" element={<Catalog />} />
           <Route path="/hyper-bee" element={<HyperBee />} />
           <Route path="/light-bee" element={<LightBee />} />
           <Route path="/ultra-bee" element={<UltraBee />} />
