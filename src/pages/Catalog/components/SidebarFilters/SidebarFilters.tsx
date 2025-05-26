@@ -6,10 +6,15 @@ import { SidebarCategoriesSkeleton } from './SidebarCategoriesSkeleton';
 
 type Props = {
   categories: Category[];
+  targetCategory?: Category;
   categoriesLoading: boolean;
 };
 
-export const SidebarFilters = ({ categories, categoriesLoading }: Props) => {
+export const SidebarFilters = ({
+  categories,
+  categoriesLoading,
+  targetCategory,
+}: Props) => {
   return (
     <Card component="aside" padding={0} shadow="lg" withBorder>
       <Title order={4} className={classes.sidebarItemWrapper}>
@@ -20,7 +25,11 @@ export const SidebarFilters = ({ categories, categoriesLoading }: Props) => {
           <SidebarCategoriesSkeleton />
         ) : (
           categories.map((category) => (
-            <TreeCategoryLink key={category.id} category={category} />
+            <TreeCategoryLink
+              key={category.id}
+              category={category}
+              targetCategory={targetCategory}
+            />
           ))
         )}
       </Group>
