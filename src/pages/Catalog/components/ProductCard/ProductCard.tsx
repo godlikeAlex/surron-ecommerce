@@ -1,6 +1,7 @@
 import { ProductProjection } from '@commercetools/platform-sdk';
 import {
   Card,
+  Divider,
   Group,
   Image,
   NumberFormatter,
@@ -9,10 +10,11 @@ import {
 } from '@mantine/core';
 import { useState } from 'react';
 
-type Props = Pick<ProductProjection, 'name' | 'masterVariant'>;
+type Props = Pick<ProductProjection, 'name' | 'masterVariant' | 'description'>;
 
-export const ProductCard = ({ name, masterVariant }: Props) => {
+export const ProductCard = ({ name, masterVariant, description }: Props) => {
   const productName = name['ru'];
+  const productDescription = description ? description['ru'] : undefined;
   const [price] = masterVariant?.prices || [];
   const [image] = masterVariant.images || [];
 
@@ -40,12 +42,17 @@ export const ProductCard = ({ name, masterVariant }: Props) => {
         </Text>
       </Group>
 
-      <Text fw={700} fz={'xl'}>
+      <Text fw={700} fz={'md'}>
         <NumberFormatter
           value={price.value.centAmount / 100 || 0}
           thousandSeparator
           suffix=" ₽"
         />
+      </Text>
+      <Divider my={'md'} />
+
+      <Text c="dimmed" size="xs">
+        {productDescription}
       </Text>
     </Card>
   );
