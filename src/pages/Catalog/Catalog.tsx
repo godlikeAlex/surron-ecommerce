@@ -1,18 +1,19 @@
 import { useMemo, useState } from 'react';
-import { useApiRootStore } from '@/store/apiRootStore';
-import { Container, Grid, Loader, Pagination, SimpleGrid } from '@mantine/core';
-import { useQuery } from '@tanstack/react-query';
+import { Container, Grid, Pagination, SimpleGrid } from '@mantine/core';
 import {
   BreadcrumbsCategories,
   BreadcrumbsCategoriesSkeleton,
   ProductCard,
+  ProductsSkeleton,
   SidebarFilters,
 } from '@/pages/Catalog/components';
 import { useCategories } from '@/pages/Catalog/hooks/useCategories';
 import classes from './Catalog.module.scss';
 import { useParams } from 'react-router';
-
-const PRODUCTS_PER_PAGE = 6;
+import {
+  PRODUCTS_PER_PAGE,
+  useProducts,
+} from '@/pages/Catalog/hooks/useProducts';
 
 export const Catalog = () => {
   const params = useParams();
@@ -24,21 +25,6 @@ export const Catalog = () => {
 
     return categoriesPath.split('/').filter((category) => category !== '');
   }, [params]);
-  const apiRoot = useApiRootStore((state) => state.apiRoot);
-  const { data, isPending, isError } = useQuery({
-    queryKey: ['catalog', page],
-    queryFn: () => {
-      return apiRoot
-        .productProjections()
-        .get({
-          queryArgs: {
-            limit: PRODUCTS_PER_PAGE,
-            offset: PRODUCTS_PER_PAGE * (page - 1),
-          },
-        })
-        .execute();
-    },
-  });
 
   const {
     categories,
@@ -46,6 +32,8 @@ export const Catalog = () => {
     targetCategory,
     isPending: categoriesIsPending,
   } = useCategories(selectedCategories);
+
+  const { products, isPending, isError, total } = useProducts({ page });
 
   return (
     <Container className={classes.catalogContainer} size="xl">
@@ -66,13 +54,13 @@ export const Catalog = () => {
         </Grid.Col>
         <Grid.Col span={9}>
           {isPending ? (
-            <Loader />
+            <ProductsSkeleton />
           ) : isError ? (
             <h1>Error!</h1>
           ) : (
             <>
               <SimpleGrid cols={3}>
-                {data.body.results.map(({ ...product }) => (
+                {products.map(({ ...product }) => (
                   <ProductCard {...product} key={product.id} />
                 ))}
               </SimpleGrid>
@@ -80,7 +68,7 @@ export const Catalog = () => {
               <Pagination
                 value={page}
                 onChange={setPage}
-                total={Math.ceil((data?.body.total || 1) / PRODUCTS_PER_PAGE)}
+                total={Math.ceil((total || 1) / PRODUCTS_PER_PAGE)}
                 mt={'lg'}
               />
             </>

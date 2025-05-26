@@ -57,8 +57,6 @@ export const useCategories = (selectedCategories: string[]) => {
     return [tree, activeCategories];
   }, [categoriesQuery.data, selectedCategories]);
 
-  console.log(activeCategories);
-
   return {
     categories,
     activeCategories,
