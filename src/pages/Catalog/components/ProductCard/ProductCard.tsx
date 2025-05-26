@@ -1,11 +1,19 @@
 import { ProductProjection } from '@commercetools/platform-sdk';
-import { Card, Group, Image, Skeleton, Text } from '@mantine/core';
+import {
+  Card,
+  Group,
+  Image,
+  NumberFormatter,
+  Skeleton,
+  Text,
+} from '@mantine/core';
 import { useState } from 'react';
 
 type Props = Pick<ProductProjection, 'name' | 'masterVariant'>;
 
 export const ProductCard = ({ name, masterVariant }: Props) => {
   const productName = name['ru'];
+  const [price] = masterVariant?.prices || [];
   const [image] = masterVariant.images || [];
 
   const [isImageLoading, setImageLoading] = useState(Boolean(image));
@@ -33,7 +41,11 @@ export const ProductCard = ({ name, masterVariant }: Props) => {
       </Group>
 
       <Text fw={700} fz={'xl'}>
-        35,000 ₽
+        <NumberFormatter
+          value={price.value.centAmount / 100 || 0}
+          thousandSeparator
+          suffix=" ₽"
+        />
       </Text>
     </Card>
   );
