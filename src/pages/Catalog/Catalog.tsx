@@ -43,6 +43,7 @@ export const Catalog = () => {
   const {
     categories,
     activeCategories,
+    targetCategory,
     isPending: categoriesIsPending,
   } = useCategories(selectedCategories);
 
@@ -59,6 +60,7 @@ export const Catalog = () => {
         <Grid.Col span={3}>
           <SidebarFilters
             categories={categories}
+            targetCategory={targetCategory}
             categoriesLoading={categoriesIsPending}
           />
         </Grid.Col>

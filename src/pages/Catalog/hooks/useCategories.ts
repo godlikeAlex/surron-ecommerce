@@ -57,9 +57,12 @@ export const useCategories = (selectedCategories: string[]) => {
     return [tree, activeCategories];
   }, [categoriesQuery.data, selectedCategories]);
 
+  console.log(activeCategories);
+
   return {
     categories,
     activeCategories,
+    targetCategory: activeCategories.at(-1),
     isPending: categoriesQuery.isPending,
     isIncorectCategoriesPath:
       selectedCategories.length !== activeCategories?.length,

@@ -8,23 +8,24 @@ import { Link } from 'react-router';
 
 type Props = {
   category: Category;
+  targetCategory?: Category;
   chainUrl?: string;
   depth?: number;
 };
 
 export const TreeCategoryLink = ({
   category,
+  targetCategory,
   chainUrl = '',
   depth = 0,
 }: Props) => {
-  const [opened, setOpened] = useState(false);
+  const [opened, setOpened] = useState(category.isActive);
   const hasChildren = category.children.length > 0;
 
   const handleExpandMenu = (e: MouseEvent) => {
     e.preventDefault();
     setOpened((opened) => !opened);
   };
-
   return (
     <Box className={classes.treeCategoryLink}>
       <Flex
@@ -32,7 +33,7 @@ export const TreeCategoryLink = ({
         to={`/catalog${chainUrl}/${category.slug}`}
         align={'center'}
         justify={'space-between'}
-        className={`${classes.treeCategoryLinkItem} ${sidebarClasses.sidebarItemWrapper}`}
+        className={`${classes.treeCategoryLinkItem} ${sidebarClasses.sidebarItemWrapper} ${targetCategory?.id === category.id ? classes.treeCategoryLinkItemActive : ''}`}
       >
         <Text style={{ paddingLeft: `${depth * 8}px` }}>{category.name}</Text>
         {hasChildren ? (
@@ -49,6 +50,7 @@ export const TreeCategoryLink = ({
             <Collapse in={opened} key={childrenCategory.id}>
               <TreeCategoryLink
                 category={childrenCategory}
+                targetCategory={targetCategory}
                 depth={depth + 1}
                 chainUrl={`${chainUrl}/${category.slug}`}
               />
