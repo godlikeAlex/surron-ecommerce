@@ -9,10 +9,20 @@ import {
   Text,
 } from '@mantine/core';
 import { useState } from 'react';
+import classes from './ProductCard.module.scss';
+import { Link } from 'react-router';
 
-type Props = Pick<ProductProjection, 'name' | 'masterVariant' | 'description'>;
+type Props = Pick<
+  ProductProjection,
+  'name' | 'masterVariant' | 'description'
+> & { productKey: ProductProjection['key'] };
 
-export const ProductCard = ({ name, masterVariant, description }: Props) => {
+export const ProductCard = ({
+  name,
+  masterVariant,
+  description,
+  productKey,
+}: Props) => {
   const productName = name['ru'];
   const productDescription = description ? description['ru'] : undefined;
   const [price] = masterVariant?.prices || [];
@@ -21,14 +31,21 @@ export const ProductCard = ({ name, masterVariant, description }: Props) => {
   const [isImageLoading, setImageLoading] = useState(Boolean(image));
 
   return (
-    <Card shadow="sm" padding="lg" radius="md" withBorder>
+    <Card
+      className={classes.productCard}
+      shadow="sm"
+      padding="lg"
+      radius="md"
+      withBorder
+      component={Link}
+      to={`/products/${productKey}`}
+    >
       <Card.Section>
         <Skeleton visible={isImageLoading}>
           {image ? (
             <Image
               src={image.url}
               height={200}
-              radius="md"
               alt={productName}
               onLoad={() => setImageLoading(false)}
             />

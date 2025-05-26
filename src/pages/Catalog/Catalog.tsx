@@ -61,7 +61,11 @@ export const Catalog = () => {
             <>
               <SimpleGrid cols={3}>
                 {products.map(({ ...product }) => (
-                  <ProductCard {...product} key={product.id} />
+                  <ProductCard
+                    {...product}
+                    productKey={product.key}
+                    key={product.id}
+                  />
                 ))}
               </SimpleGrid>
 
