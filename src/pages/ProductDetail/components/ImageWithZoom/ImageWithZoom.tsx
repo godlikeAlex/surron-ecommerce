@@ -5,18 +5,17 @@ import { IconZoomIn } from '@tabler/icons-react';
 type ImageWithZoomProps = {
   imageUrl: string;
   altText: string;
-  handleImageClick: (s: string) => void;
+  index: number;
+  handleImageClick: (i: number) => void;
 };
 
 export const ImageWithZoom = ({
   imageUrl,
   altText,
+  index,
   handleImageClick,
 }: ImageWithZoomProps) => (
-  <Box
-    className={classes.imageWrapper}
-    onClick={() => handleImageClick(imageUrl)}
-  >
+  <Box className={classes.imageWrapper} onClick={() => handleImageClick(index)}>
     <Image src={imageUrl} alt={altText} className={classes.productImage} />
     <Box className={classes.zoomIndicator}>
       <IconZoomIn />

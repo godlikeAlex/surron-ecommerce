@@ -1,24 +1,20 @@
-:root {
-  padding: 76px 20px 20px;
-}
-
 .container {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding: 76px 20px 20px;
 }
 
 .product-grid {
   display: grid;
   gap: 1.5rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 
-  @media (width >= 768px) {
+  @media (width >= 48em) {
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
   }
 }
 
 .image-card {
-  // border: 1px solid var(--mantine-color-gray-3);
   padding: 1.5rem;
   border-radius: var(--mantine-radius-md);
 }

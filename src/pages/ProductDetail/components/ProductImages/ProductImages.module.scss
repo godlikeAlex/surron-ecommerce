@@ -1,7 +1,7 @@
 .carousel {
   position: relative;
 
-  &Controls {
+  .carousel-controls {
     opacity: 0;
     transition: opacity 300ms ease;
   }
@@ -12,11 +12,10 @@
     }
   }
 
-  &Control {
+  .carousel-control {
     width: 35px;
     height: 35px;
     border: none;
-    border-radius: 0;
 
     color: var(--mantine-color-gray-7);
 

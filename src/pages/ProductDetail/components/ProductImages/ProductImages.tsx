@@ -6,7 +6,7 @@ import { ImageWithZoom } from '../ImageWithZoom/ImageWithZoom';
 
 type ProductImagesProps = {
   product: ProductVariant;
-  handleImageClick: (imageUrl: string) => void;
+  handleImageClick: (index: number) => void;
 };
 
 export const ProductImages = ({
@@ -48,6 +48,7 @@ export const ProductImages = ({
             <ImageWithZoom
               imageUrl={image.url}
               altText={image.label || `Product image ${index + 1}`}
+              index={index}
               handleImageClick={handleImageClick}
             />
           </Center>
