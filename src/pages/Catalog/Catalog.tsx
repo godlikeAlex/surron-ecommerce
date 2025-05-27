@@ -1,5 +1,13 @@
-import { useMemo, useState } from 'react';
-import { Container, Grid, Pagination, SimpleGrid } from '@mantine/core';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  Container,
+  Divider,
+  Grid,
+  Pagination,
+  SimpleGrid,
+  Skeleton,
+  Title,
+} from '@mantine/core';
 import {
   BreadcrumbsCategories,
   BreadcrumbsCategoriesSkeleton,
@@ -18,6 +26,7 @@ import {
 export const Catalog = () => {
   const params = useParams();
   const [page, setPage] = useState(1);
+
   const selectedCategories = useMemo(() => {
     const categoriesPath = params['*'];
 
@@ -38,16 +47,25 @@ export const Catalog = () => {
     category: targetCategory,
   });
 
+  useEffect(() => {
+    setPage(1);
+  }, [params]);
+
   return (
     <Container className={classes.catalogContainer} size="xl">
       <Grid>
-        <Grid.Col span={12} mb={25}>
+        <Grid.Col span={12} mb="lg">
           {categoriesIsPending ? (
             <BreadcrumbsCategoriesSkeleton />
           ) : (
             <BreadcrumbsCategories currentCategories={activeCategories} />
           )}
+
+          <Skeleton width={320} h={35} mt="md" visible={categoriesIsPending}>
+            <Title order={2}>{targetCategory?.name || 'Каталог'}</Title>
+          </Skeleton>
         </Grid.Col>
+
         <Grid.Col span={3}>
           <SidebarFilters
             categories={categories}
@@ -62,6 +80,12 @@ export const Catalog = () => {
             <h1>Error!</h1>
           ) : (
             <>
+              <Title order={5}>
+                Показано {Math.min(page * PRODUCTS_PER_PAGE, total)} из {total}
+              </Title>
+
+              <Divider my="md" />
+
               <SimpleGrid cols={3}>
                 {products.map(({ ...product }) => (
                   <ProductCard

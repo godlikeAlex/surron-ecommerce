@@ -39,7 +39,7 @@ export const useProducts = ({ page, category }: Props) => {
 
   return {
     products: data?.body.results ?? [],
-    total: data?.body.total,
+    total: data?.body.total ?? 0,
     isPending,
     isError,
   };
