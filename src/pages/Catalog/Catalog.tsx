@@ -33,7 +33,10 @@ export const Catalog = () => {
     isPending: categoriesIsPending,
   } = useCategories(selectedCategories);
 
-  const { products, isPending, isError, total } = useProducts({ page });
+  const { products, isPending, isError, total } = useProducts({
+    page,
+    category: targetCategory,
+  });
 
   return (
     <Container className={classes.catalogContainer} size="xl">
