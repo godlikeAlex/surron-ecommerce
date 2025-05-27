@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router';
 import {
   Container,
-  Image,
   Title,
   Text,
   Card,
@@ -12,7 +11,6 @@ import {
   Badge,
   Group,
   Stack,
-  Modal,
 } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import classes from './ProductDetail.module.scss';
@@ -20,6 +18,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { useState } from 'react';
 import { parseProductData } from './utils/parseProductData';
 import { ProductImages } from './components/ProductImages/ProductImages';
+import { ImageModal } from './components/ImageModal/ImageModal';
 
 // /products/sur-ron-l1e-light-bee-silver
 // /products/pod-zakaz-storm-bee-e-enduro
@@ -28,10 +27,10 @@ export const ProductDetail = () => {
   const { key } = useParams();
   const getProductByKey = useApiRootStore((state) => state.getProductByKey);
   const [opened, { open, close }] = useDisclosure(false);
-  const [selectedImage, setSelectedImage] = useState('');
+  const [initialSlide, setInitialSlide] = useState(0);
 
-  const handleImageClick = (imageUrl: string) => {
-    setSelectedImage(imageUrl);
+  const handleImageClick = (index: number) => {
+    setInitialSlide(index);
     open();
   };
 
@@ -117,20 +116,13 @@ export const ProductDetail = () => {
           </Text>
         </Stack>
       </div>
-      <Modal
+
+      <ImageModal
         opened={opened}
-        onClose={close}
-        size="auto"
-        centered
-        padding="0.5rem"
-      >
-        <Image
-          src={selectedImage}
-          alt="Enlarged product view"
-          fit="contain"
-          style={{ maxHeight: '75vh' }}
-        />
-      </Modal>
+        close={close}
+        initialSlide={initialSlide}
+        product={product}
+      />
     </Container>
   );
 };

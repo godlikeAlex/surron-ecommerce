@@ -3,7 +3,6 @@
   z-index: 2;
   right: 16px;
   bottom: 16px;
-  transform: translateY(10px);
 
   display: flex;
   align-items: center;
@@ -15,7 +14,6 @@
 
   color: white;
 
-  opacity: 0;
   background: rgb(0 0 0 / 60%);
 
   transition:
@@ -46,15 +44,6 @@
     position: absolute;
     inset: 0;
     background: rgb(0 0 0 / 3%);
-  }
-
-  &:hover {
-    // transform: scale(1.02);
-
-    .zoom-indicator {
-      transform: translateY(0);
-      opacity: 1;
-    }
   }
 }
 

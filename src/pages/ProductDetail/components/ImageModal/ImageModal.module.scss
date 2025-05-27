@@ -1,0 +1,95 @@
+@use '../../../../styles/mixins' as *;
+
+.modal-slider-container {
+  position: relative;
+  height: 100vh;
+  background: rgb(0 0 0 / 70%);
+}
+
+.close-button {
+  @include interactive-element;
+  @include circle-button;
+
+  cursor: pointer;
+
+  position: fixed;
+  z-index: 1000;
+  top: 24px;
+  right: 24px;
+
+  margin: 0;
+  padding: 0;
+  border: none;
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.modal-carousel {
+  height: 100vh;
+  max-height: 100vh;
+
+  .carousel-control {
+    @include interactive-element;
+    @include circle-button;
+
+    z-index: 1001;
+    opacity: 0.9;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+      filter: drop-shadow(0 1px 2px rgb(0 0 0 / 30%));
+    }
+  }
+}
+
+.modal-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 100vh;
+  padding: 40px;
+}
+
+.modal-image {
+  max-width: 100%;
+  max-height: calc(100vh - 80px);
+  object-fit: contain;
+}
+
+@media (width <= 48em) {
+  .close-button {
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .modal-slide {
+    padding: 20px;
+  }
+
+  .modal-image {
+    max-height: calc(100vh - 40px);
+  }
+
+  .modal-carousel {
+    .carousel-control {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
