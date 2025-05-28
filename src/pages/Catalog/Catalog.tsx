@@ -42,7 +42,7 @@ export const Catalog = () => {
     isPending: categoriesIsPending,
   } = useCategories(selectedCategories);
 
-  const { products, isPending, isError, total } = useProducts({
+  const { products, filters, isPending, isError, total } = useProducts({
     page,
     category: targetCategory,
   });
@@ -68,6 +68,7 @@ export const Catalog = () => {
 
         <Grid.Col span={3}>
           <SidebarFilters
+            filters={!isPending ? filters : undefined}
             categories={categories}
             targetCategory={targetCategory}
             categoriesLoading={categoriesIsPending}
