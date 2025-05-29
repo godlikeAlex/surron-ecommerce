@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import {
   Container,
   Divider,
@@ -22,10 +22,12 @@ import {
   PRODUCTS_PER_PAGE,
   useProducts,
 } from '@/pages/Catalog/hooks/useProducts';
+import { useCatalogQueryParams } from './hooks/useCatalogQueryParams';
+import { useProductFilters } from './hooks/useProductFilters';
 
 export const Catalog = () => {
   const params = useParams();
-  const [page, setPage] = useState(1);
+  const { page, setCatalogQueryParams } = useCatalogQueryParams();
 
   const selectedCategories = useMemo(() => {
     const categoriesPath = params['*'];
@@ -42,14 +44,15 @@ export const Catalog = () => {
     isPending: categoriesIsPending,
   } = useCategories(selectedCategories);
 
-  const { products, filters, isPending, isError, total } = useProducts({
+  const filters = useProductFilters({ category: targetCategory });
+
+  const { products, isPending, isError, total } = useProducts({
     page,
     category: targetCategory,
   });
 
-  useEffect(() => {
-    setPage(1);
-  }, [params]);
+  const isProductsLoading = isPending || filters.isPending;
+  const isProductsError = isError || filters.isError;
 
   return (
     <Container className={classes.catalogContainer} size="xl">
@@ -68,16 +71,16 @@ export const Catalog = () => {
 
         <Grid.Col span={3}>
           <SidebarFilters
-            filters={!isPending ? filters : undefined}
+            filters={!filters.isPending ? filters.filters : undefined}
             categories={categories}
             targetCategory={targetCategory}
             categoriesLoading={categoriesIsPending}
           />
         </Grid.Col>
         <Grid.Col span={9}>
-          {isPending ? (
+          {isProductsLoading ? (
             <ProductsSkeleton />
-          ) : isError ? (
+          ) : isProductsError ? (
             <h1>Error!</h1>
           ) : (
             <>
@@ -99,7 +102,7 @@ export const Catalog = () => {
 
               <Pagination
                 value={page}
-                onChange={setPage}
+                onChange={(newPage) => setCatalogQueryParams({ page: newPage })}
                 total={Math.ceil((total || 1) / PRODUCTS_PER_PAGE)}
                 mt={'lg'}
               />
