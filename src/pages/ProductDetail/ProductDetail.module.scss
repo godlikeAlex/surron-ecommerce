@@ -19,20 +19,6 @@
   border-radius: var(--mantine-radius-md);
 }
 
-.details-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.product-title {
-  margin-bottom: 0.5rem;
-}
-
-.product-description {
-  white-space: pre-line;
-}
-
 .error-card {
   display: flex;
   gap: 0.5rem;
