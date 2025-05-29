@@ -7,10 +7,9 @@ import {
   Text,
   Card,
   Skeleton,
-  Space,
-  Badge,
   Group,
   Stack,
+  SimpleGrid,
 } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import classes from './ProductDetail.module.scss';
@@ -21,7 +20,7 @@ import { ProductImages } from './components/ProductImages/ProductImages';
 import { ImageModal } from './components/ImageModal/ImageModal';
 
 // /products/sur-ron-l1e-light-bee-silver
-// /products/pod-zakaz-storm-bee-e-enduro
+// /products/storm-bee-e-enduro
 
 export const ProductDetail = () => {
   const { key } = useParams();
@@ -52,19 +51,38 @@ export const ProductDetail = () => {
 
   if (isLoading) {
     return (
-      <Container size="lg" py="xl">
-        <Skeleton height={400} width="100%" />
-        <Space h="md" />
-        <Skeleton height={50} width="60%" />
-        <Space h="md" />
-        <Skeleton height={100} width="100%" />
+      <Container
+        size="xl"
+        style={{
+          padding: '76px 20px 20px',
+        }}
+      >
+        <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl" py="xl">
+          <Skeleton height={450} />
+
+          <Stack>
+            <Skeleton height={44} width="100%" />
+            <Skeleton height={390} width="100%" />
+          </Stack>
+        </SimpleGrid>
       </Container>
     );
   }
 
   if (isError) {
     return (
-      <Container size="lg" py="xl">
+      <Container
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          width: '100%',
+          padding: '76px 20px 20px',
+        }}
+        size="lg"
+        py="xl"
+      >
         <Card shadow="sm" padding="lg" radius="md" withBorder>
           <Group>
             <IconInfoCircle color="red" size={24} />
@@ -99,17 +117,17 @@ export const ProductDetail = () => {
 
         {/* Product Details */}
         <Stack className={classes.detailsContainer}>
-          <Badge variant="light" color="blue" size="lg">
+          {/* <Badge variant="light" color="blue" size="lg">
             {product.key || product.id}
-          </Badge>
+          </Badge> */}
 
           <Title order={1} className={classes.productTitle}>
             {product.name}
           </Title>
 
-          <Text size="lg" fw={500}>
+          {/* <Text size="lg" fw={500}>
             Product Details
-          </Text>
+          </Text> */}
 
           <Text className={classes.productDescription}>
             {product.description}
