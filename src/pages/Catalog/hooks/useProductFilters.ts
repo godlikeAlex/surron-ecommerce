@@ -1,40 +1,39 @@
 import { useApiRootStore } from '@/store/apiRootStore';
+import { isRangeFacetResult } from '@/utils/guards/isRangeFacetResult';
+import { FacetRange } from '@commercetools/platform-sdk';
 import { useQuery } from '@tanstack/react-query';
 import { type Category } from './useCategories';
-import { ProductProjection } from '@commercetools/platform-sdk';
+
+export type ProductFilters = {
+  price?: FacetRange;
+};
 
 type Props = {
-  page: number;
   category?: Category;
 };
 
-type UseProductsResult =
+type UseFilterResult =
   | {
       isPending: false;
       isError: false;
-      total: number;
-      products: ProductProjection[];
+      filters: ProductFilters;
     }
   | {
       isPending: true;
       isError: false;
-      total?: number;
-      products?: undefined;
+      filters?: undefined;
     }
   | {
       isPending: false;
       isError: true;
-      total?: number;
-      products?: undefined;
+      filters?: undefined;
     };
 
-export const PRODUCTS_PER_PAGE = 6;
-
-export const useProducts = ({ page, category }: Props): UseProductsResult => {
+export const useProductFilters = ({ category }: Props): UseFilterResult => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
 
   const { data, isPending, isError } = useQuery({
-    queryKey: ['catalog', { category, page }],
+    queryKey: ['catalog-filters', { category }],
     queryFn: () => {
       const filters = [];
 
@@ -47,8 +46,7 @@ export const useProducts = ({ page, category }: Props): UseProductsResult => {
         .search()
         .get({
           queryArgs: {
-            limit: PRODUCTS_PER_PAGE,
-            offset: PRODUCTS_PER_PAGE * (page - 1),
+            limit: 0,
             'filter.query': filters,
             facet: ['variants.price.centAmount: range(0 to *)'],
           },
@@ -62,9 +60,20 @@ export const useProducts = ({ page, category }: Props): UseProductsResult => {
 
   const response = data.body;
 
+  const priceFacet = response.facets?.['variants.price.centAmount'];
+
+  const facetFilters: ProductFilters = {
+    price: isRangeFacetResult(priceFacet)
+      ? {
+          ...priceFacet.ranges[0],
+          min: priceFacet.ranges[0].min / 100,
+          max: priceFacet.ranges[0].max / 100,
+        }
+      : undefined,
+  };
+
   return {
-    products: response.results,
-    total: response.total ?? 0,
+    filters: facetFilters,
     isPending,
     isError,
   };

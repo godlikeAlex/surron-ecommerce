@@ -4,7 +4,7 @@ import { type Category } from '@/pages/Catalog/hooks/useCategories';
 import classes from './SidebarFilters.module.scss';
 import { SidebarCategoriesSkeleton } from './SidebarCategoriesSkeleton';
 import { PriceRangeSelect } from '../PriceRangeSelect';
-import { type ProductFilters } from '../../hooks/useProducts';
+import { type ProductFilters } from '../../hooks/useProductFilters';
 
 type Props = {
   categories: Category[];
@@ -37,6 +37,7 @@ export const SidebarFilters = ({
           ))
         )}
       </Group>
+
       <Divider />
 
       {filters?.price && (
@@ -49,7 +50,7 @@ export const SidebarFilters = ({
             <PriceRangeSelect
               min={filters.price.min}
               max={filters.price.max}
-              onChange={(c) => console.log(c)}
+              onChange={(c) => console.log('SOME APPS', c)}
             />
           </Box>
 
