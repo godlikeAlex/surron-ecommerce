@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router';
 import {
   Container,
-  Title,
   Text,
   Card,
   Skeleton,
@@ -18,9 +17,12 @@ import { useState } from 'react';
 import { parseProductData } from './utils/parseProductData';
 import { ProductImages } from './components/ProductImages/ProductImages';
 import { ImageModal } from './components/ImageModal/ImageModal';
+import { ProductDetails } from './components/ProductDetails/ProductDetails';
 
 // /products/sur-ron-l1e-light-bee-silver
-// /products/storm-bee-e-enduro
+// /products/sur-ron-storm-bee-e-enduro
+// /products/sur-ron-hyper-bee-blue
+//http://localhost:5173/products/storm-bee-e-enduro
 
 export const ProductDetail = () => {
   const { key } = useParams();
@@ -116,23 +118,7 @@ export const ProductDetail = () => {
         </Card>
 
         {/* Product Details */}
-        <Stack className={classes.detailsContainer}>
-          {/* <Badge variant="light" color="blue" size="lg">
-            {product.key || product.id}
-          </Badge> */}
-
-          <Title order={1} className={classes.productTitle}>
-            {product.name}
-          </Title>
-
-          {/* <Text size="lg" fw={500}>
-            Product Details
-          </Text> */}
-
-          <Text className={classes.productDescription}>
-            {product.description}
-          </Text>
-        </Stack>
+        <ProductDetails product={product} />
       </div>
 
       <ImageModal

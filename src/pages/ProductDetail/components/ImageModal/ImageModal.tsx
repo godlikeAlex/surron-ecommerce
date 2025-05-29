@@ -2,13 +2,13 @@ import { Image, Modal, FocusTrap } from '@mantine/core';
 import { IconArrowLeft, IconArrowRight, IconX } from '@tabler/icons-react';
 import classes from './ImageModal.module.scss';
 import { Carousel } from '@mantine/carousel';
-import { ProductVariant } from '@commercetools/platform-sdk';
+import { ProductType } from '../../utils/parseProductData';
 
 type ImageModalProps = {
   opened: boolean;
   close: () => void;
   initialSlide: number;
-  product: ProductVariant;
+  product: ProductType;
 };
 
 export const ImageModal = ({

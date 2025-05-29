@@ -1,11 +1,11 @@
 import { Carousel } from '@mantine/carousel';
 import classes from './ProductImages.module.scss';
 import { Image, Center } from '@mantine/core';
-import { ProductVariant } from '@commercetools/platform-sdk';
 import { ImageWithZoom } from '../ImageWithZoom/ImageWithZoom';
+import { ProductType } from '../../utils/parseProductData';
 
 type ProductImagesProps = {
-  product: ProductVariant;
+  product: ProductType;
   handleImageClick: (index: number) => void;
 };
 

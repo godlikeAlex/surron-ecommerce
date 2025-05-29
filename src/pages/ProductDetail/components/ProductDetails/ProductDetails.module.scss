@@ -1,0 +1,17 @@
+.product-title {
+  margin-bottom: 0.5rem;
+}
+
+.product-description {
+  white-space: pre-line;
+}
+
+.price-section {
+  margin: 16px 0;
+}
+
+.price-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
