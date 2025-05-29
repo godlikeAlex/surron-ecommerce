@@ -6,6 +6,7 @@ import { ProductProjection } from '@commercetools/platform-sdk';
 type Props = {
   page: number;
   category?: Category;
+  priceRange?: { from: number; to: number };
 };
 
 type UseProductsResult =
@@ -30,16 +31,28 @@ type UseProductsResult =
 
 export const PRODUCTS_PER_PAGE = 6;
 
-export const useProducts = ({ page, category }: Props): UseProductsResult => {
+export const useProducts = ({
+  page,
+  category,
+  priceRange,
+}: Props): UseProductsResult => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
 
   const { data, isPending, isError } = useQuery({
-    queryKey: ['catalog', { category, page }],
+    queryKey: ['catalog', { category, page, priceRange }],
     queryFn: () => {
       const filters = [];
 
       if (category) {
         filters.push(`categories.id: "${category.id}"`);
+      }
+
+      if (priceRange) {
+        const { from, to } = priceRange;
+
+        filters.push(
+          `variants.price.centAmount: range(${from * 100} to ${to * 100})`
+        );
       }
 
       return apiRoot
