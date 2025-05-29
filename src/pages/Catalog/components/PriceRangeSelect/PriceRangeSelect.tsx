@@ -5,24 +5,46 @@ import {
   RangeSliderValue,
 } from '@mantine/core';
 import { useField } from '@mantine/form';
-import { useEffect } from 'react';
+import { Ref, useEffect, useImperativeHandle } from 'react';
+
+export type PriceRangeSelectHandle = {
+  getValue: () => { from: number; to: number };
+} | null;
 
 type Props = {
   min: number;
   max: number;
-  onChange: (min: number, max: number) => void;
+  initialValues?: { from: number; to: number };
+  ref: Ref<PriceRangeSelectHandle>;
 };
 
-export const PriceRangeSelect = ({ min, max }: Props) => {
+export const PriceRangeSelect = ({ min, max, initialValues, ref }: Props) => {
   const minField = useField<number>({
-    initialValue: min,
+    initialValue: initialValues?.from ?? min,
   });
   const maxField = useField<number>({
-    initialValue: max,
+    initialValue: initialValues?.to ?? max,
   });
 
-  useEffect(() => minField.setValue(min), [min]);
-  useEffect(() => maxField.setValue(max), [max]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      getValue: () => ({
+        from: minField.getValue(),
+        to: maxField.getValue(),
+      }),
+    }),
+    [minField, maxField]
+  );
+
+  useEffect(
+    () => minField.setValue(initialValues?.from ?? min),
+    [min, initialValues?.from]
+  );
+  useEffect(
+    () => maxField.setValue(initialValues?.to ?? max),
+    [max, initialValues?.to]
+  );
 
   const handleChangeSlider = ([min, max]: RangeSliderValue) => {
     minField.setValue(min);
