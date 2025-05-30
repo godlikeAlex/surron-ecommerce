@@ -3,9 +3,11 @@ import { isRangeFacetResult } from '@/utils/guards/isRangeFacetResult';
 import { FacetRange } from '@commercetools/platform-sdk';
 import { useQuery } from '@tanstack/react-query';
 import { type Category } from './useCategories';
+import { isTermFacetResult } from '@/utils/guards/isTermFacetResult';
 
 export type ProductFilters = {
   price?: FacetRange;
+  colors?: string[];
 };
 
 type Props = {
@@ -48,7 +50,10 @@ export const useProductFilters = ({ category }: Props): UseFilterResult => {
           queryArgs: {
             limit: 0,
             'filter.query': filters,
-            facet: ['variants.price.centAmount: range(0 to *)'],
+            facet: [
+              'variants.price.centAmount: range(0 to *) as priceRange',
+              'variants.attributes.color.key as colors',
+            ],
           },
         })
         .execute();
@@ -60,7 +65,8 @@ export const useProductFilters = ({ category }: Props): UseFilterResult => {
 
   const response = data.body;
 
-  const priceFacet = response.facets?.['variants.price.centAmount'];
+  const priceFacet = response.facets?.['priceRange'];
+  const colorsFacet = response.facets?.['colors'];
 
   const facetFilters: ProductFilters = {
     price: isRangeFacetResult(priceFacet)
@@ -69,6 +75,9 @@ export const useProductFilters = ({ category }: Props): UseFilterResult => {
           min: priceFacet.ranges[0].min / 100,
           max: priceFacet.ranges[0].max / 100,
         }
+      : undefined,
+    colors: isTermFacetResult(colorsFacet)
+      ? colorsFacet.terms.map(({ term }) => String(term))
       : undefined,
   };
 
