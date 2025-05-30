@@ -109,13 +109,16 @@ export const Catalog = () => {
                   />
                 ))}
               </SimpleGrid>
-
-              <Pagination
-                value={page}
-                onChange={(newPage) => setCatalogQueryParams({ page: newPage })}
-                total={Math.ceil((total || 1) / PRODUCTS_PER_PAGE)}
-                mt={'lg'}
-              />
+              <Flex justify="center">
+                <Pagination
+                  value={page}
+                  onChange={(newPage) =>
+                    setCatalogQueryParams({ page: newPage })
+                  }
+                  total={Math.ceil((total || 1) / PRODUCTS_PER_PAGE)}
+                  mt={'lg'}
+                />
+              </Flex>
             </>
           )}
         </Grid.Col>
