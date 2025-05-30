@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import {
   Container,
   Divider,
+  Flex,
   Grid,
   Pagination,
   SimpleGrid,
@@ -14,6 +15,7 @@ import {
   ProductCard,
   ProductsSkeleton,
   SidebarFilters,
+  SortOptions,
 } from '@/pages/Catalog/components';
 import { useCategories } from '@/pages/Catalog/hooks/useCategories';
 import classes from './Catalog.module.scss';
@@ -27,7 +29,8 @@ import { useProductFilters } from './hooks/useProductFilters';
 
 export const Catalog = () => {
   const params = useParams();
-  const { page, priceRange, setCatalogQueryParams } = useCatalogQueryParams();
+  const { page, priceRange, sort, setCatalogQueryParams } =
+    useCatalogQueryParams();
 
   const selectedCategories = useMemo(() => {
     const categoriesPath = params['*'];
@@ -50,6 +53,7 @@ export const Catalog = () => {
     page,
     category: targetCategory,
     priceRange,
+    sort,
   });
 
   const isProductsLoading = isPending || filters.isPending;
@@ -85,9 +89,14 @@ export const Catalog = () => {
             <h1>Error!</h1>
           ) : (
             <>
-              <Title order={5}>
-                Показано {Math.min(page * PRODUCTS_PER_PAGE, total)} из {total}
-              </Title>
+              <Flex justify="space-between" align="end">
+                <Title order={5}>
+                  Показано {Math.min(page * PRODUCTS_PER_PAGE, total)} из{' '}
+                  {total}
+                </Title>
+
+                <SortOptions />
+              </Flex>
 
               <Divider my="md" />
 
