@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router';
 
 type CatalogQueryParams = {
   page?: number;
+  sort?: string;
   rangePrice?: [number, number];
 };
 
@@ -11,6 +12,7 @@ export const useCatalogQueryParams = () => {
 
   const page = searchParmas.get('page') || 1;
   const priceRange = searchParmas.get('price-range');
+  const sort = searchParmas.get('sort') || 'name.ru asc';
 
   const parsedPriceRange = useMemo(() => {
     if (!priceRange) return;
@@ -37,6 +39,10 @@ export const useCatalogQueryParams = () => {
           currentParams.set('price-range', `${from}-${to}`);
         }
 
+        if (catalogQueryParms.sort) {
+          currentParams.set('sort', catalogQueryParms.sort);
+        }
+
         return currentParams;
       });
     },
@@ -47,5 +53,6 @@ export const useCatalogQueryParams = () => {
     page: Number(page),
     priceRange: parsedPriceRange,
     setCatalogQueryParams,
+    sort,
   };
 };

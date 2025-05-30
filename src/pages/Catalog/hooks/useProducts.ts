@@ -5,6 +5,7 @@ import { ProductProjection } from '@commercetools/platform-sdk';
 
 type Props = {
   page: number;
+  sort: string;
   category?: Category;
   priceRange?: { from: number; to: number };
 };
@@ -34,12 +35,12 @@ export const PRODUCTS_PER_PAGE = 6;
 export const useProducts = ({
   page,
   category,
+  sort,
   priceRange,
 }: Props): UseProductsResult => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
-
   const { data, isPending, isError } = useQuery({
-    queryKey: ['catalog', { category, page, priceRange }],
+    queryKey: ['catalog', { category, page, priceRange, sort }],
     queryFn: () => {
       const filters = [];
 
@@ -62,6 +63,7 @@ export const useProducts = ({
           queryArgs: {
             limit: PRODUCTS_PER_PAGE,
             offset: PRODUCTS_PER_PAGE * (page - 1),
+            sort,
             'filter.query': filters,
             facet: ['variants.price.centAmount: range(0 to *)'],
           },
