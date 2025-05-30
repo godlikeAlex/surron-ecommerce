@@ -5,3 +5,4 @@ export * from './BreadcrumbsCategories';
 export * from './ProductsSkeleton';
 export * from './PriceRangeSelect';
 export * from './SortOptions';
+export * from './ColorPicker';
