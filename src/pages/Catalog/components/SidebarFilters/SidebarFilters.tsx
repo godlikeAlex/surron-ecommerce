@@ -11,6 +11,7 @@ import {
 import { type ProductFilters } from '@/pages/Catalog/hooks/useProductFilters';
 import { useCatalogQueryParams } from '@/pages/Catalog/hooks/useCatalogQueryParams';
 import { notifications } from '@mantine/notifications';
+import { ColorPicker } from '../ColorPicker';
 
 type Props = {
   categories: Category[];
@@ -84,14 +85,28 @@ export const SidebarFilters = ({
           </Box>
 
           <Divider />
+        </>
+      )}
+
+      {filters?.colors && (
+        <>
+          <Title order={4} className={classes.sidebarItemWrapper}>
+            Цвет
+          </Title>
 
           <Box className={classes.sidebarItemWrapper}>
-            <Button fullWidth onClick={handleApplyFilters}>
-              Применить фильтры
-            </Button>
+            <ColorPicker colors={filters.colors} />
           </Box>
         </>
       )}
+
+      <Divider />
+
+      <Box className={classes.sidebarItemWrapper}>
+        <Button fullWidth onClick={handleApplyFilters}>
+          Применить фильтры
+        </Button>
+      </Box>
     </Card>
   );
 };
