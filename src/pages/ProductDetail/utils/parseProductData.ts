@@ -10,6 +10,7 @@ export type ProductType = {
     label?: string;
   }[];
   variant: ProductVariant;
+  variants: Array<ProductVariant>;
 };
 
 export const parseProductData = (product: Product): ProductType => {
@@ -28,5 +29,6 @@ export const parseProductData = (product: Product): ProductType => {
       (current.description ? Object.values(current.description)[0] : ''),
     images: masterVariant.images || [],
     variant: masterVariant,
+    variants: current.variants,
   };
 };

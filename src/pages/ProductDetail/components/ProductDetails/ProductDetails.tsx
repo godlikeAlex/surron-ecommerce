@@ -1,15 +1,28 @@
-import { Title, Text, Stack, Badge, Flex } from '@mantine/core';
+import { Title, Text, Stack, Flex, Button, Group } from '@mantine/core';
 import classes from './ProductDetails.module.scss';
 import { getProductPrice, formatPrice } from '../../utils/productPrice';
 import { ProductType } from '../../utils/parseProductData';
 import { AddToCart } from './components/AddToCart';
+import { useState } from 'react';
+import { ProductVariant } from '@commercetools/platform-sdk';
 
 type ProductDetailsProps = {
   product: ProductType;
 };
 
 export const ProductDetails = ({ product }: ProductDetailsProps) => {
-  const price = getProductPrice(product.variant);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
+    null
+  );
+
+  const getVariantAttrLabel = (variant: ProductVariant) => {
+    return (
+      variant.attributes?.find((attr) => attr.name === 'tip-postavki')
+        ?.value as { key: string; label: string }
+    ).label;
+  };
+
+  const price = getProductPrice(selectedVariant ?? product.variant);
   const formattedPrice = formatPrice(price);
 
   return (
@@ -26,8 +39,8 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
 
       <Text className={classes.productDescription}>{product.description}</Text>
 
-      {/* Price */}
-      <div className={classes.priceSection}>
+      {/* Блок с ценой */}
+      <div>
         <Text
           size="sm"
           c="dimmed"
@@ -40,8 +53,17 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
 
         {formattedPrice && (
           <Flex gap="xs" wrap="wrap">
+            {!selectedVariant && (
+              <Text span size="1.5rem" fw={700}>
+                От{' '}
+              </Text>
+            )}
             {formattedPrice.original ? (
               <>
+                <Text span size="1.5rem" fw={700} c="red">
+                  {formattedPrice.current}
+                </Text>
+
                 <Text
                   span
                   c="dimmed"
@@ -51,14 +73,6 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
                 >
                   {formattedPrice.original}
                 </Text>
-
-                <Text span size="1.5rem" fw={700} c="red">
-                  {formattedPrice.current}
-                </Text>
-
-                <Badge color="red" variant="light" fw={600} size="xs">
-                  Скидка
-                </Badge>
               </>
             ) : (
               <Text span size="1.5rem" fw={700}>
@@ -69,8 +83,33 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
         )}
       </div>
 
-      {/* Add to cart block */}
-      <AddToCart product={product} />
+      {/* Кнопки вариантов */}
+      <Stack gap={0}>
+        <Text size="sm" c="dimmed" mb={4}>
+          Тип поставки
+        </Text>
+        <Group gap="sm">
+          {product.variants
+            .filter((v) =>
+              v.attributes?.some(({ name }) => name === 'tip-postavki')
+            )
+            .map((variant) => (
+              <Button
+                key={variant.key}
+                variant={variant === selectedVariant ? 'filled' : 'outline'}
+                color="yellow"
+                radius="xl"
+                size="md"
+                onClick={() => setSelectedVariant(variant)}
+              >
+                {getVariantAttrLabel(variant)}
+              </Button>
+            ))}
+        </Group>
+      </Stack>
+
+      {/* Кнопка "В корзину" */}
+      <AddToCart product={product} disabled={selectedVariant ? false : true} />
     </Stack>
   );
 };

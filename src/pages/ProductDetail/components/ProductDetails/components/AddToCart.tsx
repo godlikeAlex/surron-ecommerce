@@ -5,6 +5,7 @@ import {
   NumberInput,
   Button,
   Text,
+  Tooltip,
 } from '@mantine/core';
 import {
   IconCheck,
@@ -13,15 +14,15 @@ import {
   IconShoppingCart,
 } from '@tabler/icons-react';
 import { useState } from 'react';
-import classes from '../ProductDetails.module.scss';
 import { notifications } from '@mantine/notifications';
 import { ProductType } from '@/pages/ProductDetail/utils/parseProductData';
 
 type AddToCartProps = {
   product: ProductType;
+  disabled: boolean;
 };
 
-export const AddToCart = ({ product }: AddToCartProps) => {
+export const AddToCart = ({ product, disabled }: AddToCartProps) => {
   const [quantity, setQuantity] = useState(1);
 
   const handleAddToCart = (qty: number) => {
@@ -85,16 +86,32 @@ export const AddToCart = ({ product }: AddToCartProps) => {
         </Group>
       </div>
 
-      <Button
-        size="md"
-        variant="gradient"
-        gradient={{ from: 'cyan', to: 'yellow', deg: 114 }}
-        className={classes.addToCartButton}
-        leftSection={<IconShoppingCart size={20} />}
-        onClick={() => handleAddToCart(quantity)}
+      <Tooltip
+        label="Необходимо выбрать тип поставки"
+        color="gray"
+        disabled={!disabled}
       >
-        В корзину
-      </Button>
+        <Button
+          size="md"
+          variant="gradient"
+          gradient={{ from: 'cyan', to: 'yellow', deg: 114 }}
+          leftSection={<IconShoppingCart size={20} />}
+          onClick={() => handleAddToCart(quantity)}
+          disabled={disabled}
+          styles={{
+            root: {
+              '&:disabled': {
+                background:
+                  'linear-gradient(114deg, var(--mantine-color-cyan-6), var(--mantine-color-yellow-6))',
+                opacity: 0.6,
+                cursor: 'not-allowed',
+              },
+            },
+          }}
+        >
+          В корзину
+        </Button>
+      </Tooltip>
     </Group>
   );
 };
