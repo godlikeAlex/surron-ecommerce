@@ -29,7 +29,7 @@ import { useProductFilters } from './hooks/useProductFilters';
 
 export const Catalog = () => {
   const params = useParams();
-  const { page, priceRange, sort, setCatalogQueryParams } =
+  const { page, priceRange, sort, colors, setCatalogQueryParams } =
     useCatalogQueryParams();
 
   const selectedCategories = useMemo(() => {
@@ -54,6 +54,7 @@ export const Catalog = () => {
     category: targetCategory,
     priceRange,
     sort,
+    colors,
   });
 
   const isProductsLoading = isPending || filters.isPending;

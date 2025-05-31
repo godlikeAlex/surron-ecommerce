@@ -8,6 +8,7 @@ type Props = {
   sort: string;
   category?: Category;
   priceRange?: { from: number; to: number };
+  colors?: string[];
 };
 
 type UseProductsResult =
@@ -37,10 +38,11 @@ export const useProducts = ({
   category,
   sort,
   priceRange,
+  colors,
 }: Props): UseProductsResult => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
   const { data, isPending, isError } = useQuery({
-    queryKey: ['catalog', { category, page, priceRange, sort }],
+    queryKey: ['catalog', { category, page, priceRange, sort, colors }],
     queryFn: () => {
       const filters = [];
 
@@ -54,6 +56,12 @@ export const useProducts = ({
         filters.push(
           `variants.price.centAmount: range(${from * 100} to ${to * 100})`
         );
+      }
+
+      if (colors && colors.length > 0) {
+        const colorsQuery = colors.map((color) => `"${color}"`).join(', ');
+
+        filters.push(`variants.attributes.color.key: ${colorsQuery}`);
       }
 
       return apiRoot

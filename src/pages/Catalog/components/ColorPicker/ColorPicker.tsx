@@ -1,14 +1,13 @@
-import { Box, Group } from '@mantine/core';
+import { Box, Group, Skeleton } from '@mantine/core';
 import classes from './ColorPicker.module.scss';
-import { useState } from 'react';
 
 type Props = {
   colors: string[];
+  onChange: (colors: string[]) => void;
+  selectedColors: string[];
 };
 
-export const ColorPicker = ({ colors }: Props) => {
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
-
+const ColorPicker = ({ colors, onChange, selectedColors }: Props) => {
   const handleSelectColor = (color: string) => {
     let updatedSelectedColors = [...selectedColors];
 
@@ -20,7 +19,7 @@ export const ColorPicker = ({ colors }: Props) => {
       updatedSelectedColors.push(color);
     }
 
-    setSelectedColors(updatedSelectedColors);
+    onChange(updatedSelectedColors);
   };
 
   return (
@@ -41,3 +40,15 @@ export const ColorPicker = ({ colors }: Props) => {
     </Group>
   );
 };
+
+const ColorPickerSkeleton = () => (
+  <Group gap={5}>
+    {new Array(6).fill('').map((_, index) => (
+      <Skeleton w={32} h={32} key={index}></Skeleton>
+    ))}
+  </Group>
+);
+
+ColorPicker.Skeleton = ColorPickerSkeleton;
+
+export { ColorPicker };

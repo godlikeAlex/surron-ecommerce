@@ -3,8 +3,10 @@ import {
   NumberInput,
   RangeSlider,
   RangeSliderValue,
+  Skeleton,
 } from '@mantine/core';
 import { useField } from '@mantine/form';
+import { useDebouncedValue } from '@mantine/hooks';
 import { Ref, useEffect, useImperativeHandle } from 'react';
 
 export type PriceRangeSelectHandle = {
@@ -16,15 +18,29 @@ type Props = {
   max: number;
   initialValues?: { from: number; to: number };
   ref: Ref<PriceRangeSelectHandle>;
+  onChange: (values: { from: number; to: number }) => void;
 };
 
-export const PriceRangeSelect = ({ min, max, initialValues, ref }: Props) => {
+const PriceRangeSelect = ({
+  min,
+  max,
+  initialValues,
+  onChange,
+  ref,
+}: Props) => {
   const minField = useField<number>({
     initialValue: initialValues?.from ?? min,
   });
   const maxField = useField<number>({
     initialValue: initialValues?.to ?? max,
   });
+
+  const [minValueDebounced] = useDebouncedValue(minField.getValue(), 400);
+  const [maxValueDebounced] = useDebouncedValue(maxField.getValue(), 400);
+
+  useEffect(() => {
+    onChange({ from: minValueDebounced, to: maxValueDebounced });
+  }, [minValueDebounced, maxValueDebounced]);
 
   useImperativeHandle(
     ref,
@@ -88,3 +104,18 @@ export const PriceRangeSelect = ({ min, max, initialValues, ref }: Props) => {
     </>
   );
 };
+
+const PriceRangeSelectSkeleton = () => (
+  <>
+    <Flex gap={20}>
+      <Skeleton h={31} />
+      <Skeleton h={31} />
+    </Flex>
+
+    <Skeleton h={15} width="100%" mt="xs"></Skeleton>
+  </>
+);
+
+PriceRangeSelect.Skeleton = PriceRangeSelectSkeleton;
+
+export { PriceRangeSelect };

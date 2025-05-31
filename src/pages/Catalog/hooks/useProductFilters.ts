@@ -76,9 +76,10 @@ export const useProductFilters = ({ category }: Props): UseFilterResult => {
           max: priceFacet.ranges[0].max / 100,
         }
       : undefined,
-    colors: isTermFacetResult(colorsFacet)
-      ? colorsFacet.terms.map(({ term }) => String(term))
-      : undefined,
+    colors:
+      isTermFacetResult(colorsFacet) && colorsFacet.terms.length > 0
+        ? colorsFacet.terms.map(({ term }) => String(term))
+        : undefined,
   };
 
   return {

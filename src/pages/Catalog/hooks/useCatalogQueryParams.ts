@@ -5,6 +5,7 @@ type CatalogQueryParams = {
   page?: number;
   sort?: string;
   rangePrice?: [number, number];
+  colors?: string[];
 };
 
 export const useCatalogQueryParams = () => {
@@ -13,6 +14,7 @@ export const useCatalogQueryParams = () => {
   const page = searchParmas.get('page') || 1;
   const priceRange = searchParmas.get('price-range');
   const sort = searchParmas.get('sort') || 'name.ru asc';
+  const colors = searchParmas.get('colors');
 
   const parsedPriceRange = useMemo(() => {
     if (!priceRange) return;
@@ -25,6 +27,12 @@ export const useCatalogQueryParams = () => {
 
     return { from: Number(from), to: Number(to) };
   }, [priceRange]);
+
+  const parsedColors = useMemo(() => {
+    if (!colors) return [];
+
+    return colors.split(',');
+  }, [colors]);
 
   const setCatalogQueryParams = useCallback(
     (catalogQueryParms: CatalogQueryParams) => {
@@ -43,6 +51,10 @@ export const useCatalogQueryParams = () => {
           currentParams.set('sort', catalogQueryParms.sort);
         }
 
+        if (catalogQueryParms.colors) {
+          currentParams.set('colors', catalogQueryParms.colors.join(','));
+        }
+
         return currentParams;
       });
     },
@@ -54,5 +66,6 @@ export const useCatalogQueryParams = () => {
     priceRange: parsedPriceRange,
     setCatalogQueryParams,
     sort,
+    colors: parsedColors,
   };
 };
