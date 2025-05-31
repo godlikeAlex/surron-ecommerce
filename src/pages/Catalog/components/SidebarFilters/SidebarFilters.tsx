@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Box, Button, Card, Divider, Group, Title } from '@mantine/core';
+import { Box, Button, Card, Group } from '@mantine/core';
 import { TreeCategoryLink } from '../TreeCategoryLink';
 import { type Category } from '@/pages/Catalog/hooks/useCategories';
 import classes from './SidebarFilters.module.scss';
@@ -12,6 +12,7 @@ import { type ProductFilters } from '@/pages/Catalog/hooks/useProductFilters';
 import { useCatalogQueryParams } from '@/pages/Catalog/hooks/useCatalogQueryParams';
 import { notifications } from '@mantine/notifications';
 import { ColorPicker } from '../ColorPicker';
+import { SidebarSection } from './SidebarSection';
 
 type Props = {
   categories: Category[];
@@ -50,57 +51,40 @@ export const SidebarFilters = ({
 
   return (
     <Card component="aside" padding={0} shadow="lg" withBorder>
-      <Title order={4} className={classes.sidebarItemWrapper}>
-        Категории
-      </Title>
-      <Group gap={0}>
-        {categoriesLoading ? (
-          <SidebarCategoriesSkeleton />
-        ) : (
-          categories.map((category) => (
-            <TreeCategoryLink
-              key={category.id}
-              category={category}
-              targetCategory={targetCategory}
-            />
-          ))
-        )}
-      </Group>
+      <Box className={classes.sidebarSectionList}>
+        <SidebarSection title="Категории" withPadding={false}>
+          <Group gap={0}>
+            {categoriesLoading ? (
+              <SidebarCategoriesSkeleton />
+            ) : (
+              categories.map((category) => (
+                <TreeCategoryLink
+                  key={category.id}
+                  category={category}
+                  targetCategory={targetCategory}
+                />
+              ))
+            )}
+          </Group>
+        </SidebarSection>
 
-      <Divider />
-
-      {filters?.price && (
-        <>
-          <Title order={4} className={classes.sidebarItemWrapper}>
-            Цена
-          </Title>
-
-          <Box className={classes.sidebarItemWrapper}>
+        {filters?.price && (
+          <SidebarSection title="Цена">
             <PriceRangeSelect
               initialValues={priceRange}
               min={filters.price.min}
               max={filters.price.max}
               ref={rangePriceRef}
             />
-          </Box>
+          </SidebarSection>
+        )}
 
-          <Divider />
-        </>
-      )}
-
-      {filters?.colors && (
-        <>
-          <Title order={4} className={classes.sidebarItemWrapper}>
-            Цвет
-          </Title>
-
-          <Box className={classes.sidebarItemWrapper}>
+        {filters?.colors && (
+          <SidebarSection title="Цвет">
             <ColorPicker colors={filters.colors} />
-          </Box>
-        </>
-      )}
-
-      <Divider />
+          </SidebarSection>
+        )}
+      </Box>
 
       <Box className={classes.sidebarItemWrapper}>
         <Button fullWidth onClick={handleApplyFilters}>
