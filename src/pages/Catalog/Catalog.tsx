@@ -12,6 +12,7 @@ import {
 import {
   BreadcrumbsCategories,
   BreadcrumbsCategoriesSkeleton,
+  DebounceSearch,
   ProductCard,
   ProductsSkeleton,
   SidebarFilters,
@@ -29,7 +30,7 @@ import { useProductFilters } from './hooks/useProductFilters';
 
 export const Catalog = () => {
   const params = useParams();
-  const { page, priceRange, sort, colors, setCatalogQueryParams } =
+  const { page, priceRange, sort, colors, search, setCatalogQueryParams } =
     useCatalogQueryParams();
 
   const selectedCategories = useMemo(() => {
@@ -55,6 +56,7 @@ export const Catalog = () => {
     priceRange,
     sort,
     colors,
+    search,
   });
 
   const isProductsLoading = isPending || filters.isPending;
@@ -70,9 +72,17 @@ export const Catalog = () => {
             <BreadcrumbsCategories currentCategories={activeCategories} />
           )}
 
-          <Skeleton width={320} h={35} mt="md" visible={categoriesIsPending}>
-            <Title order={2}>{targetCategory?.name || 'Каталог'}</Title>
-          </Skeleton>
+          <Flex justify="space-between" mt="md" align="center">
+            <Skeleton width={320} h={35} visible={categoriesIsPending}>
+              <Title order={2}>{targetCategory?.name || 'Каталог'}</Title>
+            </Skeleton>
+
+            <DebounceSearch
+              defaultValue={search || ''}
+              disabled={isProductsLoading}
+              onSearch={(value) => setCatalogQueryParams({ search: value })}
+            />
+          </Flex>
         </Grid.Col>
 
         <Grid.Col span={3}>

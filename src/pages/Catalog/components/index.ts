@@ -6,3 +6,4 @@ export * from './ProductsSkeleton';
 export * from './PriceRangeSelect';
 export * from './SortOptions';
 export * from './ColorPicker';
+export * from './DebounceSearch';

@@ -13,7 +13,6 @@ export const SortOptions = () => {
   return (
     <Select
       size="xs"
-      label="Сортировка"
       value={sort}
       onChange={(value) => value && setCatalogQueryParams({ sort: value })}
       data={options}
