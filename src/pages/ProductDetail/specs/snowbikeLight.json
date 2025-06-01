@@ -1,0 +1,29 @@
+{
+  "product": "КИТ Гусеничный Snowbike Sur-Ron Light bee",
+  "specifications": [
+    {
+      "parameter": "Гусеница шириной",
+      "value": "19-22 см"
+    },
+    {
+      "parameter": "Пятно контакта с землей",
+      "value": "60-62 см"
+    },
+    {
+      "parameter": "Глубина рыхлого снега",
+      "value": "до 40 см"
+    },
+    {
+      "parameter": "Лыжа",
+      "value": "Пластик"
+    },
+    {
+      "parameter": "Материал рамы",
+      "value": "Сталь"
+    },
+    {
+      "parameter": "Вес комплекта",
+      "value": "55-60 кг"
+    }
+  ]
+}

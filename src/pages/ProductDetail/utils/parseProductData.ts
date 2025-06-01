@@ -1,4 +1,8 @@
-import { Product, ProductVariant } from '@commercetools/platform-sdk';
+import {
+  CategoryReference,
+  Product,
+  ProductVariant,
+} from '@commercetools/platform-sdk';
 
 export type ProductType = {
   id: number;
@@ -11,6 +15,7 @@ export type ProductType = {
   }[];
   variant: ProductVariant;
   variants: Array<ProductVariant>;
+  category: CategoryReference;
 };
 
 export const parseProductData = (product: Product): ProductType => {
@@ -30,5 +35,6 @@ export const parseProductData = (product: Product): ProductType => {
     images: masterVariant.images || [],
     variant: masterVariant,
     variants: current.variants,
+    category: current.categories[0],
   };
 };
