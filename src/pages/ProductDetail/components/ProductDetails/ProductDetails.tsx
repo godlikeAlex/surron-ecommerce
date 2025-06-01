@@ -33,7 +33,7 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
 
       <Text className={classes.productDescription}>{product.description}</Text>
 
-      {/* Блок с ценой */}
+      {/* Price */}
       <div>
         <Text
           size="sm"
@@ -77,7 +77,7 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
         )}
       </div>
 
-      {/* Кнопки вариантов */}
+      {/* Variant buttons */}
       <Stack gap={0}>
         <Text size="sm" c="dimmed" mb={4}>
           Тип поставки
@@ -102,7 +102,7 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
         </Group>
       </Stack>
 
-      {/* Кнопка "В корзину" */}
+      {/* Add to cart button block */}
       <AddToCart product={product} disabled={selectedVariant ? false : true} />
     </Stack>
   );

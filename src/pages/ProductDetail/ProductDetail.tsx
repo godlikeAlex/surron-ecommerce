@@ -9,6 +9,7 @@ import {
   Group,
   Stack,
   SimpleGrid,
+  Box,
 } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import classes from './ProductDetail.module.scss';
@@ -19,11 +20,6 @@ import { ProductImages } from './components/ProductImages/ProductImages';
 import { ImageModal } from './components/ImageModal/ImageModal';
 import { ProductDetails } from './components/ProductDetails/ProductDetails';
 import { ProductDescription } from './components';
-
-// /products/sur-ron-l1e-light-bee-silver
-// /products/sur-ron-storm-bee-e-enduro
-// /products/sur-ron-hyper-bee-blue
-//http://localhost:5173/products/storm-bee-e-enduro
 
 export const ProductDetail = () => {
   const { key } = useParams();
@@ -67,6 +63,7 @@ export const ProductDetail = () => {
             <Skeleton height={390} width="100%" />
           </Stack>
         </SimpleGrid>
+        <Skeleton height={350} width="100%" mt={'xl'} />
       </Container>
     );
   }
@@ -120,10 +117,10 @@ export const ProductDetail = () => {
         {/* Product Details */}
         <ProductDetails product={product} />
       </div>
-      <div>
+      <Box mt={'xl'}>
         {/* Product Additional Info, characteristics*/}
         <ProductDescription product={product} />
-      </div>
+      </Box>
 
       <ImageModal
         opened={opened}
