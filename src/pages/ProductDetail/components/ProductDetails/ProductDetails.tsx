@@ -1,10 +1,11 @@
 import { Title, Text, Stack, Flex, Button, Group } from '@mantine/core';
 import classes from './ProductDetails.module.scss';
-import { getProductPrice, formatPrice } from '../../utils/productPrice';
+import { getProductPrice, formatPrice } from '../../utils/price';
 import { ProductType } from '../../utils/parseProductData';
 import { AddToCart } from './components/AddToCart';
 import { useState } from 'react';
 import { ProductVariant } from '@commercetools/platform-sdk';
+import { getVariantAttrLabel } from '../../utils/variant';
 
 type ProductDetailsProps = {
   product: ProductType;
@@ -14,13 +15,6 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
     null
   );
-
-  const getVariantAttrLabel = (variant: ProductVariant) => {
-    return (
-      variant.attributes?.find((attr) => attr.name === 'tip-postavki')
-        ?.value as { key: string; label: string }
-    ).label;
-  };
 
   const price = getProductPrice(selectedVariant ?? product.variant);
   const formattedPrice = formatPrice(price);
