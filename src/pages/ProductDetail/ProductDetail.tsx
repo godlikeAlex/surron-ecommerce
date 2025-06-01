@@ -18,6 +18,7 @@ import { parseProductData } from './utils/parseProductData';
 import { ProductImages } from './components/ProductImages/ProductImages';
 import { ImageModal } from './components/ImageModal/ImageModal';
 import { ProductDetails } from './components/ProductDetails/ProductDetails';
+import { ProductDescription } from './components';
 
 // /products/sur-ron-l1e-light-bee-silver
 // /products/sur-ron-storm-bee-e-enduro
@@ -46,7 +47,6 @@ export const ProductDetail = () => {
     enabled: !!key,
   });
 
-  // Parse the product data if available
   const product = productResponse
     ? parseProductData(productResponse.body)
     : null;
@@ -119,6 +119,10 @@ export const ProductDetail = () => {
 
         {/* Product Details */}
         <ProductDetails product={product} />
+      </div>
+      <div>
+        {/* Product Additional Info, characteristics*/}
+        <ProductDescription product={product} />
       </div>
 
       <ImageModal

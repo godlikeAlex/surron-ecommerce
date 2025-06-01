@@ -1,7 +1,7 @@
 import { Carousel } from '@mantine/carousel';
 import classes from './ProductImages.module.scss';
 import { Image, Center } from '@mantine/core';
-import { ImageWithZoom } from '../ImageWithZoom/ImageWithZoom';
+import { ImageWithZoom } from './ImageWithZoom/ImageWithZoom';
 import { ProductType } from '../../utils/parseProductData';
 
 type ProductImagesProps = {
