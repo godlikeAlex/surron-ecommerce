@@ -13,6 +13,7 @@ import {
   BreadcrumbsCategories,
   BreadcrumbsCategoriesSkeleton,
   DebounceSearch,
+  EmptyScreen,
   ProductCard,
   ProductsSkeleton,
   SidebarFilters,
@@ -30,8 +31,15 @@ import { useProductFilters } from './hooks/useProductFilters';
 
 export const Catalog = () => {
   const params = useParams();
-  const { page, priceRange, sort, colors, search, setCatalogQueryParams } =
-    useCatalogQueryParams();
+  const {
+    page,
+    priceRange,
+    sort,
+    colors,
+    search,
+    setCatalogQueryParams,
+    resetAllFilters,
+  } = useCatalogQueryParams();
 
   const selectedCategories = useMemo(() => {
     const categoriesPath = params['*'];
@@ -111,25 +119,31 @@ export const Catalog = () => {
 
               <Divider my="md" />
 
-              <SimpleGrid cols={3}>
-                {products.map(({ ...product }) => (
-                  <ProductCard
-                    {...product}
-                    productKey={product.key}
-                    key={product.id}
-                  />
-                ))}
-              </SimpleGrid>
-              <Flex justify="center">
-                <Pagination
-                  value={page}
-                  onChange={(newPage) =>
-                    setCatalogQueryParams({ page: newPage })
-                  }
-                  total={Math.ceil((total || 1) / PRODUCTS_PER_PAGE)}
-                  mt={'lg'}
-                />
-              </Flex>
+              {products.length > 0 ? (
+                <>
+                  <SimpleGrid cols={3}>
+                    {products.map(({ ...product }) => (
+                      <ProductCard
+                        {...product}
+                        productKey={product.key}
+                        key={product.id}
+                      />
+                    ))}
+                  </SimpleGrid>
+                  <Flex justify="center">
+                    <Pagination
+                      value={page}
+                      onChange={(newPage) =>
+                        setCatalogQueryParams({ page: newPage })
+                      }
+                      total={Math.ceil((total || 1) / PRODUCTS_PER_PAGE)}
+                      mt={'lg'}
+                    />
+                  </Flex>
+                </>
+              ) : (
+                <EmptyScreen onResetFilters={() => resetAllFilters()} />
+              )}
             </>
           )}
         </Grid.Col>

@@ -1,13 +1,9 @@
-import { useRef } from 'react';
-import { Box, Card, Group } from '@mantine/core';
+import { Box, Button, Card, Group } from '@mantine/core';
 import { TreeCategoryLink } from '../TreeCategoryLink';
 import { type Category } from '@/pages/Catalog/hooks/useCategories';
 import classes from './SidebarFilters.module.scss';
 import { SidebarCategoriesSkeleton } from './SidebarCategoriesSkeleton';
-import {
-  PriceRangeSelect,
-  type PriceRangeSelectHandle,
-} from '../PriceRangeSelect';
+import { PriceRangeSelect } from '../PriceRangeSelect';
 import { type ProductFilters } from '@/pages/Catalog/hooks/useProductFilters';
 import { useCatalogQueryParams } from '@/pages/Catalog/hooks/useCatalogQueryParams';
 import { ColorPicker } from '../ColorPicker';
@@ -26,9 +22,13 @@ export const SidebarFilters = ({
   targetCategory,
   filters,
 }: Props) => {
-  const { setCatalogQueryParams, priceRange, colors } = useCatalogQueryParams();
-
-  const rangePriceRef = useRef<PriceRangeSelectHandle>(null);
+  const {
+    setCatalogQueryParams,
+    deleteCatalogQueryParams,
+    resetAllFilters,
+    priceRange,
+    colors,
+  } = useCatalogQueryParams();
 
   return (
     <Card component="aside" padding={0} shadow="lg" withBorder>
@@ -62,26 +62,63 @@ export const SidebarFilters = ({
         )}
 
         {filters?.price && (
-          <SidebarSection title="Цена">
+          <SidebarSection
+            title="Цена"
+            rightSection={
+              <Button
+                size="compact-xs"
+                variant="light"
+                disabled={priceRange === undefined}
+                onClick={() => deleteCatalogQueryParams(['rangePrice'])}
+              >
+                Сбросить
+              </Button>
+            }
+          >
             <PriceRangeSelect
               onChange={({ from, to }) =>
                 setCatalogQueryParams({ rangePrice: [from, to] })
               }
-              initialValues={priceRange}
+              initialValues={
+                priceRange ?? { from: filters.price.min, to: filters.price.max }
+              }
               min={filters.price.min}
               max={filters.price.max}
-              ref={rangePriceRef}
             />
           </SidebarSection>
         )}
 
         {filters?.colors && (
-          <SidebarSection title="Цвет">
+          <SidebarSection
+            title="Цвет"
+            rightSection={
+              <Button
+                size="compact-xs"
+                variant="light"
+                disabled={colors.length === 0}
+                onClick={() => deleteCatalogQueryParams(['colors'])}
+              >
+                Сбросить
+              </Button>
+            }
+          >
             <ColorPicker
               colors={filters.colors}
               selectedColors={colors}
               onChange={(colors) => setCatalogQueryParams({ colors })}
             />
+          </SidebarSection>
+        )}
+
+        {filters && (
+          <SidebarSection>
+            <Button
+              fullWidth
+              onClick={() => resetAllFilters()}
+              disabled={colors.length === 0 && !priceRange}
+            >
+              Сбросить фильтры
+            </Button>
           </SidebarSection>
         )}
       </Box>

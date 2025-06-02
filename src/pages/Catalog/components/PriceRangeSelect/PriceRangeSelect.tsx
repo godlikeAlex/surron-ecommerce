@@ -5,9 +5,8 @@ import {
   RangeSliderValue,
   Skeleton,
 } from '@mantine/core';
-import { useField } from '@mantine/form';
-import { useDebouncedValue } from '@mantine/hooks';
-import { Ref, useEffect, useImperativeHandle } from 'react';
+import { useDebouncedCallback } from '@mantine/hooks';
+import { useEffect, useState } from 'react';
 
 export type PriceRangeSelectHandle = {
   getValue: () => { from: number; to: number };
@@ -16,62 +15,53 @@ export type PriceRangeSelectHandle = {
 type Props = {
   min: number;
   max: number;
-  initialValues?: { from: number; to: number };
-  ref: Ref<PriceRangeSelectHandle>;
+  initialValues: { from: number; to: number };
   onChange: (values: { from: number; to: number }) => void;
 };
 
-const PriceRangeSelect = ({
-  min,
-  max,
-  initialValues,
-  onChange,
-  ref,
-}: Props) => {
-  const minField = useField<number>({
-    initialValue: initialValues?.from ?? min,
-  });
-  const maxField = useField<number>({
-    initialValue: initialValues?.to ?? max,
-  });
-
-  const [minValueDebounced] = useDebouncedValue(minField.getValue(), 400);
-  const [maxValueDebounced] = useDebouncedValue(maxField.getValue(), 400);
+const PriceRangeSelect = ({ min, max, initialValues, onChange }: Props) => {
+  const [minValue, setMinValue] = useState<number>(initialValues?.from);
+  const [maxValue, setMaxValue] = useState<number>(initialValues?.to);
 
   useEffect(() => {
-    onChange({ from: minValueDebounced, to: maxValueDebounced });
-  }, [minValueDebounced, maxValueDebounced]);
+    setMinValue(initialValues.from);
+    setMaxValue(initialValues.to);
+  }, [initialValues]);
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      getValue: () => ({
-        from: minField.getValue(),
-        to: maxField.getValue(),
-      }),
-    }),
-    [minField, maxField]
+  const handleDebounceChange = useDebouncedCallback(
+    ([from, to]: RangeSliderValue) => {
+      onChange({ from, to });
+      console.log('FROM', { from, to });
+    },
+    500
   );
 
-  useEffect(
-    () => minField.setValue(initialValues?.from ?? min),
-    [min, initialValues?.from]
-  );
-  useEffect(
-    () => maxField.setValue(initialValues?.to ?? max),
-    [max, initialValues?.to]
-  );
+  const handleChange = (input: 'min' | 'max', value: number) => {
+    if (input === 'min') {
+      handleDebounceChange([value, maxValue]);
+      setMinValue(value);
+    } else {
+      handleDebounceChange([minValue, value]);
+      setMaxValue(value);
+    }
+  };
 
   const handleChangeSlider = ([min, max]: RangeSliderValue) => {
-    minField.setValue(min);
-    maxField.setValue(max);
+    if (min !== minValue) {
+      handleChange('min', min);
+    }
+
+    if (max !== maxValue) {
+      handleChange('max', max);
+    }
   };
 
   return (
     <>
       <Flex gap={20} justify="space-between">
         <NumberInput
-          {...minField.getInputProps()}
+          onChange={(value) => handleChange('min', Number(value))}
+          value={minValue}
           size="xs"
           thousandSeparator=" "
           min={min}
@@ -80,7 +70,8 @@ const PriceRangeSelect = ({
           prefix="₽ "
         />
         <NumberInput
-          {...maxField.getInputProps()}
+          onChange={(value) => handleChange('max', Number(value))}
+          value={maxValue}
           size="xs"
           thousandSeparator
           min={min}
@@ -96,8 +87,7 @@ const PriceRangeSelect = ({
         min={min}
         max={max}
         step={100}
-        defaultValue={[min, max]}
-        value={[+minField.getValue(), +maxField.getValue()]}
+        value={[minValue, maxValue]}
         onChange={handleChangeSlider}
         disabled={min === max}
       />
