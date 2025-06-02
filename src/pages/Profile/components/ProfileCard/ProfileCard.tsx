@@ -200,6 +200,7 @@ export const ProfileCard = () => {
         <Flex gap={10} wrap="wrap">
           <Button
             style={{ flexGrow: '1' }}
+            className={classes.profileButton}
             onClick={() => {
               setModalState(4);
               setModalAddressState(3);
@@ -225,6 +226,7 @@ export const ProfileCard = () => {
           </Button>
           <Button
             style={{ flexGrow: '1' }}
+            className={classes.profileButton}
             onClick={() => {
               void removeAddress(id);
             }}
@@ -280,7 +282,10 @@ export const ProfileCard = () => {
   };
 
   return (
-    <Skeleton visible={isPendingInfo || isPendingEdit}>
+    <Skeleton
+      visible={isPendingInfo || isPendingEdit}
+      className={classes.profileContainer}
+    >
       <Divider my="sm" label="Персональная информация" />
       <Flex justify="space-between" align="center">
         <Title order={5}>Имя:</Title>
@@ -303,6 +308,7 @@ export const ProfileCard = () => {
       <Modal
         opened={opened}
         onClose={close}
+        className={classes.profileModal}
         title={
           modalState === 1
             ? 'Редактировать информацию'
@@ -342,6 +348,7 @@ export const ProfileCard = () => {
               <Button
                 type="submit"
                 disabled={isPendingEdit}
+                className={classes.profileButton}
                 style={{ flexGrow: '1', marginTop: '10px' }}
               >
                 {isPendingEdit ? (
@@ -369,6 +376,7 @@ export const ProfileCard = () => {
               <Button
                 type="submit"
                 disabled={isPendingEdit}
+                className={classes.profileButton}
                 style={{ flexGrow: '1', marginTop: '10px' }}
               >
                 {isPendingEdit ? (
@@ -415,6 +423,7 @@ export const ProfileCard = () => {
               <Button
                 type="submit"
                 disabled={isPendingEdit}
+                className={classes.profileButton}
                 style={{ flexGrow: '1', marginTop: '10px' }}
               >
                 {isPendingEdit ? (
@@ -436,6 +445,7 @@ export const ProfileCard = () => {
       <Flex gap={10} wrap="wrap">
         <Button
           style={{ flexGrow: '1' }}
+          className={classes.profileButton}
           onClick={() => {
             setModalState(1);
             open();
@@ -456,6 +466,7 @@ export const ProfileCard = () => {
       <Flex gap={10} wrap="wrap">
         <Button
           style={{ flexGrow: '1' }}
+          className={classes.profileButton}
           onClick={() => {
             setModalState(4);
             setModalAddressState(1);
@@ -478,6 +489,7 @@ export const ProfileCard = () => {
       <Flex gap={10} wrap="wrap">
         <Button
           style={{ flexGrow: '1' }}
+          className={classes.profileButton}
           onClick={() => {
             setModalState(4);
             setModalAddressState(2);
@@ -492,6 +504,7 @@ export const ProfileCard = () => {
       <Flex gap={10} wrap="wrap">
         <Button
           style={{ flexGrow: '1' }}
+          className={classes.profileButton}
           onClick={() => {
             setModalState(2);
             open();
@@ -501,6 +514,7 @@ export const ProfileCard = () => {
         </Button>
         <Button
           style={{ flexGrow: '1' }}
+          className={classes.profileButton}
           onClick={() => {
             setModalState(3);
             open();
