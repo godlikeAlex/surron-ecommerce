@@ -1,4 +1,5 @@
 import { apiRootStore, useApiRootStore } from '@/store/apiRootStore';
+import { MyCustomerUpdateAction } from '@commercetools/platform-sdk';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 
@@ -7,12 +8,12 @@ export const useProfileEdit = () => {
   const version = useApiRootStore((state) => state.version);
 
   const { isError, isPending, isSuccess, mutateAsync } = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (actions: MyCustomerUpdateAction[]) => {
       const response = await apiRoot
         .me()
         .post({
           body: {
-            actions: [{ action: 'setFirstName', firstName: 'Sophie' }],
+            actions: actions,
             version: version,
           },
         })

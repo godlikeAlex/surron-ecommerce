@@ -3,15 +3,37 @@ import {
   Button,
   Divider,
   Flex,
+  Loader,
+  Modal,
   Skeleton,
   Text,
+  TextInput,
   Title,
 } from '@mantine/core';
 import classes from './ProfileCard.module.scss';
 import { useProfileInfo } from './useProfileInfo';
 import { COUNTRIES } from '@/constants/countries';
-import { ClientResponse, Customer } from '@commercetools/platform-sdk';
+import {
+  ClientResponse,
+  Customer,
+  MyCustomerUpdateAction,
+} from '@commercetools/platform-sdk';
 import { useProfileEdit } from './useProfileEdit';
+import { useDisclosure } from '@mantine/hooks';
+import { isNotEmpty, useForm } from '@mantine/form';
+import {
+  combineRules,
+  isDateDiffLessThan,
+  isOnlyLetters,
+} from '@/utils/mantine-validation';
+import { DatePickerInput } from '@mantine/dates';
+import { IconCalendar } from '@tabler/icons-react';
+
+export interface InfoValues {
+  firstName: string;
+  lastName: string;
+  dateOfBirth?: string;
+}
 
 const renderAddress = (
   id: string,
@@ -27,7 +49,7 @@ const renderAddress = (
           name={name}
           id={id}
           value={id}
-          checked={isDefault}
+          defaultChecked={isDefault}
         />
         <label htmlFor={id} className={classes.label}>
           {isDefault
@@ -67,9 +89,52 @@ const renderAddress = (
 };
 
 export const ProfileCard = () => {
-  const { isPending: isPendingInfo, data } = useProfileInfo();
   const { isPending: isPendingEdit, mutateAsync } = useProfileEdit();
+  const [opened, { open, close }] = useDisclosure(false);
 
+  const formInfo = useForm<InfoValues>({
+    initialValues: {
+      firstName: '',
+      lastName: '',
+      dateOfBirth: undefined,
+    },
+    validate: {
+      firstName: combineRules([
+        isNotEmpty('Имя должно быть заполнено'),
+        isOnlyLetters('Разрешены только буквы'),
+      ]),
+      lastName: combineRules([
+        isNotEmpty('Фамилия должна быть заполнена'),
+        isOnlyLetters('Разрешены только буквы'),
+      ]),
+      dateOfBirth: combineRules([
+        isNotEmpty('Выберите дату'),
+        isDateDiffLessThan(
+          { target: 13, unit: 'years' },
+          'Чтобы пользоваться нашим сайтом, вы должны быть старше 13 лет'
+        ),
+      ]),
+    },
+    validateInputOnChange: true,
+  });
+  const { isPending: isPendingInfo, data } = useProfileInfo(formInfo);
+
+  const handleSubmit = async (values: InfoValues) => {
+    const actions: MyCustomerUpdateAction[] = [
+      { action: 'setFirstName', firstName: values.firstName },
+      {
+        action: 'setLastName',
+        lastName: values.lastName,
+      },
+      {
+        action: 'setDateOfBirth',
+        dateOfBirth: values.dateOfBirth,
+      },
+    ];
+    await mutateAsync(actions);
+    close();
+    console.log(values);
+  };
   return (
     <Skeleton visible={isPendingInfo || isPendingEdit}>
       <Divider my="sm" label="Персональная информация" />
@@ -91,8 +156,50 @@ export const ProfileCard = () => {
       <Text className={classes.text} style={{ padding: '5px 0 15px' }}>
         {isPendingInfo ? '...' : data?.body.dateOfBirth}
       </Text>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="Редактировать информацию"
+        centered
+      >
+        <Box component="form" onSubmit={formInfo.onSubmit(handleSubmit)}>
+          <TextInput
+            label="Имя"
+            placeholder="Введите имя"
+            withAsterisk
+            {...formInfo.getInputProps('firstName')}
+            disabled={isPendingEdit}
+          />
+          <TextInput
+            label="Фамилия"
+            placeholder="Введите фамилию"
+            withAsterisk
+            {...formInfo.getInputProps('lastName')}
+            disabled={isPendingEdit}
+          />
+          <DatePickerInput
+            label="Дата рождения"
+            placeholder="Выберите дату рождения"
+            withAsterisk
+            leftSection={<IconCalendar />}
+            disabled={isPendingEdit}
+            {...formInfo.getInputProps('dateOfBirth')}
+          />
+          <Flex gap={10} wrap="wrap">
+            <Button
+              type="submit"
+              disabled={isPendingEdit}
+              style={{ flexGrow: '1', marginTop: '10px' }}
+            >
+              {isPendingEdit ? <Loader size="sm" color="white" /> : 'Сохранить'}
+            </Button>
+          </Flex>
+        </Box>
+      </Modal>
       <Flex gap={10} wrap="wrap">
-        <Button style={{ flexGrow: '1' }}>Редактировать информацию</Button>
+        <Button style={{ flexGrow: '1' }} onClick={open}>
+          Редактировать информацию
+        </Button>
       </Flex>
       <Divider my="sm" label="Aдреса доставки" />
       {data?.body.shippingAddressIds?.map((id) =>
@@ -116,7 +223,7 @@ export const ProfileCard = () => {
         )
       )}
       <Flex gap={10} wrap="wrap">
-        <Button style={{ flexGrow: '1' }} onClick={() => void mutateAsync()}>
+        <Button style={{ flexGrow: '1' }}>
           Добавить адрес выставления счёта
         </Button>
       </Flex>
