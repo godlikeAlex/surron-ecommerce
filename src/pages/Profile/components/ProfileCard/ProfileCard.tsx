@@ -36,6 +36,7 @@ import { IconAt, IconCalendar, IconLock } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useApiRootStore } from '@/store/apiRootStore';
 import { usePasswordChange } from './usePasswordUpdate';
+import { ModalAddress } from './ModalAddress';
 
 export interface InfoValues {
   firstName: string;
@@ -112,6 +113,7 @@ export const ProfileCard = () => {
     usePasswordChange();
   const [opened, { open, close }] = useDisclosure(false);
   const [modalState, setModalState] = useState(1);
+  const [modalAddressState, setModalAddressState] = useState(1);
   const version = useApiRootStore((state) => state.version);
 
   const formInfo = useForm<InfoValues>({
@@ -207,6 +209,7 @@ export const ProfileCard = () => {
     await mutatePassword(action);
     close();
   };
+
   return (
     <Skeleton visible={isPendingInfo || isPendingEdit}>
       <Divider my="sm" label="Персональная информация" />
@@ -236,7 +239,9 @@ export const ProfileCard = () => {
             ? 'Редактировать информацию'
             : modalState === 2
               ? 'Редактировать email'
-              : 'Сменить пароль'
+              : modalState === 3
+                ? 'Сменить пароль'
+                : 'Введите адрес'
         }
         centered
       >
@@ -305,7 +310,7 @@ export const ProfileCard = () => {
               </Button>
             </Flex>
           </Box>
-        ) : (
+        ) : modalState === 3 ? (
           <Box
             component="form"
             onSubmit={formPassword.onSubmit(handleSubmitPassword)}
@@ -351,6 +356,11 @@ export const ProfileCard = () => {
               </Button>
             </Flex>
           </Box>
+        ) : (
+          <ModalAddress
+            close={close}
+            submitType={modalAddressState}
+          ></ModalAddress>
         )}
       </Modal>
       <Flex gap={10} wrap="wrap">
@@ -374,7 +384,16 @@ export const ProfileCard = () => {
         )
       )}
       <Flex gap={10} wrap="wrap">
-        <Button style={{ flexGrow: '1' }}>Добавить адрес доставки</Button>
+        <Button
+          style={{ flexGrow: '1' }}
+          onClick={() => {
+            setModalState(4);
+            setModalAddressState(1);
+            open();
+          }}
+        >
+          Добавить адрес доставки
+        </Button>
       </Flex>
       <Divider my="sm" label="Aдреса выставления счёта" />
       {data?.body.billingAddressIds?.map((id) =>
@@ -386,7 +405,14 @@ export const ProfileCard = () => {
         )
       )}
       <Flex gap={10} wrap="wrap">
-        <Button style={{ flexGrow: '1' }}>
+        <Button
+          style={{ flexGrow: '1' }}
+          onClick={() => {
+            setModalState(4);
+            setModalAddressState(2);
+            open();
+          }}
+        >
           Добавить адрес выставления счёта
         </Button>
       </Flex>
