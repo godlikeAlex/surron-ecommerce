@@ -1,0 +1,35 @@
+.container {
+  padding: 76px 20px 20px;
+}
+
+.product-grid {
+  display: grid;
+  gap: 1.5rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+
+  @media (width >= 48em) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+.image-card {
+  padding: 1.5rem;
+  border-radius: var(--mantine-radius-md);
+}
+
+.error-card {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.error-icon {
+  color: var(--mantine-color-red-6);
+}
+
+.error-text {
+  font-size: 1.125rem;
+  color: var(--mantine-color-red-6);
+}
