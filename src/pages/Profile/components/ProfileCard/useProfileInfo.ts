@@ -1,10 +1,17 @@
 import { apiRootStore, useApiRootStore } from '@/store/apiRootStore';
 import { UseFormReturnType } from '@mantine/form';
 import { useQuery } from '@tanstack/react-query';
-import { InfoValues } from './ProfileCard';
+import { EmailValues, InfoValues } from './ProfileCard';
 
 export const useProfileInfo = (
-  setFormInfo: UseFormReturnType<InfoValues, (values: InfoValues) => InfoValues>
+  setFormInfo: UseFormReturnType<
+    InfoValues,
+    (values: InfoValues) => InfoValues
+  >,
+  setFormEmail: UseFormReturnType<
+    EmailValues,
+    (values: EmailValues) => EmailValues
+  >
 ) => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
   const token = useApiRootStore((state) => state.refreshToken);
@@ -18,6 +25,7 @@ export const useProfileInfo = (
       setFormInfo.setFieldValue('firstName', response.body.firstName || '');
       setFormInfo.setFieldValue('lastName', response.body.lastName || '');
       setFormInfo.setFieldValue('dateOfBirth', response.body.dateOfBirth || '');
+      setFormEmail.setFieldValue('email', response.body.email || '');
       return response;
     },
   });

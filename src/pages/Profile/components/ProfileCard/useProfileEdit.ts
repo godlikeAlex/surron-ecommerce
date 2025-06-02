@@ -30,6 +30,16 @@ export const useProfileEdit = () => {
         color: 'green',
       });
     },
+    onError: () => {
+      notifications.show({
+        title: 'Упс!',
+        message: 'Что-то пошло не так...',
+        autoClose: 7000,
+        withCloseButton: true,
+        withBorder: true,
+        color: 'red',
+      });
+    },
   });
 
   return { isError, isPending, isSuccess, mutateAsync };
