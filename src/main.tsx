@@ -11,15 +11,17 @@ import { theme } from '@/theme';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/dates/styles.css';
+import '@mantine/notifications/styles.css';
 import 'dayjs/locale/ru';
 import './main.scss';
+import '@mantine/carousel/styles.css';
 
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <MantineProvider theme={theme}>
-      <Notifications position="top-right" color="yellow" zIndex={999} />
+      <Notifications position="top-right" />
       <DatesProvider settings={{ locale: 'ru' }}>
         <QueryClientProvider client={queryClient}>
           <App />

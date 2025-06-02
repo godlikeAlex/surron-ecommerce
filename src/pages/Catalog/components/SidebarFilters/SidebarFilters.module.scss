@@ -1,0 +1,9 @@
+.sidebar-section-list {
+  & .sidebar-section {
+    border-bottom: 1px solid var(--mantine-color-gray-3);
+  }
+}
+
+.sidebar-item-wrapper {
+  padding: 10px 20px;
+}

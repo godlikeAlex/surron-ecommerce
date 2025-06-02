@@ -1,0 +1,27 @@
+.color-picker-button {
+  cursor: pointer;
+
+  width: 32px;
+  height: 32px;
+  padding: 2px;
+  border: 2px solid var(--mantine-color-disabled);
+  border-radius: calc(
+    var(--button-radius, var(--mantine-radius-default)) + 4px
+  );
+
+  background-color: transparent;
+
+  &__color {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--button-radius, var(--mantine-radius-default));
+  }
+
+  &--active {
+    border-color: var(--button-bg, var(--mantine-primary-color-filled));
+  }
+
+  &:not(&--active):hover {
+    border-color: #99bdff;
+  }
+}

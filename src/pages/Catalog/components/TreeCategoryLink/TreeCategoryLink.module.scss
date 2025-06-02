@@ -1,0 +1,19 @@
+.tree-category-link {
+  display: block;
+  width: 100%;
+
+  &__item {
+    color: black;
+    text-decoration: none;
+    transition: 0.2s;
+
+    &:hover,
+    &--active {
+      color: var(--mantine-primary-color-filled);
+      background-color: light-dark(
+        var(--mantine-color-gray-0),
+        var(--mantine-color-dark-7)
+      );
+    }
+  }
+}
