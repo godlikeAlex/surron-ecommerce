@@ -25,14 +25,20 @@ import {
   combineRules,
   isDateDiffLessThan,
   isOnlyLetters,
+  validateEmail,
 } from '@/utils/mantine-validation';
 import { DatePickerInput } from '@mantine/dates';
-import { IconCalendar } from '@tabler/icons-react';
+import { IconAt, IconCalendar } from '@tabler/icons-react';
+import { useState } from 'react';
 
 export interface InfoValues {
   firstName: string;
   lastName: string;
   dateOfBirth?: string;
+}
+
+export interface EmailValues {
+  email: string;
 }
 
 const renderAddress = (
@@ -91,6 +97,7 @@ const renderAddress = (
 export const ProfileCard = () => {
   const { isPending: isPendingEdit, mutateAsync } = useProfileEdit();
   const [opened, { open, close }] = useDisclosure(false);
+  const [modalState, setModalState] = useState(1);
 
   const formInfo = useForm<InfoValues>({
     initialValues: {
@@ -117,9 +124,21 @@ export const ProfileCard = () => {
     },
     validateInputOnChange: true,
   });
-  const { isPending: isPendingInfo, data } = useProfileInfo(formInfo);
+  const formEmail = useForm<EmailValues>({
+    initialValues: {
+      email: '',
+    },
+    validate: {
+      email: (email) => validateEmail(email),
+    },
+    validateInputOnChange: true,
+  });
+  const { isPending: isPendingInfo, data } = useProfileInfo(
+    formInfo,
+    formEmail
+  );
 
-  const handleSubmit = async (values: InfoValues) => {
+  const handleSubmitInfo = async (values: InfoValues) => {
     const actions: MyCustomerUpdateAction[] = [
       { action: 'setFirstName', firstName: values.firstName },
       {
@@ -133,7 +152,14 @@ export const ProfileCard = () => {
     ];
     await mutateAsync(actions);
     close();
-    console.log(values);
+  };
+
+  const handleSubmitEmail = async (values: EmailValues) => {
+    const actions: MyCustomerUpdateAction[] = [
+      { action: 'changeEmail', email: values.email },
+    ];
+    await mutateAsync(actions);
+    close();
   };
   return (
     <Skeleton visible={isPendingInfo || isPendingEdit}>
@@ -159,45 +185,86 @@ export const ProfileCard = () => {
       <Modal
         opened={opened}
         onClose={close}
-        title="Редактировать информацию"
+        title={
+          modalState === 1 ? 'Редактировать информацию' : 'Редактировать email'
+        }
         centered
       >
-        <Box component="form" onSubmit={formInfo.onSubmit(handleSubmit)}>
-          <TextInput
-            label="Имя"
-            placeholder="Введите имя"
-            withAsterisk
-            {...formInfo.getInputProps('firstName')}
-            disabled={isPendingEdit}
-          />
-          <TextInput
-            label="Фамилия"
-            placeholder="Введите фамилию"
-            withAsterisk
-            {...formInfo.getInputProps('lastName')}
-            disabled={isPendingEdit}
-          />
-          <DatePickerInput
-            label="Дата рождения"
-            placeholder="Выберите дату рождения"
-            withAsterisk
-            leftSection={<IconCalendar />}
-            disabled={isPendingEdit}
-            {...formInfo.getInputProps('dateOfBirth')}
-          />
-          <Flex gap={10} wrap="wrap">
-            <Button
-              type="submit"
+        {modalState === 1 ? (
+          <Box component="form" onSubmit={formInfo.onSubmit(handleSubmitInfo)}>
+            <TextInput
+              label="Имя"
+              placeholder="Введите имя"
+              withAsterisk
+              {...formInfo.getInputProps('firstName')}
               disabled={isPendingEdit}
-              style={{ flexGrow: '1', marginTop: '10px' }}
-            >
-              {isPendingEdit ? <Loader size="sm" color="white" /> : 'Сохранить'}
-            </Button>
-          </Flex>
-        </Box>
+            />
+            <TextInput
+              label="Фамилия"
+              placeholder="Введите фамилию"
+              withAsterisk
+              {...formInfo.getInputProps('lastName')}
+              disabled={isPendingEdit}
+            />
+            <DatePickerInput
+              label="Дата рождения"
+              placeholder="Выберите дату рождения"
+              withAsterisk
+              leftSection={<IconCalendar />}
+              disabled={isPendingEdit}
+              {...formInfo.getInputProps('dateOfBirth')}
+            />
+            <Flex gap={10} wrap="wrap">
+              <Button
+                type="submit"
+                disabled={isPendingEdit}
+                style={{ flexGrow: '1', marginTop: '10px' }}
+              >
+                {isPendingEdit ? (
+                  <Loader size="sm" color="white" />
+                ) : (
+                  'Сохранить'
+                )}
+              </Button>
+            </Flex>
+          </Box>
+        ) : (
+          <Box
+            component="form"
+            onSubmit={formEmail.onSubmit(handleSubmitEmail)}
+          >
+            <TextInput
+              label="Email"
+              placeholder="user@example.com"
+              leftSection={<IconAt />}
+              withAsterisk
+              {...formEmail.getInputProps('email')}
+              disabled={isPendingEdit}
+            />
+            <Flex gap={10} wrap="wrap">
+              <Button
+                type="submit"
+                disabled={isPendingEdit}
+                style={{ flexGrow: '1', marginTop: '10px' }}
+              >
+                {isPendingEdit ? (
+                  <Loader size="sm" color="white" />
+                ) : (
+                  'Сохранить'
+                )}
+              </Button>
+            </Flex>
+          </Box>
+        )}
       </Modal>
       <Flex gap={10} wrap="wrap">
-        <Button style={{ flexGrow: '1' }} onClick={open}>
+        <Button
+          style={{ flexGrow: '1' }}
+          onClick={() => {
+            setModalState(1);
+            open();
+          }}
+        >
           Редактировать информацию
         </Button>
       </Flex>
@@ -229,7 +296,15 @@ export const ProfileCard = () => {
       </Flex>
       <Divider my="sm" label="Дополнительные возможности" />
       <Flex gap={10} wrap="wrap">
-        <Button style={{ flexGrow: '1' }}>Cменить email</Button>
+        <Button
+          style={{ flexGrow: '1' }}
+          onClick={() => {
+            setModalState(2);
+            open();
+          }}
+        >
+          Cменить email
+        </Button>
         <Button style={{ flexGrow: '1' }}>Cменить пароль</Button>
       </Flex>
     </Skeleton>
