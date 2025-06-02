@@ -226,7 +226,7 @@ export const ProfileCard = () => {
           </Button>
           <Button
             style={{ flexGrow: '1' }}
-            className={classes.profileButton}
+            color="red"
             onClick={() => {
               void removeAddress(id);
             }}
@@ -466,7 +466,7 @@ export const ProfileCard = () => {
       <Flex gap={10} wrap="wrap">
         <Button
           style={{ flexGrow: '1' }}
-          className={classes.profileButton}
+          color="black"
           onClick={() => {
             setModalState(4);
             setModalAddressState(1);
@@ -489,7 +489,7 @@ export const ProfileCard = () => {
       <Flex gap={10} wrap="wrap">
         <Button
           style={{ flexGrow: '1' }}
-          className={classes.profileButton}
+          color="black"
           onClick={() => {
             setModalState(4);
             setModalAddressState(2);
