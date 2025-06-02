@@ -29,10 +29,7 @@ const PriceRangeSelect = ({ min, max, initialValues, onChange }: Props) => {
   }, [initialValues]);
 
   const handleDebounceChange = useDebouncedCallback(
-    ([from, to]: RangeSliderValue) => {
-      onChange({ from, to });
-      console.log('FROM', { from, to });
-    },
+    ([from, to]: RangeSliderValue) => onChange({ from, to }),
     500
   );
 
