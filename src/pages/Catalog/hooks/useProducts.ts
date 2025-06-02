@@ -9,6 +9,7 @@ type Props = {
   category?: Category;
   priceRange?: { from: number; to: number };
   colors?: string[];
+  chargeTime?: string[];
   search?: string;
 };
 
@@ -41,10 +42,14 @@ export const useProducts = ({
   priceRange,
   colors,
   search,
+  chargeTime,
 }: Props): UseProductsResult => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
   const { data, isPending, isError } = useQuery({
-    queryKey: ['catalog', { category, page, priceRange, sort, colors, search }],
+    queryKey: [
+      'catalog',
+      { category, page, priceRange, sort, colors, search, chargeTime },
+    ],
     queryFn: () => {
       const filters = [];
 
@@ -64,6 +69,16 @@ export const useProducts = ({
         const colorsQuery = colors.map((color) => `"${color}"`).join(', ');
 
         filters.push(`variants.attributes.color.key: ${colorsQuery}`);
+      }
+
+      if (chargeTime && chargeTime.length > 0) {
+        const chargeTimeQuery = chargeTime
+          .map((chargeTime) => `"${chargeTime}"`)
+          .join(', ');
+
+        filters.push(
+          `variants.attributes.vremya-zaryadki.key: ${chargeTimeQuery}`
+        );
       }
 
       return apiRoot

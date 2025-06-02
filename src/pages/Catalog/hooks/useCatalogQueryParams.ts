@@ -6,6 +6,7 @@ type CatalogQueryParams = {
   sort?: string;
   rangePrice?: [number, number];
   colors?: string[];
+  chargeTime?: string[];
   search?: string;
 };
 
@@ -16,6 +17,7 @@ export const useCatalogQueryParams = () => {
   const priceRange = searchParmas.get('price-range');
   const sort = searchParmas.get('sort') || 'name.ru asc';
   const colors = searchParmas.get('colors');
+  const chargeTime = searchParmas.get('chargeTime');
   const search = searchParmas.get('search') || undefined;
 
   const parsedPriceRange = useMemo(() => {
@@ -36,6 +38,12 @@ export const useCatalogQueryParams = () => {
     return colors.split(',');
   }, [colors]);
 
+  const parsedChargeTime = useMemo(() => {
+    if (!chargeTime) return [];
+
+    return chargeTime.split(',');
+  }, [chargeTime]);
+
   const setCatalogQueryParams = useCallback(
     (catalogQueryParms: CatalogQueryParams) => {
       setSearchParams((currentParams) => {
@@ -55,6 +63,13 @@ export const useCatalogQueryParams = () => {
 
         if (catalogQueryParms.colors) {
           currentParams.set('colors', catalogQueryParms.colors.join(','));
+        }
+
+        if (catalogQueryParms.chargeTime) {
+          currentParams.set(
+            'chargeTime',
+            catalogQueryParms.chargeTime.join(',')
+          );
         }
 
         if (typeof catalogQueryParms.search === 'string') {
@@ -88,7 +103,7 @@ export const useCatalogQueryParams = () => {
   );
 
   const resetAllFilters = () => {
-    deleteCatalogQueryParams(['colors', 'rangePrice']);
+    deleteCatalogQueryParams(['colors', 'rangePrice', 'chargeTime']);
   };
 
   return {
@@ -100,5 +115,6 @@ export const useCatalogQueryParams = () => {
     sort,
     search,
     colors: parsedColors,
+    chargeTime: parsedChargeTime,
   };
 };

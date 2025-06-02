@@ -8,6 +8,7 @@ import { isTermFacetResult } from '@/utils/guards/isTermFacetResult';
 export type ProductFilters = {
   price?: FacetRange;
   colors?: string[];
+  chargeTime?: string[];
 };
 
 type Props = {
@@ -53,6 +54,7 @@ export const useProductFilters = ({ category }: Props): UseFilterResult => {
             facet: [
               'variants.price.centAmount: range(0 to *) as priceRange',
               'variants.attributes.color.key as colors',
+              'variants.attributes.vremya-zaryadki.key as chargeTime',
             ],
           },
         })
@@ -67,6 +69,7 @@ export const useProductFilters = ({ category }: Props): UseFilterResult => {
 
   const priceFacet = response.facets?.['priceRange'];
   const colorsFacet = response.facets?.['colors'];
+  const chargeTimeFacet = response.facets?.['chargeTime'];
 
   const facetFilters: ProductFilters = {
     price: isRangeFacetResult(priceFacet)
@@ -79,6 +82,10 @@ export const useProductFilters = ({ category }: Props): UseFilterResult => {
     colors:
       isTermFacetResult(colorsFacet) && colorsFacet.terms.length > 0
         ? colorsFacet.terms.map(({ term }) => String(term))
+        : undefined,
+    chargeTime:
+      isTermFacetResult(chargeTimeFacet) && chargeTimeFacet.terms.length > 0
+        ? chargeTimeFacet.terms.map(({ term }) => String(term)).sort()
         : undefined,
   };
 

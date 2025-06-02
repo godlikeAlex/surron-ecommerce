@@ -39,6 +39,7 @@ export const Catalog = () => {
     search,
     setCatalogQueryParams,
     resetAllFilters,
+    chargeTime,
   } = useCatalogQueryParams();
 
   const selectedCategories = useMemo(() => {
@@ -65,6 +66,7 @@ export const Catalog = () => {
     sort,
     colors,
     search,
+    chargeTime,
   });
 
   const isProductsLoading = isPending || filters.isPending;

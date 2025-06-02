@@ -1,4 +1,4 @@
-import { Box, Button, Card, Group } from '@mantine/core';
+import { Box, Button, Card, Checkbox, Group, Stack } from '@mantine/core';
 import { TreeCategoryLink } from '../TreeCategoryLink';
 import { type Category } from '@/pages/Catalog/hooks/useCategories';
 import classes from './SidebarFilters.module.scss';
@@ -28,6 +28,7 @@ export const SidebarFilters = ({
     resetAllFilters,
     priceRange,
     colors,
+    chargeTime,
   } = useCatalogQueryParams();
 
   return (
@@ -110,12 +111,47 @@ export const SidebarFilters = ({
           </SidebarSection>
         )}
 
+        {filters?.chargeTime && (
+          <SidebarSection
+            title="Время зарядки (ч)"
+            rightSection={
+              <Button
+                size="compact-xs"
+                variant="light"
+                disabled={chargeTime.length === 0}
+                onClick={() => deleteCatalogQueryParams(['chargeTime'])}
+              >
+                Сбросить
+              </Button>
+            }
+          >
+            <Checkbox.Group
+              value={chargeTime}
+              onChange={(selected) =>
+                setCatalogQueryParams({ chargeTime: selected })
+              }
+            >
+              <Stack>
+                {filters?.chargeTime.map((chargeTime) => (
+                  <Checkbox
+                    key={chargeTime}
+                    value={chargeTime}
+                    label={`🔋 ${chargeTime} ч`}
+                  />
+                ))}
+              </Stack>
+            </Checkbox.Group>
+          </SidebarSection>
+        )}
+
         {filters && (
           <SidebarSection>
             <Button
               fullWidth
               onClick={() => resetAllFilters()}
-              disabled={colors.length === 0 && !priceRange}
+              disabled={
+                colors.length === 0 && chargeTime.length === 0 && !priceRange
+              }
             >
               Сбросить фильтры
             </Button>
