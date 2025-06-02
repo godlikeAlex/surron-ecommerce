@@ -99,7 +99,7 @@ export const Catalog = () => {
           </Flex>
         </Grid.Col>
 
-        <Grid.Col span={3}>
+        <Grid.Col span={{ xs: 12, sm: 3 }}>
           <SidebarFilters
             filters={!filters.isPending ? filters.filters : undefined}
             categories={categories}
@@ -107,7 +107,7 @@ export const Catalog = () => {
             categoriesLoading={categoriesIsPending}
           />
         </Grid.Col>
-        <Grid.Col span={9}>
+        <Grid.Col span={{ base: 12, sm: 9 }}>
           {isProductsLoading ? (
             <ProductsSkeleton />
           ) : isProductsError ? (
@@ -127,7 +127,7 @@ export const Catalog = () => {
 
               {products.length > 0 ? (
                 <>
-                  <SimpleGrid cols={3}>
+                  <SimpleGrid cols={{ base: 1, xs: 2, sm: 2, md: 3 }}>
                     {products.map(({ ...product }) => (
                       <ProductCard
                         {...product}
