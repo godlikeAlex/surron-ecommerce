@@ -1,0 +1,33 @@
+.text {
+  overflow-x: hidden;
+  width: min(600px, calc(100vw - 90px));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.label {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-anchor);
+}
+
+.modal {
+  transform: translateX(100) !important;
+  padding: 176px 20px 20px;
+}
+
+.profile-container,
+.profile-modal {
+  .profile-button {
+    color: var(--mantine-color-white);
+    background-color: var(--mantine-color-gray-7);
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: var(--mantine-color-gray-8);
+    }
+
+    &:disabled {
+      background-color: var(--mantine-color-gray-8);
+    }
+  }
+}

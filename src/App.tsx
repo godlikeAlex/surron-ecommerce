@@ -7,6 +7,7 @@ import { apiRootStorageHandleEvent } from './store/storage/apiRootStorage';
 import { HyperBee } from './pages/HyperBee';
 import { LightBee } from './pages/LightBee';
 import { UltraBee } from './pages/UltraBee';
+import { Profile } from './pages/Profile';
 import { ProductDetail } from './pages/ProductDetail';
 
 const App = () => {
@@ -30,6 +31,9 @@ const App = () => {
           <Route element={<ProtectedRoutes requiredLoginState={false} />}>
             <Route path="/login" element={<Login />} />
             <Route path="/registration" element={<Registration />} />
+          </Route>
+          <Route element={<ProtectedRoutes requiredLoginState={true} />}>
+            <Route path="/profile" element={<Profile />} />
           </Route>
         </Route>
       </Routes>
