@@ -54,59 +54,6 @@ export interface PasswordValues {
   confirmedPassword: string;
 }
 
-const renderAddress = (
-  id: string,
-  data: ClientResponse<Customer> | undefined,
-  isDefault: boolean,
-  name: string
-) => {
-  return (
-    <Box key={id}>
-      <Flex justify="flex-start" align="center" gap={5}>
-        <input
-          type="radio"
-          name={name}
-          id={id}
-          value={id}
-          defaultChecked={isDefault}
-        />
-        <label htmlFor={id} className={classes.label}>
-          {isDefault
-            ? 'является адресом по умолчанию'
-            : 'не является адересом по умолчанию (сделать)'}
-        </label>
-      </Flex>
-      <Title order={5}>Страна:</Title>
-      <Text className={classes.text} style={{ padding: '5px 0 15px' }}>
-        {
-          COUNTRIES.find(
-            (country) =>
-              country.code ===
-              data?.body.addresses.find((address) => address.id === id)?.country
-          )?.name
-        }
-      </Text>
-      <Title order={5}>Город:</Title>
-      <Text className={classes.text} style={{ padding: '5px 0 15px' }}>
-        {data?.body.addresses.find((address) => address.id === id)?.city}
-      </Text>
-      <Title order={5}>Улица:</Title>
-      <Text className={classes.text} style={{ padding: '5px 0 15px' }}>
-        {data?.body.addresses.find((address) => address.id === id)?.streetName}
-      </Text>
-      <Title order={5}>Почтовый индекс:</Title>
-      <Text className={classes.text} style={{ padding: '5px 0 15px' }}>
-        {data?.body.addresses.find((address) => address.id === id)?.postalCode}
-      </Text>
-      <Flex gap={10} wrap="wrap">
-        <Button style={{ flexGrow: '1' }}>Редактировать адрес</Button>
-        <Button style={{ flexGrow: '1' }}>Удалить адрес</Button>
-      </Flex>
-      <Divider my="md" />
-    </Box>
-  );
-};
-
 export const ProfileCard = () => {
   const { isPending: isPendingEdit, mutateAsync } = useProfileEdit();
   const { isPending: isPendingPassword, mutateAsync: mutatePassword } =
@@ -174,6 +121,80 @@ export const ProfileCard = () => {
     formInfo,
     formEmail
   );
+
+  const renderAddress = (
+    id: string,
+    data: ClientResponse<Customer> | undefined,
+    isDefault: boolean,
+    name: string
+  ) => {
+    return (
+      <Box key={id}>
+        <Flex justify="flex-start" align="center" gap={5}>
+          <input
+            type="radio"
+            name={name}
+            id={id}
+            value={id}
+            defaultChecked={isDefault}
+          />
+          <label htmlFor={id} className={classes.label}>
+            {isDefault
+              ? 'является адресом по умолчанию'
+              : 'не является адересом по умолчанию (сделать)'}
+          </label>
+        </Flex>
+        <Title order={5}>Страна:</Title>
+        <Text className={classes.text} style={{ padding: '5px 0 15px' }}>
+          {
+            COUNTRIES.find(
+              (country) =>
+                country.code ===
+                data?.body.addresses.find((address) => address.id === id)
+                  ?.country
+            )?.name
+          }
+        </Text>
+        <Title order={5}>Город:</Title>
+        <Text className={classes.text} style={{ padding: '5px 0 15px' }}>
+          {data?.body.addresses.find((address) => address.id === id)?.city}
+        </Text>
+        <Title order={5}>Улица:</Title>
+        <Text className={classes.text} style={{ padding: '5px 0 15px' }}>
+          {
+            data?.body.addresses.find((address) => address.id === id)
+              ?.streetName
+          }
+        </Text>
+        <Title order={5}>Почтовый индекс:</Title>
+        <Text className={classes.text} style={{ padding: '5px 0 15px' }}>
+          {
+            data?.body.addresses.find((address) => address.id === id)
+              ?.postalCode
+          }
+        </Text>
+        <Flex gap={10} wrap="wrap">
+          <Button style={{ flexGrow: '1' }}>Редактировать адрес</Button>
+          <Button
+            style={{ flexGrow: '1' }}
+            onClick={() => {
+              void removeAddress(id);
+            }}
+          >
+            Удалить адрес
+          </Button>
+        </Flex>
+        <Divider my="md" />
+      </Box>
+    );
+  };
+
+  const removeAddress = async (id: string) => {
+    const actions: MyCustomerUpdateAction[] = [
+      { action: 'removeAddress', addressId: id },
+    ];
+    await mutateAsync(actions);
+  };
 
   const handleSubmitInfo = async (values: InfoValues) => {
     const actions: MyCustomerUpdateAction[] = [
