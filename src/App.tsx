@@ -20,10 +20,10 @@ const App = () => {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
+          <Route path="/catalog/*" element={<Catalog />} />
           <Route path="/hyper-bee" element={<HyperBee />} />
           <Route path="/light-bee" element={<LightBee />} />
           <Route path="/ultra-bee" element={<UltraBee />} />
-          <Route path="/catalog" element={<Catalog />} />
           <Route path="/products/:key" element={<ProductDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
