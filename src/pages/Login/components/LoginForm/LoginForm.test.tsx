@@ -17,8 +17,9 @@ describe('login form component', () => {
   it('should show errors when submit button pressed whit empty email and password fields', async () => {
     expect.hasAssertions();
 
-    render(<LoginForm />);
     const user = userEvent.setup();
+
+    render(<LoginForm />);
 
     const submitButton = screen.getByRole('button', { name: 'Войти' });
 
@@ -36,8 +37,9 @@ describe('login form component', () => {
   it('should show error for invalid email format', async () => {
     expect.hasAssertions();
 
-    render(<LoginForm />);
     const user = userEvent.setup();
+
+    render(<LoginForm />);
 
     const emailInput = screen.getByLabelText(/email/i);
     await user.type(emailInput, 'invalid-email');
@@ -57,8 +59,9 @@ describe('login form component', () => {
   it('should show error for email with leading/trailing spaces', async () => {
     expect.hasAssertions();
 
-    render(<LoginForm />);
     const user = userEvent.setup();
+
+    render(<LoginForm />);
 
     const emailInput = screen.getByLabelText(/email/i);
     await user.type(emailInput, ' user@example.com ');
@@ -71,8 +74,9 @@ describe('login form component', () => {
   it('should show error for email without domain', async () => {
     expect.hasAssertions();
 
-    render(<LoginForm />);
     const user = userEvent.setup();
+
+    render(<LoginForm />);
 
     const emailInput = screen.getByLabelText(/email/i);
     await user.type(emailInput, 'user@');
@@ -85,8 +89,9 @@ describe('login form component', () => {
   it('should show error for email with invalid domain format', async () => {
     expect.hasAssertions();
 
-    render(<LoginForm />);
     const user = userEvent.setup();
+
+    render(<LoginForm />);
 
     const emailInput = screen.getByLabelText(/email/i);
 
@@ -107,8 +112,9 @@ describe('login form component', () => {
   it('should show error for password with leading/trailing spaces', async () => {
     expect.hasAssertions();
 
-    render(<LoginForm />);
     const user = userEvent.setup();
+
+    render(<LoginForm />);
 
     const passwordInput = screen.getByLabelText(/пароль/i);
     await user.type(passwordInput, ' validPass123! ');
@@ -121,8 +127,9 @@ describe('login form component', () => {
   it('should show password requirements errors for weak password', async () => {
     expect.hasAssertions();
 
-    render(<LoginForm />);
     const user = userEvent.setup();
+
+    render(<LoginForm />);
 
     const passwordInput = screen.getByLabelText(/пароль/i);
     await user.type(passwordInput, 'simple');
@@ -163,8 +170,9 @@ describe('login form component', () => {
   it('should enable submit button when form is valid', async () => {
     expect.hasAssertions();
 
-    render(<LoginForm />);
     const user = userEvent.setup();
+
+    render(<LoginForm />);
 
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/пароль/i);
@@ -180,8 +188,9 @@ describe('login form component', () => {
     expect.hasAssertions();
 
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    render(<LoginForm />);
     const user = userEvent.setup();
+
+    render(<LoginForm />);
 
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/пароль/i);
