@@ -18,6 +18,7 @@ import { isNotEmpty, useForm } from '@mantine/form';
 import { useMemo } from 'react';
 import { useProfileEdit } from './useProfileEdit';
 import { MyCustomerUpdateAction } from '@commercetools/platform-sdk';
+import classes from './ProfileCard.module.scss';
 
 type VoidFunction = () => void;
 export type AddressWithId = AddressPickerInputs & { id: string };
@@ -161,6 +162,7 @@ export const ModalAddress = ({
       <Flex gap={10} wrap="wrap">
         <Button
           type="submit"
+          className={classes.profileButton}
           disabled={isPendingEdit}
           style={{ flexGrow: '1', marginTop: '10px' }}
         >
