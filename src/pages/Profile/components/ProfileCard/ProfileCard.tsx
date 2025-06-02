@@ -36,7 +36,7 @@ import { IconAt, IconCalendar, IconLock } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useApiRootStore } from '@/store/apiRootStore';
 import { usePasswordChange } from './usePasswordUpdate';
-import { ModalAddress } from './ModalAddress';
+import { AddressWithId, ModalAddress } from './ModalAddress';
 
 export interface InfoValues {
   firstName: string;
@@ -54,12 +54,21 @@ export interface PasswordValues {
   confirmedPassword: string;
 }
 
+const emptyAddress: AddressWithId = {
+  country: '',
+  city: '',
+  postalCode: '',
+  streetName: '',
+  id: '',
+};
+
 export const ProfileCard = () => {
   const { isPending: isPendingEdit, mutateAsync } = useProfileEdit();
   const { isPending: isPendingPassword, mutateAsync: mutatePassword } =
     usePasswordChange();
   const [opened, { open, close }] = useDisclosure(false);
   const [modalState, setModalState] = useState(1);
+  const [addressInfo, setAddressInfo] = useState(emptyAddress);
   const [modalAddressState, setModalAddressState] = useState(1);
   const version = useApiRootStore((state) => state.version);
 
@@ -174,7 +183,31 @@ export const ProfileCard = () => {
           }
         </Text>
         <Flex gap={10} wrap="wrap">
-          <Button style={{ flexGrow: '1' }}>Редактировать адрес</Button>
+          <Button
+            style={{ flexGrow: '1' }}
+            onClick={() => {
+              setModalState(4);
+              setModalAddressState(3);
+              setAddressInfo({
+                city:
+                  data?.body.addresses.find((address) => address.id === id)
+                    ?.city || '',
+                country:
+                  data?.body.addresses.find((address) => address.id === id)
+                    ?.country || '',
+                postalCode:
+                  data?.body.addresses.find((address) => address.id === id)
+                    ?.postalCode || '',
+                streetName:
+                  data?.body.addresses.find((address) => address.id === id)
+                    ?.streetName || '',
+                id: id,
+              });
+              open();
+            }}
+          >
+            Редактировать адрес
+          </Button>
           <Button
             style={{ flexGrow: '1' }}
             onClick={() => {
@@ -381,6 +414,7 @@ export const ProfileCard = () => {
           <ModalAddress
             close={close}
             submitType={modalAddressState}
+            addressWithId={addressInfo}
           ></ModalAddress>
         )}
       </Modal>
@@ -410,6 +444,7 @@ export const ProfileCard = () => {
           onClick={() => {
             setModalState(4);
             setModalAddressState(1);
+            setAddressInfo(emptyAddress);
             open();
           }}
         >
@@ -431,6 +466,7 @@ export const ProfileCard = () => {
           onClick={() => {
             setModalState(4);
             setModalAddressState(2);
+            setAddressInfo(emptyAddress);
             open();
           }}
         >
