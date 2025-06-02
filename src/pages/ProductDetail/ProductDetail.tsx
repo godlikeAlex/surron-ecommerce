@@ -39,7 +39,7 @@ export const ProductDetail = () => {
     error,
   } = useQuery({
     queryKey: ['product', key],
-    queryFn: () => getProductByKey(key!),
+    queryFn: () => (key ? getProductByKey(key) : null),
     enabled: !!key,
   });
 
