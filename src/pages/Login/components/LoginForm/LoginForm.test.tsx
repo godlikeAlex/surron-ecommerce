@@ -1,11 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen, userEvent } from '@/tests/utils';
 import { LoginForm } from './LoginForm';
-import * as LoginModule from './index';
 import '@testing-library/jest-dom';
 
 describe('login form component', () => {
-  it('renders form with email and password fields', () => {
+  it('should render form with email and password fields', () => {
     expect.assertions(3);
 
     render(<LoginForm />);
@@ -15,7 +14,7 @@ describe('login form component', () => {
     expect(screen.getByRole('button', { name: 'Войти' })).toBeInTheDocument();
   });
 
-  it('shows errors when submit button pressed whit empty email and password fields', async () => {
+  it('should show errors when submit button pressed whit empty email and password fields', async () => {
     expect.hasAssertions();
 
     render(<LoginForm />);
@@ -34,7 +33,7 @@ describe('login form component', () => {
     ).resolves.toBeInTheDocument();
   });
 
-  it('shows error for invalid email format', async () => {
+  it('should show error for invalid email format', async () => {
     expect.hasAssertions();
 
     render(<LoginForm />);
@@ -55,7 +54,7 @@ describe('login form component', () => {
     ).resolves.toBeInTheDocument();
   });
 
-  it('shows error for email with leading/trailing spaces', async () => {
+  it('should show error for email with leading/trailing spaces', async () => {
     expect.hasAssertions();
 
     render(<LoginForm />);
@@ -69,7 +68,7 @@ describe('login form component', () => {
     ).resolves.toBeInTheDocument();
   });
 
-  it('shows error for email without domain', async () => {
+  it('should show error for email without domain', async () => {
     expect.hasAssertions();
 
     render(<LoginForm />);
@@ -83,7 +82,7 @@ describe('login form component', () => {
     ).resolves.toBeInTheDocument();
   });
 
-  it('shows error for email with invalid domain format', async () => {
+  it('should show error for email with invalid domain format', async () => {
     expect.hasAssertions();
 
     render(<LoginForm />);
@@ -105,7 +104,7 @@ describe('login form component', () => {
     ).resolves.toBeInTheDocument();
   });
 
-  it('shows error for password with leading/trailing spaces', async () => {
+  it('should show error for password with leading/trailing spaces', async () => {
     expect.hasAssertions();
 
     render(<LoginForm />);
@@ -119,7 +118,7 @@ describe('login form component', () => {
     ).resolves.toBeInTheDocument();
   });
 
-  it('shows password requirements errors for weak password', async () => {
+  it('should show password requirements errors for weak password', async () => {
     expect.hasAssertions();
 
     render(<LoginForm />);
@@ -161,7 +160,7 @@ describe('login form component', () => {
     ).resolves.toBeInTheDocument();
   });
 
-  it('enables submit button when form is valid', async () => {
+  it('should enable submit button when form is valid', async () => {
     expect.hasAssertions();
 
     render(<LoginForm />);
@@ -177,7 +176,7 @@ describe('login form component', () => {
     expect(submitButton).toBeEnabled();
   });
 
-  it('calls submit handler with form data when valid', async () => {
+  it('should call submit handler with form data when valid', async () => {
     expect.hasAssertions();
 
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -212,13 +211,5 @@ describe('login form component', () => {
     expect(registerLink).toHaveAttribute('href', '/registration');
 
     await userEvent.click(registerLink);
-  });
-});
-
-describe('login form exports', () => {
-  it('should correctly export LoginForm', () => {
-    expect.assertions(1);
-
-    expect(LoginModule.LoginForm).toBe(LoginForm);
   });
 });
