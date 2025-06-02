@@ -19,15 +19,15 @@
 .profile-modal {
   .profile-button {
     color: var(--mantine-color-white);
-    background-color: var(--mantine-color-black);
+    background-color: var(--mantine-color-gray-7);
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: var(--mantine-color-dark-6);
+      background-color: var(--mantine-color-gray-8);
     }
 
     &:disabled {
-      background-color: var(--mantine-color-dark-6);
+      background-color: var(--mantine-color-gray-8);
     }
   }
 }
