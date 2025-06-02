@@ -1,29 +1,29 @@
 import { apiRootStore, useApiRootStore } from '@/store/apiRootStore';
-import { MyCustomerUpdateAction } from '@commercetools/platform-sdk';
+import { CustomerChangePassword } from '@commercetools/platform-sdk';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 
-export const useProfileEdit = () => {
+export const usePasswordChange = () => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
-  const version = useApiRootStore((state) => state.version);
+  const setLogin = useApiRootStore((state) => state.setLogin);
 
   const { isPending, mutateAsync } = useMutation({
-    mutationFn: async (actions: MyCustomerUpdateAction[]) => {
+    mutationFn: async (action: CustomerChangePassword) => {
       const response = await apiRoot
         .me()
+        .password()
         .post({
-          body: {
-            actions: actions,
-            version: version,
-          },
+          body: action,
         })
         .execute();
+      if (response.statusCode === 200)
+        setLogin(response.body.email, action.newPassword);
       apiRootStore().setVersion(response.body.version);
     },
     onSuccess: () => {
       notifications.show({
         title: 'Поздравляем!',
-        message: 'Данные успешно обновлены',
+        message: 'Пароль успешно обновлён',
         autoClose: 7000,
         withCloseButton: true,
         withBorder: true,
@@ -33,7 +33,7 @@ export const useProfileEdit = () => {
     onError: () => {
       notifications.show({
         title: 'Упс!',
-        message: 'Что-то пошло не так...',
+        message: 'Не удалось обновить пароль',
         autoClose: 7000,
         withCloseButton: true,
         withBorder: true,

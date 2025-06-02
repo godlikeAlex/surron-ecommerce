@@ -5,6 +5,7 @@ import {
   Flex,
   Loader,
   Modal,
+  PasswordInput,
   Skeleton,
   Text,
   TextInput,
@@ -16,6 +17,7 @@ import { COUNTRIES } from '@/constants/countries';
 import {
   ClientResponse,
   Customer,
+  CustomerChangePassword,
   MyCustomerUpdateAction,
 } from '@commercetools/platform-sdk';
 import { useProfileEdit } from './useProfileEdit';
@@ -25,11 +27,15 @@ import {
   combineRules,
   isDateDiffLessThan,
   isOnlyLetters,
+  validateConfirmedPassword,
   validateEmail,
+  validatePassword,
 } from '@/utils/mantine-validation';
 import { DatePickerInput } from '@mantine/dates';
-import { IconAt, IconCalendar } from '@tabler/icons-react';
+import { IconAt, IconCalendar, IconLock } from '@tabler/icons-react';
 import { useState } from 'react';
+import { useApiRootStore } from '@/store/apiRootStore';
+import { usePasswordChange } from './usePasswordUpdate';
 
 export interface InfoValues {
   firstName: string;
@@ -39,6 +45,12 @@ export interface InfoValues {
 
 export interface EmailValues {
   email: string;
+}
+
+export interface PasswordValues {
+  oldPassword: string;
+  newPassword: string;
+  confirmedPassword: string;
 }
 
 const renderAddress = (
@@ -96,8 +108,11 @@ const renderAddress = (
 
 export const ProfileCard = () => {
   const { isPending: isPendingEdit, mutateAsync } = useProfileEdit();
+  const { isPending: isPendingPassword, mutateAsync: mutatePassword } =
+    usePasswordChange();
   const [opened, { open, close }] = useDisclosure(false);
   const [modalState, setModalState] = useState(1);
+  const version = useApiRootStore((state) => state.version);
 
   const formInfo = useForm<InfoValues>({
     initialValues: {
@@ -133,6 +148,26 @@ export const ProfileCard = () => {
     },
     validateInputOnChange: true,
   });
+  const formPassword = useForm<PasswordValues>({
+    initialValues: {
+      oldPassword: '',
+      newPassword: '',
+      confirmedPassword: '',
+    },
+    validate: {
+      oldPassword: (oldPassword) => validatePassword(oldPassword),
+      newPassword: (newPassword) => validatePassword(newPassword),
+      confirmedPassword: (confirmedPassword, { newPassword }) =>
+        validateConfirmedPassword(confirmedPassword, newPassword),
+    },
+    validateInputOnChange: true,
+  });
+
+  formPassword.watch('newPassword', () => {
+    if (formPassword.getValues().confirmedPassword.length > 0)
+      formPassword.validateField('confirmedPassword');
+  });
+
   const { isPending: isPendingInfo, data } = useProfileInfo(
     formInfo,
     formEmail
@@ -161,6 +196,17 @@ export const ProfileCard = () => {
     await mutateAsync(actions);
     close();
   };
+
+  const handleSubmitPassword = async (values: PasswordValues) => {
+    const action: CustomerChangePassword = {
+      currentPassword: values.oldPassword,
+      id: data?.body.id || '',
+      newPassword: values.newPassword,
+      version,
+    };
+    await mutatePassword(action);
+    close();
+  };
   return (
     <Skeleton visible={isPendingInfo || isPendingEdit}>
       <Divider my="sm" label="Персональная информация" />
@@ -186,7 +232,11 @@ export const ProfileCard = () => {
         opened={opened}
         onClose={close}
         title={
-          modalState === 1 ? 'Редактировать информацию' : 'Редактировать email'
+          modalState === 1
+            ? 'Редактировать информацию'
+            : modalState === 2
+              ? 'Редактировать email'
+              : 'Сменить пароль'
         }
         centered
       >
@@ -228,7 +278,7 @@ export const ProfileCard = () => {
               </Button>
             </Flex>
           </Box>
-        ) : (
+        ) : modalState === 2 ? (
           <Box
             component="form"
             onSubmit={formEmail.onSubmit(handleSubmitEmail)}
@@ -240,6 +290,52 @@ export const ProfileCard = () => {
               withAsterisk
               {...formEmail.getInputProps('email')}
               disabled={isPendingEdit}
+            />
+            <Flex gap={10} wrap="wrap">
+              <Button
+                type="submit"
+                disabled={isPendingEdit}
+                style={{ flexGrow: '1', marginTop: '10px' }}
+              >
+                {isPendingEdit ? (
+                  <Loader size="sm" color="white" />
+                ) : (
+                  'Сохранить'
+                )}
+              </Button>
+            </Flex>
+          </Box>
+        ) : (
+          <Box
+            component="form"
+            onSubmit={formPassword.onSubmit(handleSubmitPassword)}
+          >
+            <PasswordInput
+              label="Старый пароль"
+              placeholder="Введите пароль"
+              type="password"
+              withAsterisk
+              leftSection={<IconLock />}
+              {...formPassword.getInputProps('oldPassword')}
+              disabled={isPendingPassword}
+            />
+            <PasswordInput
+              label="Новый пароль"
+              placeholder="Введите пароль"
+              type="password"
+              withAsterisk
+              leftSection={<IconLock />}
+              {...formPassword.getInputProps('newPassword')}
+              disabled={isPendingPassword}
+            />
+            <PasswordInput
+              label="Повторите новый пароль"
+              placeholder="Введите пароль"
+              type="password"
+              withAsterisk
+              leftSection={<IconLock />}
+              {...formPassword.getInputProps('confirmedPassword')}
+              disabled={isPendingPassword}
             />
             <Flex gap={10} wrap="wrap">
               <Button
@@ -305,7 +401,15 @@ export const ProfileCard = () => {
         >
           Cменить email
         </Button>
-        <Button style={{ flexGrow: '1' }}>Cменить пароль</Button>
+        <Button
+          style={{ flexGrow: '1' }}
+          onClick={() => {
+            setModalState(3);
+            open();
+          }}
+        >
+          Cменить пароль
+        </Button>
       </Flex>
     </Skeleton>
   );
