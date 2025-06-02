@@ -71,10 +71,32 @@ export const useCatalogQueryParams = () => {
     [setSearchParams]
   );
 
+  const deleteCatalogQueryParams = useCallback(
+    (catalogQueryParams: Array<keyof CatalogQueryParams>) => {
+      setSearchParams((currentParams) => {
+        for (const queryParam of catalogQueryParams) {
+          if (queryParam === 'rangePrice') {
+            currentParams.delete('price-range');
+          }
+          currentParams.delete(queryParam);
+        }
+
+        return currentParams;
+      });
+    },
+    [setSearchParams]
+  );
+
+  const resetAllFilters = () => {
+    deleteCatalogQueryParams(['colors', 'rangePrice']);
+  };
+
   return {
     page: Number(page),
     priceRange: parsedPriceRange,
     setCatalogQueryParams,
+    deleteCatalogQueryParams,
+    resetAllFilters,
     sort,
     search,
     colors: parsedColors,
