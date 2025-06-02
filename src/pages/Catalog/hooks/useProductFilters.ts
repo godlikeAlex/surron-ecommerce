@@ -11,7 +11,7 @@ export type ProductFilters = {
   chargeTime?: string[];
 };
 
-type Props = {
+type ProductFiltersParams = {
   category?: Category;
 };
 
@@ -32,7 +32,9 @@ type UseFilterResult =
       filters?: undefined;
     };
 
-export const useProductFilters = ({ category }: Props): UseFilterResult => {
+export const useProductFilters = ({
+  category,
+}: ProductFiltersParams): UseFilterResult => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
 
   const { data, isPending, isError } = useQuery({
