@@ -20,13 +20,16 @@ import { useProfileEdit } from './useProfileEdit';
 import { MyCustomerUpdateAction } from '@commercetools/platform-sdk';
 
 type VoidFunction = () => void;
+export type AddressWithId = AddressPickerInputs & { id: string };
 
 export const ModalAddress = ({
   close,
   submitType,
+  addressWithId,
 }: {
   close: VoidFunction;
   submitType: number;
+  addressWithId: AddressWithId;
 }) => {
   const { isPending: isPendingEdit, mutateAsync } = useProfileEdit();
 
@@ -46,8 +49,7 @@ export const ModalAddress = ({
       await mutateAsync(actions);
       await mutateAsync([{ action: 'addShippingAddressId', addressId: '' }]);
       close();
-    }
-    if (submitType === 2) {
+    } else if (submitType === 2) {
       const actions: MyCustomerUpdateAction[] = [
         {
           action: 'addAddress',
@@ -62,15 +64,30 @@ export const ModalAddress = ({
       await mutateAsync(actions);
       await mutateAsync([{ action: 'addBillingAddressId', addressId: '' }]);
       close();
+    } else if (submitType === 3) {
+      const actions: MyCustomerUpdateAction[] = [
+        {
+          action: 'changeAddress',
+          address: {
+            city: values.city,
+            country: values.country,
+            postalCode: values.postalCode,
+            streetName: values.streetName,
+          },
+          addressId: addressWithId.id,
+        },
+      ];
+      await mutateAsync(actions);
+      close();
     }
   };
 
   const formAddress = useForm<AddressPickerInputs>({
     initialValues: {
-      streetName: '',
-      city: '',
-      postalCode: '',
-      country: '',
+      streetName: addressWithId.streetName,
+      city: addressWithId.city,
+      postalCode: addressWithId.postalCode,
+      country: addressWithId.country,
     },
     validate: {
       streetName: isNotEmpty('Введите улицу'),
