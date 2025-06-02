@@ -71,6 +71,7 @@ export const SidebarFilters = ({
                 variant="light"
                 disabled={priceRange === undefined}
                 onClick={() => deleteCatalogQueryParams(['rangePrice'])}
+                color="red"
               >
                 Сбросить
               </Button>
@@ -98,6 +99,7 @@ export const SidebarFilters = ({
                 variant="light"
                 disabled={colors.length === 0}
                 onClick={() => deleteCatalogQueryParams(['colors'])}
+                color="red"
               >
                 Сбросить
               </Button>
@@ -120,6 +122,7 @@ export const SidebarFilters = ({
                 variant="light"
                 disabled={chargeTime.length === 0}
                 onClick={() => deleteCatalogQueryParams(['chargeTime'])}
+                color="red"
               >
                 Сбросить
               </Button>
@@ -152,6 +155,7 @@ export const SidebarFilters = ({
               disabled={
                 colors.length === 0 && chargeTime.length === 0 && !priceRange
               }
+              color="black"
             >
               Сбросить фильтры
             </Button>

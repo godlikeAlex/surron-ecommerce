@@ -49,6 +49,8 @@ export const useCatalogQueryParams = () => {
       setSearchParams((currentParams) => {
         if (catalogQueryParms.page) {
           currentParams.set('page', String(catalogQueryParms.page));
+        } else {
+          currentParams.delete('page');
         }
 
         if (catalogQueryParms.rangePrice) {
@@ -103,7 +105,7 @@ export const useCatalogQueryParams = () => {
   );
 
   const resetAllFilters = () => {
-    deleteCatalogQueryParams(['colors', 'rangePrice', 'chargeTime']);
+    deleteCatalogQueryParams(['colors', 'rangePrice', 'chargeTime', 'search']);
   };
 
   return {

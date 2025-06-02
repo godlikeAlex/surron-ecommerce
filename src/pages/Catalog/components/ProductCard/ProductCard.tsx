@@ -63,6 +63,7 @@ export const ProductCard = ({
       <Flex align="center">
         {price.discounted ? (
           <Text fw={700} c="red" fz="md">
+            От{' '}
             <NumberFormatter
               value={price.discounted.value.centAmount / 100 || 0}
               thousandSeparator
@@ -78,6 +79,7 @@ export const ProductCard = ({
           c={price.discounted && 'dimmed'}
           fz={price.discounted ? 'xs' : 'md'}
         >
+          От{' '}
           <NumberFormatter
             value={price.value.centAmount / 100 || 0}
             thousandSeparator

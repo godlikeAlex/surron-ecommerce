@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { type Category } from './useCategories';
 import { ProductProjection } from '@commercetools/platform-sdk';
 
-type Props = {
+type ProductParams = {
   page: number;
   sort: string;
   category?: Category;
@@ -43,7 +43,7 @@ export const useProducts = ({
   colors,
   search,
   chargeTime,
-}: Props): UseProductsResult => {
+}: ProductParams): UseProductsResult => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
   const { data, isPending, isError } = useQuery({
     queryKey: [
@@ -88,9 +88,9 @@ export const useProducts = ({
           queryArgs: {
             limit: PRODUCTS_PER_PAGE,
             offset: PRODUCTS_PER_PAGE * (page - 1),
+            markMatchingVariants: true,
             fuzzy: true,
-            fuzzyLevel: 0,
-            'text.ru': search && search.length > 0 ? search : undefined,
+            'text.ru': search && search.length > 0 ? `${search}` : undefined,
             sort,
             'filter.query': filters,
             facet: ['variants.price.centAmount: range(0 to *)'],

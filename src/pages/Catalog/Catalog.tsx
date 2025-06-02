@@ -74,7 +74,7 @@ export const Catalog = () => {
   const isProductsLoading = isPending || filters.isPending;
   const isProductsError = isError || filters.isError;
 
-  if (isIncorectCategoriesPath) return <NotFound />;
+  if (isIncorectCategoriesPath && !isProductsLoading) return <NotFound />;
 
   return (
     <Container className={classes.catalogContainer} size="xl">
@@ -138,6 +138,7 @@ export const Catalog = () => {
                   </SimpleGrid>
                   <Flex justify="center">
                     <Pagination
+                      color="var(--color-yellow-surron-darker)"
                       value={page}
                       onChange={(newPage) =>
                         setCatalogQueryParams({ page: newPage })

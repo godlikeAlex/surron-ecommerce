@@ -20,7 +20,7 @@ export const EmptyScreen = ({ onResetFilters }: Props) => (
       то, что нужно.
     </Text>
 
-    <Button mt="md" onClick={onResetFilters}>
+    <Button mt="md" onClick={onResetFilters} color="red">
       Сбросить фильтры
     </Button>
   </Container>
