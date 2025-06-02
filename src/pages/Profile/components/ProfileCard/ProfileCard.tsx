@@ -146,6 +146,21 @@ export const ProfileCard = () => {
             id={id}
             value={id}
             defaultChecked={isDefault}
+            onChange={(e) => {
+              if (e.target.value) {
+                if (name === 'shipping') {
+                  const actions: MyCustomerUpdateAction[] = [
+                    { action: 'setDefaultShippingAddress', addressId: id },
+                  ];
+                  void mutateAsync(actions);
+                } else {
+                  const actions: MyCustomerUpdateAction[] = [
+                    { action: 'setDefaultBillingAddress', addressId: id },
+                  ];
+                  void mutateAsync(actions);
+                }
+              }
+            }}
           />
           <label htmlFor={id} className={classes.label}>
             {isDefault
