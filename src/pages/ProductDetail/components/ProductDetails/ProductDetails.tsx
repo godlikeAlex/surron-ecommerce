@@ -2,10 +2,10 @@ import { Title, Text, Stack, Flex, Button, Group } from '@mantine/core';
 import classes from './ProductDetails.module.scss';
 import { getProductPrice, formatPrice } from '../../utils/price';
 import { ProductType } from '../../utils/parseProductData';
-import { AddToCart } from './components/AddToCart';
 import { useState } from 'react';
 import { ProductVariant } from '@commercetools/platform-sdk';
 import { getVariantAttrLabel } from '../../utils/variant';
+import { AddToCart } from './AddToCart/AddToCart';
 
 type ProductDetailsProps = {
   product: ProductType;
