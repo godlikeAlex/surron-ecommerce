@@ -28,6 +28,7 @@ import {
 } from '@/pages/Catalog/hooks/useProducts';
 import { useCatalogQueryParams } from './hooks/useCatalogQueryParams';
 import { useProductFilters } from './hooks/useProductFilters';
+import { NotFound } from '../NotFound';
 
 export const Catalog = () => {
   const params = useParams();
@@ -55,6 +56,7 @@ export const Catalog = () => {
     activeCategories,
     targetCategory,
     isPending: categoriesIsPending,
+    isIncorectCategoriesPath,
   } = useCategories(selectedCategories);
 
   const filters = useProductFilters({ category: targetCategory });
@@ -71,6 +73,8 @@ export const Catalog = () => {
 
   const isProductsLoading = isPending || filters.isPending;
   const isProductsError = isError || filters.isError;
+
+  if (isIncorectCategoriesPath) return <NotFound />;
 
   return (
     <Container className={classes.catalogContainer} size="xl">
