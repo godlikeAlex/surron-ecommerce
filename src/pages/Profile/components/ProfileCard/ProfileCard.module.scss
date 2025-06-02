@@ -1,0 +1,11 @@
+.text {
+  overflow-x: hidden;
+  width: min(600px, calc(100vw - 90px));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.label {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-anchor);
+}

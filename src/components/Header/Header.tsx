@@ -25,6 +25,7 @@ type LinkType = {
 const buttons = [
   { path: '/registration', label: 'Регистрация' },
   { path: '/login', label: 'Вход' },
+  { path: '/profile', label: 'Профиль' },
 ];
 
 const links = [
@@ -77,6 +78,7 @@ const Header = () => {
   const buttonComponents = buttons.map((button) => {
     if (isLoggedIn && button.path === '/registration') return;
     if (isLoggedIn && button.path === '/login') return;
+    if (!isLoggedIn && button.path === '/profile') return;
     return getLinkComponent(button, 'button');
   });
 
