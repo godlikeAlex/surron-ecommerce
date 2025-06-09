@@ -57,6 +57,7 @@ const PriceRangeSelect = ({ min, max, initialValues, onChange }: Props) => {
     <>
       <Flex gap={20} justify="space-between">
         <NumberInput
+          placeholder="Минимальная цена"
           onChange={(value) => handleChange('min', Number(value))}
           value={minValue}
           size="xs"
@@ -67,6 +68,7 @@ const PriceRangeSelect = ({ min, max, initialValues, onChange }: Props) => {
           prefix="₽ "
         />
         <NumberInput
+          placeholder="Максимальная цена"
           onChange={(value) => handleChange('max', Number(value))}
           value={maxValue}
           size="xs"
@@ -79,6 +81,7 @@ const PriceRangeSelect = ({ min, max, initialValues, onChange }: Props) => {
       </Flex>
       <RangeSlider
         mt="xs"
+        name="price-slider"
         label={null}
         minRange={100}
         min={min}
@@ -95,11 +98,11 @@ const PriceRangeSelect = ({ min, max, initialValues, onChange }: Props) => {
 const PriceRangeSelectSkeleton = () => (
   <>
     <Flex gap={20}>
-      <Skeleton h={31} />
-      <Skeleton h={31} />
+      <Skeleton h={31} role="presentation" />
+      <Skeleton h={31} role="presentation" />
     </Flex>
 
-    <Skeleton h={15} width="100%" mt="xs"></Skeleton>
+    <Skeleton h={15} width="100%" mt="xs" role="presentation"></Skeleton>
   </>
 );
 

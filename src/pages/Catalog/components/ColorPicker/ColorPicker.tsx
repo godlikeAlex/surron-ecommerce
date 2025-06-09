@@ -30,6 +30,8 @@ const ColorPicker = ({ colors, onChange, selectedColors }: Props) => {
           className={`${classes.colorPickerButton} ${selectedColors.includes(color) && classes.colorPickerButtonActive}`}
           onClick={() => handleSelectColor(color)}
           component="button"
+          aria-label={color}
+          aria-pressed={selectedColors.includes(color)}
         >
           <Box
             style={{ background: color }}
@@ -44,7 +46,7 @@ const ColorPicker = ({ colors, onChange, selectedColors }: Props) => {
 const ColorPickerSkeleton = () => (
   <Group gap={5}>
     {new Array(6).fill('').map((_, index) => (
-      <Skeleton w={32} h={32} key={index}></Skeleton>
+      <Skeleton w={32} h={32} key={index} role="presentation"></Skeleton>
     ))}
   </Group>
 );

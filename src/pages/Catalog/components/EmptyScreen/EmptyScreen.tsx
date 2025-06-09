@@ -8,7 +8,12 @@ type Props = {
 
 export const EmptyScreen = ({ onResetFilters }: Props) => (
   <Container className={classes.container}>
-    <Image src={EmptyImage} className={classes.image} w={360} />
+    <Image
+      src={EmptyImage}
+      className={classes.image}
+      w={360}
+      alt="Ничего не найдено"
+    />
 
     <Title order={2}>Упс! Ничего не найдено</Title>
 

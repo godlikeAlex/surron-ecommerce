@@ -1,4 +1,4 @@
-import { Anchor, Breadcrumbs, Text } from '@mantine/core';
+import { Anchor, Breadcrumbs, Skeleton, Text } from '@mantine/core';
 import { Category } from '@/pages/Catalog/hooks/useCategories';
 import { Link } from 'react-router';
 import { useMemo } from 'react';
@@ -50,3 +50,13 @@ export const BreadcrumbsCategories = ({ currentCategories }: Props) => {
     </Breadcrumbs>
   );
 };
+
+const BreadcrumbsCategoriesSkeleton = () => (
+  <Breadcrumbs>
+    <Skeleton height={16} width={59} role="presentation" />
+    <Skeleton height={16} width={60} role="presentation" />
+    <Skeleton height={16} width={120} role="presentation" />
+  </Breadcrumbs>
+);
+
+BreadcrumbsCategories.Skeleton = BreadcrumbsCategoriesSkeleton;
