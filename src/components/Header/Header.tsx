@@ -30,9 +30,9 @@ const buttons = [
 
 const links = [
   { path: '/', label: 'Главная' },
-  { path: '/hyper-bee', label: 'HYPER BEE' },
-  { path: '/light-bee', label: 'LIGHT BEE' },
-  { path: '/ultra-bee', label: 'ULTRA BEE' },
+  { path: '/catalog/sur-ron-hyper-bee', label: 'HYPER BEE' },
+  { path: '/catalog/sur-ron-light-bee-2025', label: 'LIGHT BEE' },
+  { path: '/catalog/sur-ron-ultra-bee', label: 'ULTRA BEE' },
   { path: '/catalog', label: 'Магазин' },
   { path: '/about', label: 'О нас' },
 ];
