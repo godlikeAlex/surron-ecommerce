@@ -1,5 +1,9 @@
 import { Select } from '@mantine/core';
-import { useCatalogQueryParams } from '@/pages/Catalog/hooks/useCatalogQueryParams';
+
+type Props = {
+  sort: string;
+  onChange: (sort: string) => void;
+};
 
 const options = [
   { label: 'Подороже', value: 'price desc' },
@@ -7,14 +11,13 @@ const options = [
   { label: 'По имени', value: 'name.ru asc' },
 ];
 
-export const SortOptions = () => {
-  const { setCatalogQueryParams, sort } = useCatalogQueryParams();
-
+export const SortOptions = ({ onChange, sort }: Props) => {
   return (
     <Select
       size="xs"
+      placeholder="Сортировать по"
       value={sort}
-      onChange={(value) => value && setCatalogQueryParams({ sort: value })}
+      onChange={(value) => value && onChange(value)}
       data={options}
     />
   );
