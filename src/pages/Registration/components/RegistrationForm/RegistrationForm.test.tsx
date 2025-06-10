@@ -7,6 +7,7 @@ import { COUNTRIES } from '@/constants/countries';
 vi.mock('@mantine/dates');
 
 const handleSignupMock = vi.fn<(data: FormValues) => Promise<void>>();
+const setLoginMock = vi.fn<(email: string, password: string) => void>();
 
 vi.mock('./useSignupUser', () => ({
   useSignupUser: () => ({
@@ -14,6 +15,18 @@ vi.mock('./useSignupUser', () => ({
     isPending: false,
     error: false,
   }),
+}));
+
+vi.mock('@/store/apiRootStore', () => ({
+  useApiRootStore: vi
+    .fn<
+      (selector: (state: { setLogin: typeof setLoginMock }) => void) => void
+    >()
+    .mockImplementation((selector) =>
+      selector({
+        setLogin: setLoginMock,
+      })
+    ),
 }));
 
 async function selectCountry(user: UserEvent, path: string) {
@@ -126,6 +139,7 @@ describe('component RegistrationForm', () => {
       lastName: 'Yurkovskiy',
       password: '123456Sss$',
     });
+    expect(setLoginMock).toHaveBeenCalledWith('user@example.com', '123456Sss$');
   });
 
   it('should render address inputs', () => {
