@@ -68,7 +68,11 @@ const Header = () => {
   const linkComponents = links.map((link) => {
     if (
       isBetweenSmAndMd &&
-      ['/hyper-bee', '/light-bee', '/ultra-bee'].includes(link.path)
+      [
+        '/catalog/sur-ron-hyper-bee',
+        '/catalog/sur-ron-light-bee-2025',
+        '/catalog/sur-ron-ultra-bee',
+      ].includes(link.path)
     ) {
       return null;
     }
