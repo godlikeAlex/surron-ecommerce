@@ -13,6 +13,7 @@ const links = [
   { path: '/catalog', label: 'Магазин' },
   { path: '/about', label: 'О нас' },
   { path: '/profile', label: 'Профиль' },
+  { path: '/cart', label: 'Корзина' },
 ];
 
 const linkItems = links.map((link) => {

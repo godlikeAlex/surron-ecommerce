@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { apiRootStorageHandleEvent } from './store/storage/apiRootStorage';
 import { Profile } from './pages/Profile';
 import { ProductDetail } from './pages/ProductDetail';
+import { Cart } from './pages/Cart';
 
 const App = () => {
   useEffect(() => {
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/catalog/*" element={<Catalog />} />
           <Route path="/products/:key" element={<ProductDetail />} />
           <Route path="/about" element={<About />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="*" element={<NotFound />} />
           <Route element={<ProtectedRoutes requiredLoginState={false} />}>
             <Route path="/login" element={<Login />} />
