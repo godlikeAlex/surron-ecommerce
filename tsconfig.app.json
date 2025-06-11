@@ -15,7 +15,8 @@
 
     /* Aliases */
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@modules-mocks/*": ["./__mocks__/*"]
     },
 
     /* Bundler mode */
