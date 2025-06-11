@@ -25,6 +25,7 @@ type ApiRootState = {
   handleRehydrateStorage: () => void;
   version: number;
   setVersion: (version: number) => void;
+  customer?: Customer;
 };
 
 export const LOCAL_STORAGE_KEY = 'surronc-commerce';
@@ -38,6 +39,7 @@ export const useApiRootStore = create<ApiRootState>()(
       isLoggedIn: false,
       refreshToken: undefined,
       version: 1,
+      customer: undefined,
 
       handleRehydrateStorage: () => {
         const token = get().refreshToken;
@@ -89,6 +91,7 @@ export const useApiRootStore = create<ApiRootState>()(
         const customerResponse = await passwordApiRoot.me().get().execute();
         set({
           isLoggedIn: true,
+          customer: customerResponse.body,
         });
         return customerResponse.body;
       },
