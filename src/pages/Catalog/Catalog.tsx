@@ -11,7 +11,6 @@ import {
 } from '@mantine/core';
 import {
   BreadcrumbsCategories,
-  BreadcrumbsCategoriesSkeleton,
   DebounceSearch,
   EmptyScreen,
   ProductCard,
@@ -81,7 +80,7 @@ export const Catalog = () => {
       <Grid>
         <Grid.Col span={12} mb="lg">
           {categoriesIsPending ? (
-            <BreadcrumbsCategoriesSkeleton />
+            <BreadcrumbsCategories.Skeleton />
           ) : (
             <BreadcrumbsCategories currentCategories={activeCategories} />
           )}
@@ -120,7 +119,10 @@ export const Catalog = () => {
                   {total}
                 </Title>
 
-                <SortOptions />
+                <SortOptions
+                  sort={sort}
+                  onChange={(sort) => setCatalogQueryParams({ sort })}
+                />
               </Flex>
 
               <Divider my="md" />

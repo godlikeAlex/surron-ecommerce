@@ -13,7 +13,7 @@ import { useState } from 'react';
 import classes from './ProductCard.module.scss';
 import { Link } from 'react-router';
 
-type Props = Pick<
+export type ProductCardProps = Pick<
   ProductProjection,
   'name' | 'masterVariant' | 'description'
 > & { productKey: ProductProjection['key'] };
@@ -23,7 +23,7 @@ export const ProductCard = ({
   masterVariant,
   description,
   productKey,
-}: Props) => {
+}: ProductCardProps) => {
   const productName = name['ru'];
   const productDescription = description ? description['ru'] : undefined;
   const [price] = masterVariant?.prices || [];
@@ -40,6 +40,7 @@ export const ProductCard = ({
       withBorder
       component={Link}
       to={`/products/${productKey}`}
+      role="article"
     >
       <Card.Section>
         <Skeleton visible={isImageLoading}>
@@ -60,33 +61,36 @@ export const ProductCard = ({
         </Text>
       </Group>
 
-      <Flex align="center">
-        {price.discounted ? (
-          <Text fw={700} c="red" fz="md">
+      {price && (
+        <Flex align="center">
+          {price?.discounted ? (
+            <Text fw={700} c="red" fz="md">
+              От{' '}
+              <NumberFormatter
+                value={price.discounted.value.centAmount / 100 || 0}
+                thousandSeparator
+                suffix=" ₽"
+                style={{ paddingRight: 5 }}
+              />
+            </Text>
+          ) : null}
+
+          <Text
+            data-testid="base-price"
+            fw={700}
+            td={price?.discounted && 'line-through'}
+            c={price?.discounted && 'dimmed'}
+            fz={price?.discounted ? 'xs' : 'md'}
+          >
             От{' '}
             <NumberFormatter
-              value={price.discounted.value.centAmount / 100 || 0}
+              value={price.value.centAmount / 100 || 0}
               thousandSeparator
               suffix=" ₽"
-              style={{ paddingRight: 5 }}
             />
           </Text>
-        ) : null}
-
-        <Text
-          fw={700}
-          td={price.discounted && 'line-through'}
-          c={price.discounted && 'dimmed'}
-          fz={price.discounted ? 'xs' : 'md'}
-        >
-          От{' '}
-          <NumberFormatter
-            value={price.value.centAmount / 100 || 0}
-            thousandSeparator
-            suffix=" ₽"
-          />
-        </Text>
-      </Flex>
+        </Flex>
+      )}
 
       <Divider my={'md'} />
 

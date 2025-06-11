@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      '@modules-mocks': path.resolve(__dirname, '__mocks__'),
     },
   },
   css: {
