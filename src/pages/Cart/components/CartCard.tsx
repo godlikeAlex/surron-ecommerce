@@ -129,7 +129,7 @@ export const CartCard = () => {
               <Table.Th>{isLargeScreen ? 'Цена, ₽' : '💰, ₽'}</Table.Th>
               <Table.Th>{isLargeScreen ? 'Количество' : '📜'}</Table.Th>
               <Table.Th>{isLargeScreen ? 'Стоимость, ₽' : '💲, ₽'}</Table.Th>
-              <Table.Th>{isLargeScreen ? 'Удалить, ₽' : '❌'}</Table.Th>
+              <Table.Th>{isLargeScreen ? 'Удалить' : '❌'}</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
