@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Center,
   NumberFormatter,
   ScrollArea,
   Skeleton,
@@ -13,6 +14,7 @@ import { Cart } from '@commercetools/platform-sdk';
 import { useState } from 'react';
 import cx from 'clsx';
 import { useMediaQuery } from '@mantine/hooks';
+import { Link } from 'react-router';
 
 export const CartCard = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -81,9 +83,16 @@ export const CartCard = () => {
   return (
     <Skeleton visible={isPending} className={classes.cartContainer}>
       {!data || data.length === 0 || data[0].lineItems.length == 0 ? (
-        <Text ta="center" size="lg" lh={3}>
-          Корзина пуста
-        </Text>
+        <>
+          <Text ta="center" size="md" lh={2}>
+            Корзина пуста, выберите что-нибудь из нашего
+          </Text>
+          <Center>
+            <Link to="/catalog" className={classes.link}>
+              каталога
+            </Link>
+          </Center>
+        </>
       ) : (
         f(data)
       )}
