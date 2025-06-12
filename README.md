@@ -46,6 +46,14 @@
         the corresponding variables in the file with the data obtained in
         CommerceTools.
       </li>
+	  <li>
+        In order for Stylelint to work, the corresponding plugin must be installed in VS Code. Also add the following to your settings.json (if you haven't done this already):
+		<br><code>"stylelint.validate": ["css", "scss", "sass", "less"]</code>
+      </li>
+	  <li>
+	  In order for SCSS modules to work properly you need to add corresponding settings in VS Code. The easiest way to do this is to just add the the following to your settings.json (read more  <a href="https://github.com/mrmckeb/typescript-plugin-css-modules?tab=readme-ov-file#visual-studio-code">here</a>):
+	  <br><code>"typescript.tsserver.pluginPaths": ["typescript-plugin-css-modules"]</code>
+	  </li>
       <li>
         Launch the project (the developer mode launch option is specified, other
         launch options can be found in the <a href="#scripts-section">scripts section</a>:
@@ -75,14 +83,14 @@
       patterns found in Javascript/Typescript code.
     </li>
     <li>
-      <b>Husky</b> — popular Git hook tool that makes sure to format and fix
+      <b>Husky</b> — modern Git hook tool that makes sure to format and fix
       code before committing.
     </li>
     <li><b>Prettier</b> — opinionated code formatter.</li>
-    <li><b>Zustand</b> — popular state management library.</li>
-    <li><b>Mantine UI</b> — popular React component library.</li>
+    <li><b>Zustand</b> — lightweight, fast, and scalable state management library.</li>
+    <li><b>Mantine UI</b> — comprehensive and responsive React component library.</li>
     <li>
-      <b>TanStack Query</b> — popular library for managing server state in React
+      <b>TanStack Query</b> — powerful library for managing server state in React
       applications.
     </li>
     <hr>

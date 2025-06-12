@@ -1,5 +1,5 @@
-import { Header } from '@/components';
+import { HeroSection } from './components';
 
-const Home = () => <Header />;
+const Home = () => <HeroSection />;
 
 export default Home;

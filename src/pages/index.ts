@@ -1,4 +1,9 @@
-import Home from './Home';
-import NotFound from './NotFound';
-
-export { Home, NotFound };
+export * from './Home';
+export * from './NotFound';
+export * from './Login';
+export * from './Registration';
+export * from './Catalog';
+export * from './About';
+export * from './HyperBee';
+export * from './LightBee';
+export * from './UltraBee';
