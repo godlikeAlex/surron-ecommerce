@@ -16,24 +16,40 @@ import {
 import { useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { ProductType } from '@/pages/ProductDetail/utils/parseProductData';
+import { useCart } from '@/pages/ProductDetail/hooks/useCart';
+import { ProductVariant } from '@commercetools/platform-sdk';
+import { isVariantInCart } from '@/pages/ProductDetail/utils/isVariantInCart';
 
 type AddToCartProps = {
   product: ProductType;
-  disabled: boolean;
+  selectedVariant: ProductVariant | null;
 };
 
-export const AddToCart = ({ product, disabled }: AddToCartProps) => {
+export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
   const [quantity, setQuantity] = useState(1);
 
-  const handleAddToCart = (qty: number) => {
-    //addToCart(product.id, qty);
+  const { cart, addLineItem } = useCart();
 
-    console.log(`Добавлено ${qty} товара(ов)`);
+  console.log({ cart });
+
+  const variantInCart =
+    cart && selectedVariant
+      ? isVariantInCart(cart, product, selectedVariant)
+      : false;
+
+  const disabled = !selectedVariant;
+
+  const handleAddToCart = async () => {
+    if (selectedVariant) {
+      await addLineItem(product.id, selectedVariant?.id, quantity);
+    }
+
+    console.log({ 'cart after update': cart?.lineItems });
 
     notifications.show({
       title: 'Успешно!',
-      message: `Товар "${product.name}" добавлен в корзину (${qty} шт.)`,
-      color: 'teal',
+      message: `Товар "${product.name}" добавлен в корзину (${quantity} шт.)`,
+      color: 'green',
       icon: <IconCheck size="1.1rem" />,
       withCloseButton: true,
       autoClose: 3000,
@@ -51,7 +67,7 @@ export const AddToCart = ({ product, disabled }: AddToCartProps) => {
             size={42}
             variant="default"
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            disabled={quantity <= 1}
+            disabled={quantity <= 1 || variantInCart}
           >
             <IconMinus />
           </ActionIcon>
@@ -73,45 +89,62 @@ export const AddToCart = ({ product, disabled }: AddToCartProps) => {
                 borderRight: 'none',
               },
             }}
+            disabled={variantInCart}
           />
 
           <ActionIcon
             size={42}
             variant="default"
             onClick={() => setQuantity((q) => Math.min(100, q + 1))}
-            disabled={quantity >= 100}
+            disabled={quantity >= 100 || variantInCart}
           >
             <IconPlus />
           </ActionIcon>
         </Group>
       </div>
 
-      <Tooltip
-        label="Необходимо выбрать тип поставки"
-        color="gray"
-        disabled={!disabled}
-      >
+      {!variantInCart ? (
+        <Tooltip
+          label="Необходимо выбрать тип поставки"
+          color="gray"
+          disabled={!disabled}
+        >
+          <Button
+            size="md"
+            variant="gradient"
+            gradient={{ from: 'cyan', to: 'yellow', deg: 114 }}
+            leftSection={<IconShoppingCart size={20} />}
+            onClick={() => {
+              void handleAddToCart();
+            }}
+            disabled={disabled}
+            styles={{
+              root: {
+                '&:disabled': {
+                  background:
+                    'linear-gradient(114deg, var(--mantine-color-cyan-6), var(--mantine-color-yellow-6))',
+                  opacity: 0.6,
+                  cursor: 'not-allowed',
+                },
+              },
+            }}
+          >
+            В корзину
+          </Button>
+        </Tooltip>
+      ) : (
         <Button
           size="md"
           variant="gradient"
-          gradient={{ from: 'cyan', to: 'yellow', deg: 114 }}
+          gradient={{ from: 'red', to: 'gray', deg: 114 }}
           leftSection={<IconShoppingCart size={20} />}
-          onClick={() => handleAddToCart(quantity)}
-          disabled={disabled}
-          styles={{
-            root: {
-              '&:disabled': {
-                background:
-                  'linear-gradient(114deg, var(--mantine-color-cyan-6), var(--mantine-color-yellow-6))',
-                opacity: 0.6,
-                cursor: 'not-allowed',
-              },
-            },
+          onClick={() => {
+            //void handleRemoveFromCart();
           }}
         >
-          В корзину
+          Удалить из корзины
         </Button>
-      </Tooltip>
+      )}
     </Group>
   );
 };

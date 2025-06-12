@@ -19,7 +19,6 @@ import { ImageModal } from './components/ImageModal/ImageModal';
 import { ProductDetails } from './components/ProductDetails/ProductDetails';
 import { ProductDescription } from './components';
 import { useProduct } from './hooks/useProduct';
-import { useCart } from './hooks/useCart';
 
 export const ProductDetail = () => {
   const { key } = useParams();
@@ -32,10 +31,6 @@ export const ProductDetail = () => {
   };
 
   const { productResponse, isLoading, isError, error } = useProduct(key);
-
-  const { cart } = useCart();
-
-  console.log(cart);
 
   const product = productResponse
     ? parseProductData(productResponse.body)

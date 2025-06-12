@@ -5,7 +5,7 @@ import {
 } from '@commercetools/platform-sdk';
 
 export type ProductType = {
-  id: number;
+  id: string;
   key?: string;
   name: string;
   description: string;
@@ -26,7 +26,7 @@ export const parseProductData = (product: Product): ProductType => {
   const masterVariant = current.masterVariant;
 
   return {
-    id: Number(product.id),
+    id: product.id,
     key: product.key,
     name: current.name.en || Object.values(current.name)[0],
     description:
