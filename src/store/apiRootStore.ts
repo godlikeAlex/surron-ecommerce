@@ -97,6 +97,8 @@ export const useApiRootStore = create<ApiRootState>()(
           isLoggedIn: false,
           refreshToken: undefined,
           apiRoot: getAnonymousApiRoot(),
+          cartId: undefined,
+          cartVersion: 0,
           customer: undefined,
         });
         try {
