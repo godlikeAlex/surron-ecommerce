@@ -116,8 +116,8 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
           <ActionIcon
             size={42}
             variant="default"
-            onClick={() => setQuantity((q) => Math.min(100, q + 1))}
-            disabled={quantity >= 100 || isVariantInCart}
+            onClick={() => setQuantity((q) => Math.min(10, q + 1))}
+            disabled={quantity >= 10 || isVariantInCart}
           >
             <IconPlus />
           </ActionIcon>
