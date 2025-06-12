@@ -8,15 +8,15 @@ export const useCartUpdate = (cart?: Cart) => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
 
   const { mutateAsync: updateCart } = useMutation({
-    mutationFn: (action: MyCartUpdateAction) => {
+    mutationFn: (actions: MyCartUpdateAction[]) => {
       return apiRoot
         .me()
         .carts()
         .withId({ ID: cart?.id ?? '' })
         .post({
           body: {
-            version: cart?.version ?? 0,
-            actions: [action],
+            version: cart?.version ?? 1,
+            actions,
           },
         })
         .execute();
@@ -35,26 +35,44 @@ export const useCartUpdate = (cart?: Cart) => {
 
   const addLineItem = useCallback(
     (productId: string, variantId: number, quantity: number) => {
-      return updateCart({
-        action: 'addLineItem',
-        productId,
-        variantId,
-        quantity,
-      });
+      return updateCart([
+        {
+          action: 'addLineItem',
+          productId,
+          variantId,
+          quantity,
+        },
+      ]);
     },
     [updateCart]
   );
 
   const removeLineItem = useCallback(
     (lineItemId: string) => {
-      return updateCart({
-        action: 'removeLineItem',
-        lineItemId,
-        //quantity,
-      });
+      return updateCart([
+        {
+          action: 'removeLineItem',
+          lineItemId,
+          //quantity,
+        },
+      ]);
     },
     [updateCart]
   );
 
-  return { addLineItem, removeLineItem };
+  const mergeCartItems = useCallback(
+    (sourceCart: Cart) => {
+      const updateActions = sourceCart.lineItems.map((item) => ({
+        action: 'addLineItem' as const,
+        productId: item.productId,
+        variantId: item.variant?.id,
+        quantity: item.quantity,
+      }));
+
+      return updateCart(updateActions);
+    },
+    [updateCart]
+  );
+
+  return { addLineItem, removeLineItem, mergeCartItems };
 };
