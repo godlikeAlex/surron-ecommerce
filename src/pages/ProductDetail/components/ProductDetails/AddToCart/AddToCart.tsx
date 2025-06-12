@@ -30,8 +30,6 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
 
   const { cart, addLineItem, removeLineItem } = useCart();
 
-  console.log({ cart });
-
   const variantInCart =
     cart && selectedVariant && getVariantInCart(cart, product, selectedVariant);
 
