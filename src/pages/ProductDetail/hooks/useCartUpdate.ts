@@ -4,7 +4,7 @@ import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
-export const useCartUpdate = (cart: Cart) => {
+export const useCartUpdate = (cart?: Cart) => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
 
   const {
@@ -16,10 +16,10 @@ export const useCartUpdate = (cart: Cart) => {
       return apiRoot
         .me()
         .carts()
-        .withId({ ID: cart?.id })
+        .withId({ ID: cart?.id ?? '' })
         .post({
           body: {
-            version: cart?.version,
+            version: cart?.version ?? 0,
             actions: [action],
           },
         })

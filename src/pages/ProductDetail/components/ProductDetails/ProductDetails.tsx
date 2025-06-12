@@ -103,7 +103,7 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
       </Stack>
 
       {/* Add to cart button block */}
-      <AddToCart product={product} disabled={selectedVariant ? false : true} />
+      <AddToCart product={product} selectedVariant={selectedVariant} />
     </Stack>
   );
 };

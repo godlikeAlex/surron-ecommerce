@@ -2,11 +2,14 @@ import { useCartCreate } from './useCartCreate';
 import { useApiRootStore } from '@/store/apiRootStore';
 import { notifications } from '@mantine/notifications';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import { useCartUpdate } from './useCartUpdate';
+import { useCartDelete } from './useCartDelete';
 
 export const useCart = () => {
   const { apiRoot, customer } = useApiRootStore((state) => state);
   const { createdCart, createCart } = useCartCreate();
+  const { deleteCart } = useCartDelete();
 
   const {
     data: cartResponse,
@@ -17,6 +20,18 @@ export const useCart = () => {
     queryKey: ['carts', customer?.id, createdCart?.body.id],
     queryFn: () => apiRoot.me().carts().get().execute(),
   });
+
+  const cart = cartResponse?.body?.results?.[0];
+  const { addLineItem } = useCartUpdate(cart);
+  const addLineItemAndRefetch = useCallback(
+    async (productId: string, variantId: number, quantity: number) => {
+      await addLineItem(productId, variantId, quantity);
+      if (refetch) {
+        await refetch();
+      }
+    },
+    [addLineItem, refetch]
+  );
 
   useEffect(() => {
     if (isError) {
@@ -32,12 +47,13 @@ export const useCart = () => {
   }, [isError]);
 
   useEffect(() => {
+    //void deleteCart();
     if (cartResponse && cartResponse.body.total === 0) {
       createCart()
         .then(() => refetch())
         .catch(() => {});
     }
-  }, [cartResponse, createCart, refetch]);
+  }, [cartResponse, createCart, refetch, deleteCart]);
 
-  return { cart: cartResponse?.body?.results?.[0], isPending };
+  return { cart, isPending, addLineItem: addLineItemAndRefetch };
 };

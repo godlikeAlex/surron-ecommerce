@@ -16,7 +16,7 @@ export const useCartCreate = () => {
         .carts()
         .post({
           body: {
-            currency: 'RUR',
+            currency: 'RUB',
           },
         })
         .execute(),
