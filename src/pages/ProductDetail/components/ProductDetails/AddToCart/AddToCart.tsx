@@ -18,7 +18,7 @@ import { notifications } from '@mantine/notifications';
 import { ProductType } from '@/pages/ProductDetail/utils/parseProductData';
 import { useCart } from '@/pages/ProductDetail/hooks/useCart';
 import { ProductVariant } from '@commercetools/platform-sdk';
-import { isVariantInCart } from '@/pages/ProductDetail/utils/isVariantInCart';
+import { getVariantInCart } from '@/pages/ProductDetail/utils/getVariantInCart';
 
 type AddToCartProps = {
   product: ProductType;
@@ -28,27 +28,46 @@ type AddToCartProps = {
 export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
   const [quantity, setQuantity] = useState(1);
 
-  const { cart, addLineItem } = useCart();
+  const { cart, addLineItem, removeLineItem } = useCart();
 
   console.log({ cart });
 
   const variantInCart =
-    cart && selectedVariant
-      ? isVariantInCart(cart, product, selectedVariant)
-      : false;
+    cart && selectedVariant && getVariantInCart(cart, product, selectedVariant);
+
+  const isVariantInCart = !!variantInCart;
 
   const disabled = !selectedVariant;
+
+  const displayQuantity = variantInCart ? variantInCart.quantity : quantity;
 
   const handleAddToCart = async () => {
     if (selectedVariant) {
       await addLineItem(product.id, selectedVariant?.id, quantity);
     }
 
-    console.log({ 'cart after update': cart?.lineItems });
-
     notifications.show({
       title: 'Успешно!',
       message: `Товар "${product.name}" добавлен в корзину (${quantity} шт.)`,
+      color: 'green',
+      icon: <IconCheck size="1.1rem" />,
+      withCloseButton: true,
+      autoClose: 3000,
+    });
+  };
+
+  const handleRemoveFromCart = async () => {
+    if (variantInCart) {
+      const itemId = variantInCart.id;
+
+      if (itemId) {
+        await removeLineItem(itemId);
+      }
+    }
+
+    notifications.show({
+      title: 'Успешно!',
+      message: `Товар "${product.name}" удален из корзины.)`,
       color: 'green',
       icon: <IconCheck size="1.1rem" />,
       withCloseButton: true,
@@ -67,13 +86,13 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
             size={42}
             variant="default"
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            disabled={quantity <= 1 || variantInCart}
+            disabled={quantity <= 1 || isVariantInCart}
           >
             <IconMinus />
           </ActionIcon>
 
           <NumberInput
-            value={quantity}
+            value={displayQuantity}
             onChange={(value) => setQuantity(Number(value) || 1)}
             min={1}
             max={100}
@@ -89,21 +108,21 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
                 borderRight: 'none',
               },
             }}
-            disabled={variantInCart}
+            disabled={isVariantInCart}
           />
 
           <ActionIcon
             size={42}
             variant="default"
             onClick={() => setQuantity((q) => Math.min(100, q + 1))}
-            disabled={quantity >= 100 || variantInCart}
+            disabled={quantity >= 100 || isVariantInCart}
           >
             <IconPlus />
           </ActionIcon>
         </Group>
       </div>
 
-      {!variantInCart ? (
+      {!isVariantInCart ? (
         <Tooltip
           label="Необходимо выбрать тип поставки"
           color="gray"
@@ -139,7 +158,7 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
           gradient={{ from: 'red', to: 'gray', deg: 114 }}
           leftSection={<IconShoppingCart size={20} />}
           onClick={() => {
-            //void handleRemoveFromCart();
+            void handleRemoveFromCart();
           }}
         >
           Удалить из корзины

@@ -22,7 +22,8 @@ export const useCart = () => {
   });
 
   const cart = cartResponse?.body?.results?.[0];
-  const { addLineItem } = useCartUpdate(cart);
+  const { addLineItem, removeLineItem } = useCartUpdate(cart);
+
   const addLineItemAndRefetch = useCallback(
     async (productId: string, variantId: number, quantity: number) => {
       await addLineItem(productId, variantId, quantity);
@@ -31,6 +32,16 @@ export const useCart = () => {
       }
     },
     [addLineItem, refetch]
+  );
+
+  const removeLineItemAndRefetch = useCallback(
+    async (lineItemId: string) => {
+      await removeLineItem(lineItemId);
+      if (refetch) {
+        await refetch();
+      }
+    },
+    [removeLineItem, refetch]
   );
 
   useEffect(() => {
@@ -55,5 +66,10 @@ export const useCart = () => {
     }
   }, [cartResponse, createCart, refetch, deleteCart]);
 
-  return { cart, isPending, addLineItem: addLineItemAndRefetch };
+  return {
+    cart,
+    isPending,
+    addLineItem: addLineItemAndRefetch,
+    removeLineItem: removeLineItemAndRefetch,
+  };
 };
