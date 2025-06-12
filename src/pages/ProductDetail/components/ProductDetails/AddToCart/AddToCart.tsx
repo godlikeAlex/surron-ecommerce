@@ -19,6 +19,7 @@ import { ProductType } from '@/pages/ProductDetail/utils/parseProductData';
 import { useCart } from '@/pages/ProductDetail/hooks/useCart';
 import { ProductVariant } from '@commercetools/platform-sdk';
 import { getVariantInCart } from '@/pages/ProductDetail/utils/getVariantInCart';
+import { getVariantsWithTipPostavki } from '@/pages/ProductDetail/utils/variant';
 
 type AddToCartProps = {
   product: ProductType;
@@ -35,7 +36,10 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
 
   const isVariantInCart = !!variantInCart;
 
-  const disabled = !selectedVariant;
+  const isVariantWithTipPostavki =
+    getVariantsWithTipPostavki(product).length > 0;
+
+  const disabled = !selectedVariant && isVariantWithTipPostavki;
 
   const displayQuantity = variantInCart ? variantInCart.quantity : quantity;
 
