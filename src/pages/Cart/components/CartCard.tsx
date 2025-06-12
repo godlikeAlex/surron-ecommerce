@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Avatar,
+  Button,
   Center,
   Group,
   NumberFormatter,
@@ -95,6 +96,22 @@ export const CartCard = () => {
             thousandSeparator
           />
         </Table.Td>
+        <Table.Td>
+          <Button
+            className={classes.button}
+            onClick={() => {
+              const actions: MyCartUpdateAction[] = [
+                {
+                  action: 'removeLineItem',
+                  lineItemId: row.id,
+                },
+              ];
+              void mutateAsync(actions);
+            }}
+          >
+            ❌
+          </Button>
+        </Table.Td>
       </Table.Tr>
     ));
     return (
@@ -112,6 +129,7 @@ export const CartCard = () => {
               <Table.Th>{isLargeScreen ? 'Цена, ₽' : '💰, ₽'}</Table.Th>
               <Table.Th>{isLargeScreen ? 'Количество' : '📜'}</Table.Th>
               <Table.Th>{isLargeScreen ? 'Стоимость, ₽' : '💲, ₽'}</Table.Th>
+              <Table.Th>{isLargeScreen ? 'Удалить, ₽' : '❌'}</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>

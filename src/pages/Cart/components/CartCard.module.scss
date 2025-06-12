@@ -93,4 +93,16 @@
       }
     }
   }
+
+  .button {
+    padding: 0;
+    opacity: 0.5;
+    background: transparent;
+
+    &:hover,
+    &:active {
+      opacity: 1;
+      background: transparent;
+    }
+  }
 }
