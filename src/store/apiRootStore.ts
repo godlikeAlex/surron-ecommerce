@@ -26,6 +26,10 @@ type ApiRootState = {
   handleRehydrateStorage: () => void;
   version: number;
   setVersion: (version: number) => void;
+  cartId?: string;
+  cartVersion: number;
+  setCartId: (id?: string) => void;
+  setCartVersion: (version: number) => void;
   customer?: Customer;
   cart?: Cart;
   setCart: (cart: Cart) => void;
@@ -42,6 +46,8 @@ export const useApiRootStore = create<ApiRootState>()(
       isLoggedIn: false,
       refreshToken: undefined,
       version: 1,
+      cartId: undefined,
+      cartVersion: 1,
       customer: undefined,
       cart: undefined,
 
@@ -59,6 +65,14 @@ export const useApiRootStore = create<ApiRootState>()(
 
       setVersion: (newVersion) => {
         set({ version: newVersion });
+      },
+
+      setCartId(newId) {
+        if (newId !== get().cartId) set({ cartId: newId });
+      },
+
+      setCartVersion(newVersion) {
+        if (newVersion !== get().cartVersion) set({ cartVersion: newVersion });
       },
 
       setCart: (cart) => {
@@ -115,6 +129,8 @@ export const useApiRootStore = create<ApiRootState>()(
         isLoggedIn: state.isLoggedIn,
         refreshToken: state.refreshToken,
         version: state.version,
+        cartId: state.cartId,
+        cartVersion: state.cartVersion,
       }),
       onRehydrateStorage: (state) => {
         return () => state.handleRehydrateStorage();
