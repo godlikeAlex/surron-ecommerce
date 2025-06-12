@@ -2,7 +2,7 @@ import { Title, Text, Stack, Flex, Button, Group } from '@mantine/core';
 import classes from './ProductDetails.module.scss';
 import { getProductPrice, formatPrice } from '../../utils/price';
 import { ProductType } from '../../utils/parseProductData';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ProductVariant } from '@commercetools/platform-sdk';
 import {
   getVariantsWithTipPostavki,
@@ -24,9 +24,13 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
   const variantsWithTipPostavki = getVariantsWithTipPostavki(product);
   const isVariantWithTipPostavki = variantsWithTipPostavki.length > 0;
 
-  if (!isVariantWithTipPostavki && selectedVariant !== product.variant) {
-    setSelectedVariant(product.variant);
-  }
+  useEffect(() => {
+    if (!isVariantWithTipPostavki) {
+      setSelectedVariant(product.variant);
+    } else {
+      setSelectedVariant(variantsWithTipPostavki[0]);
+    }
+  }, []);
 
   return (
     <Stack
