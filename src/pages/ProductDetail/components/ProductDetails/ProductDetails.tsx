@@ -24,6 +24,10 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
   const variantsWithTipPostavki = getVariantsWithTipPostavki(product);
   const isVariantWithTipPostavki = variantsWithTipPostavki.length > 0;
 
+  if (!isVariantWithTipPostavki && selectedVariant !== product.variant) {
+    setSelectedVariant(product.variant);
+  }
+
   return (
     <Stack
       className={classes.detailsContainer}
