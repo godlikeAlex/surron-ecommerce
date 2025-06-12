@@ -1,6 +1,9 @@
 import { Group, Table, Tabs, Text } from '@mantine/core';
 import { ProductType } from '../../utils/parseProductData';
-import { getVariantAttrLabel } from '../../utils/variant';
+import {
+  getVariantsWithTipPostavki,
+  getVariantAttrLabel,
+} from '../../utils/variant';
 import { specs } from '../../specs/specs';
 
 type ProductDescriptionProps = {
@@ -9,6 +12,8 @@ type ProductDescriptionProps = {
 
 export const ProductDescription = ({ product }: ProductDescriptionProps) => {
   const productSpecs = specs[product.category.id] || null;
+  const variantsWithTipPostavki = getVariantsWithTipPostavki(product);
+  const isVariantWithTipPostavki = variantsWithTipPostavki.length > 0;
 
   return (
     <Tabs color="yellow" defaultValue="gallery">
@@ -49,12 +54,18 @@ export const ProductDescription = ({ product }: ProductDescriptionProps) => {
           <Text span fw={500} mr={'xs'}>
             Тип поставки:
           </Text>
-          {product.variants.map((variant, index) => (
-            <Text span key={variant.key}>
-              {getVariantAttrLabel(variant)}
-              {index < product.variants.length - 1 && ','}
+          {isVariantWithTipPostavki ? (
+            variantsWithTipPostavki.map((variant, index) => (
+              <Text span key={variant.key}>
+                {getVariantAttrLabel(variant)}
+                {index < product.variants.length - 1 && ','}
+              </Text>
+            ))
+          ) : (
+            <Text size="sm" c="dimmed" mb={4}>
+              -
             </Text>
-          ))}
+          )}
         </Group>
       </Tabs.Panel>
     </Tabs>

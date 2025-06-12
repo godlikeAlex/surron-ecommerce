@@ -1,4 +1,5 @@
 import { ProductVariant } from '@commercetools/platform-sdk';
+import { ProductType } from './parseProductData';
 
 export const getVariantAttrLabel = (variant: ProductVariant) => {
   return (
@@ -8,3 +9,8 @@ export const getVariantAttrLabel = (variant: ProductVariant) => {
     }
   ).label;
 };
+
+export const getVariantsWithTipPostavki = (product: ProductType) =>
+  product.variants.filter((v) =>
+    v.attributes?.some(({ name }) => name === 'tip-postavki')
+  );

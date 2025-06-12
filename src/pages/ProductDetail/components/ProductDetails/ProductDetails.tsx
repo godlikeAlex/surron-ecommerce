@@ -4,7 +4,10 @@ import { getProductPrice, formatPrice } from '../../utils/price';
 import { ProductType } from '../../utils/parseProductData';
 import { useState } from 'react';
 import { ProductVariant } from '@commercetools/platform-sdk';
-import { getVariantAttrLabel } from '../../utils/variant';
+import {
+  getVariantsWithTipPostavki,
+  getVariantAttrLabel,
+} from '../../utils/variant';
 import { AddToCart } from './AddToCart/AddToCart';
 
 type ProductDetailsProps = {
@@ -18,6 +21,8 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
 
   const price = getProductPrice(selectedVariant ?? product.variant);
   const formattedPrice = formatPrice(price);
+  const variantsWithTipPostavki = getVariantsWithTipPostavki(product);
+  const isVariantWithTipPostavki = variantsWithTipPostavki.length > 0;
 
   return (
     <Stack
@@ -47,7 +52,7 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
 
         {formattedPrice && (
           <Flex gap="xs" wrap="wrap">
-            {!selectedVariant && (
+            {!selectedVariant && isVariantWithTipPostavki && (
               <Text span size="1.5rem" fw={700}>
                 От{' '}
               </Text>
@@ -83,11 +88,8 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
           Тип поставки
         </Text>
         <Group gap="sm">
-          {product.variants
-            .filter((v) =>
-              v.attributes?.some(({ name }) => name === 'tip-postavki')
-            )
-            .map((variant) => (
+          {isVariantWithTipPostavki ? (
+            variantsWithTipPostavki.map((variant) => (
               <Button
                 key={variant.key}
                 variant={variant === selectedVariant ? 'filled' : 'outline'}
@@ -98,7 +100,12 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
               >
                 {getVariantAttrLabel(variant)}
               </Button>
-            ))}
+            ))
+          ) : (
+            <Text size="sm" c="dimmed" mb={4}>
+              -
+            </Text>
+          )}
         </Group>
       </Stack>
 
