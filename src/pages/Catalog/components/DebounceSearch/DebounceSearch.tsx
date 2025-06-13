@@ -29,7 +29,6 @@ export const DebounceSearch = ({ onSearch, defaultValue, ...props }: Props) => {
       placeholder="Найти товары"
       size="sm"
       leftSection={<IconSearch />}
-      defaultValue={defaultValue || ''}
       value={value}
       onChange={(e) => handleChange(e.target.value)}
       {...props}
