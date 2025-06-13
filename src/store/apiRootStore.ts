@@ -6,6 +6,7 @@ import {
 import { AuthFormValues } from '@/pages/Login/components';
 import {
   ByProjectKeyRequestBuilder,
+  Cart,
   ClientResponse,
   Customer,
   Product,
@@ -25,6 +26,9 @@ type ApiRootState = {
   handleRehydrateStorage: () => void;
   version: number;
   setVersion: (version: number) => void;
+  customer?: Customer;
+  cart?: Cart;
+  setCart: (cart: Cart) => void;
 };
 
 export const LOCAL_STORAGE_KEY = 'surronc-commerce';
@@ -38,6 +42,8 @@ export const useApiRootStore = create<ApiRootState>()(
       isLoggedIn: false,
       refreshToken: undefined,
       version: 1,
+      customer: undefined,
+      cart: undefined,
 
       handleRehydrateStorage: () => {
         const token = get().refreshToken;
@@ -53,6 +59,10 @@ export const useApiRootStore = create<ApiRootState>()(
 
       setVersion: (newVersion) => {
         set({ version: newVersion });
+      },
+
+      setCart: (cart) => {
+        set({ cart });
       },
 
       setLogin: (email, password) => {
@@ -73,6 +83,7 @@ export const useApiRootStore = create<ApiRootState>()(
           isLoggedIn: false,
           refreshToken: undefined,
           apiRoot: getAnonymousApiRoot(),
+          customer: undefined,
         });
         try {
           void get().apiRoot.categories().get().execute();
@@ -89,6 +100,7 @@ export const useApiRootStore = create<ApiRootState>()(
         const customerResponse = await passwordApiRoot.me().get().execute();
         set({
           isLoggedIn: true,
+          customer: customerResponse.body,
         });
         return customerResponse.body;
       },

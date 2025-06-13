@@ -1,5 +1,3 @@
-import { useApiRootStore } from '@/store/apiRootStore';
-import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router';
 import {
   Container,
@@ -20,10 +18,10 @@ import { ProductImages } from './components/ProductImages/ProductImages';
 import { ImageModal } from './components/ImageModal/ImageModal';
 import { ProductDetails } from './components/ProductDetails/ProductDetails';
 import { ProductDescription } from './components';
+import { useProduct } from './hooks/useProduct';
 
 export const ProductDetail = () => {
   const { key } = useParams();
-  const getProductByKey = useApiRootStore((state) => state.getProductByKey);
   const [opened, { open, close }] = useDisclosure(false);
   const [initialSlide, setInitialSlide] = useState(0);
 
@@ -32,16 +30,7 @@ export const ProductDetail = () => {
     open();
   };
 
-  const {
-    data: productResponse,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ['product', key],
-    queryFn: () => (key ? getProductByKey(key) : null),
-    enabled: !!key,
-  });
+  const { productResponse, isLoading, isError, error } = useProduct(key);
 
   const product = productResponse
     ? parseProductData(productResponse.body)
