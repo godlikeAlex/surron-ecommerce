@@ -18,6 +18,7 @@ import { useProductVariants } from '../../hooks/useProductVariants';
 import { IconCheck, IconShoppingBag, IconX } from '@tabler/icons-react';
 import { useCart } from '@/pages/ProductDetail/hooks/useCart';
 import { notifications } from '@mantine/notifications';
+import { getVariantInCart } from '@/pages/ProductDetail/utils/getVariantInCart';
 
 export type ProductCardProps = Pick<
   ProductProjection,
@@ -35,7 +36,7 @@ export const ProductCard = ({
   const productName = name['ru'];
   const productDescription = description ? description['ru'] : undefined;
   const [image] = masterVariant.images || [];
-  const { addLineItem } = useCart();
+  const { addLineItem, cart } = useCart();
 
   const [isImageLoading, setImageLoading] = useState(Boolean(image));
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -51,6 +52,8 @@ export const ProductCard = ({
     masterVariant,
   });
   const [price] = variantPrices || [];
+
+  const variantInCart = cart && getVariantInCart(cart, id, selectedVariantID);
 
   const handleAddToCart = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -162,6 +165,7 @@ export const ProductCard = ({
         variant="light"
         onClick={handleAddToCart}
         loading={isAddingToCart}
+        disabled={Boolean(variantInCart)}
       >
         Добавить в корзину
       </Button>
