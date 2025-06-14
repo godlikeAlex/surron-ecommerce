@@ -42,6 +42,7 @@ const productCardPropsMock = {
     prices: [basicPriceMock],
     images: [{ url: 'https://example.com', dimensions: { w: 120, h: 120 } }],
   },
+  variants: [],
 };
 
 describe('product card component', () => {
