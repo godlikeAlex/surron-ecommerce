@@ -116,21 +116,22 @@ export const useApiRootStore = create<ApiRootState>()(
       },
 
       logIn: async ({ email, password }: AuthFormValues): Promise<Customer> => {
-        await get()
-          .apiRoot.login()
-          .post({
-            body: {
-              email,
-              password,
-              anonymousCartSignInMode: 'MergeWithExistingCustomerCart',
-              anonymousCart: {
-                id: get().cartId,
-                typeId: 'cart',
+        if (get().cartId)
+          await get()
+            .apiRoot.login()
+            .post({
+              body: {
+                email,
+                password,
+                anonymousCartSignInMode: 'MergeWithExistingCustomerCart',
+                anonymousCart: {
+                  id: get().cartId,
+                  typeId: 'cart',
+                },
               },
-            },
-            headers: {},
-          })
-          .execute();
+              headers: {},
+            })
+            .execute();
         const passwordApiRoot = getPasswordApiRoot({
           username: email,
           password,
