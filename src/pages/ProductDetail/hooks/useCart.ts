@@ -1,5 +1,5 @@
 import { useCartCreate } from './useCartCreate';
-import { useApiRootStore } from '@/store/apiRootStore';
+import { apiRootStore, useApiRootStore } from '@/store/apiRootStore';
 import { notifications } from '@mantine/notifications';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef } from 'react';
@@ -35,6 +35,9 @@ export const useCart = () => {
           console.log('[useCart] fetch completed', {
             result: result?.body?.results?.[0],
           });
+          apiRootStore().setTotalCart(
+            result?.body?.results?.[0]?.totalLineItemQuantity ?? 0
+          );
           return result;
         });
     },
