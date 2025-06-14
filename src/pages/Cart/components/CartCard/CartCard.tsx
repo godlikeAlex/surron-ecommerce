@@ -111,9 +111,7 @@ export const CartCard = ({
               >
                 <IconMinus />
               </ActionIcon>
-              <Text className={classes.quantity} truncate>
-                {quantity}
-              </Text>
+              <Text truncate>{quantity}</Text>
               <ActionIcon
                 size={21}
                 variant="default"
