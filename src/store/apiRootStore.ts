@@ -81,19 +81,39 @@ export const useApiRootStore = create<ApiRootState>()(
       },
 
       setLogin: (email, password) => {
-        set({
-          isLoggedIn: true,
-          refreshToken: undefined,
-          apiRoot: getPasswordApiRoot({ username: email, password }),
-        });
         try {
-          const cart = async () => {
-            const response = await get().apiRoot.me().carts().get().execute();
+          const login = async () => {
+            if (get().cartId)
+              await get()
+                .apiRoot.login()
+                .post({
+                  body: {
+                    email,
+                    password,
+                    anonymousCartSignInMode: 'MergeWithExistingCustomerCart',
+                    anonymousCart: {
+                      id: get().cartId,
+                      typeId: 'cart',
+                    },
+                  },
+                  headers: {},
+                })
+                .execute();
             set({
-              totalCart: response.body.results?.[0]?.totalLineItemQuantity ?? 0,
+              isLoggedIn: true,
+              refreshToken: undefined,
+              apiRoot: getPasswordApiRoot({ username: email, password }),
             });
+            const cart = async () => {
+              const response = await get().apiRoot.me().carts().get().execute();
+              set({
+                totalCart:
+                  response.body.results?.[0]?.totalLineItemQuantity ?? 0,
+              });
+            };
+            await cart();
           };
-          void cart();
+          void login();
         } catch (error) {
           if (error) console.log();
         }
