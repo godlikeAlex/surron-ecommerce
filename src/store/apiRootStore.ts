@@ -31,6 +31,8 @@ type ApiRootState = {
   setCart: (cart: Cart) => void;
   totalCart: number;
   setTotalCart: (total: number) => void;
+  cartId: string;
+  setCartId: (cardId: string) => void;
 };
 
 export const LOCAL_STORAGE_KEY = 'surronc-commerce';
@@ -47,6 +49,7 @@ export const useApiRootStore = create<ApiRootState>()(
       customer: undefined,
       cart: undefined,
       totalCart: 0,
+      cartId: '',
 
       handleRehydrateStorage: () => {
         const token = get().refreshToken;
@@ -66,6 +69,11 @@ export const useApiRootStore = create<ApiRootState>()(
 
       setTotalCart: (newTotal) => {
         set({ totalCart: newTotal });
+      },
+
+      setCartId: (newId) => {
+        set({ cartId: newId });
+        console.log(newId);
       },
 
       setCart: (cart) => {
@@ -98,6 +106,7 @@ export const useApiRootStore = create<ApiRootState>()(
           apiRoot: getAnonymousApiRoot(),
           customer: undefined,
           totalCart: 0,
+          cartId: '',
         });
         try {
           void get().apiRoot.categories().get().execute();
@@ -107,6 +116,21 @@ export const useApiRootStore = create<ApiRootState>()(
       },
 
       logIn: async ({ email, password }: AuthFormValues): Promise<Customer> => {
+        await get()
+          .apiRoot.login()
+          .post({
+            body: {
+              email,
+              password,
+              anonymousCartSignInMode: 'MergeWithExistingCustomerCart',
+              anonymousCart: {
+                id: get().cartId,
+                typeId: 'cart',
+              },
+            },
+            headers: {},
+          })
+          .execute();
         const passwordApiRoot = getPasswordApiRoot({
           username: email,
           password,
@@ -137,6 +161,7 @@ export const useApiRootStore = create<ApiRootState>()(
         refreshToken: state.refreshToken,
         version: state.version,
         totalCart: state.totalCart,
+        cartId: state.cartId,
       }),
       onRehydrateStorage: (state) => {
         return () => state.handleRehydrateStorage();
