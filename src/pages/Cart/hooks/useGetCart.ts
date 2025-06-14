@@ -1,4 +1,4 @@
-import { useApiRootStore } from '@/store/apiRootStore';
+import { apiRootStore, useApiRootStore } from '@/store/apiRootStore';
 import { useQuery } from '@tanstack/react-query';
 
 export const useGetCart = () => {
@@ -9,6 +9,9 @@ export const useGetCart = () => {
     queryKey: ['use-get-cart', token],
     queryFn: async () => {
       const response = await apiRoot.me().carts().get().execute();
+      apiRootStore().setTotalCart(
+        response.body.results?.[0]?.totalLineItemQuantity ?? 0
+      );
       return response.body.results;
     },
   });

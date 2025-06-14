@@ -9,6 +9,8 @@ import {
   Modal,
   useMantineTheme,
   Box,
+  UnstyledButton,
+  Text,
 } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import classes from './Header.module.scss';
@@ -16,6 +18,7 @@ import { Link, useLocation } from 'react-router';
 import logo from '@/assets/logo.png';
 import { apiRootStore, useApiRootStore } from '@/store/apiRootStore';
 import { useCallback } from 'react';
+import { IconBasket } from '@tabler/icons-react';
 
 type LinkType = {
   path: string;
@@ -41,12 +44,15 @@ const Header = () => {
   const location = useLocation();
   const [opened, { toggle }] = useDisclosure(false);
   const isLoggedIn = useApiRootStore((state) => state.isLoggedIn);
+  const totalCart = useApiRootStore((state) => state.totalCart);
   const theme = useMantineTheme();
 
   const isLargeScreen = useMediaQuery(`(max-width: ${theme.breakpoints.lg})`);
   const isBetweenSmAndMd = useMediaQuery(
     `(min-width: ${theme.breakpoints.sm}) and (max-width: ${theme.breakpoints.md})`
   );
+
+  const a = { title: 'Taxes', icon: IconBasket, color: '#d4b300' };
 
   const getLinkComponent = (
     link: LinkType,
@@ -123,6 +129,24 @@ const Header = () => {
           <Group gap={isLargeScreen ? 0 : 10} visibleFrom="sm">
             {buttonComponents}
             {logoutButton}
+            <Link to="/cart">
+              <UnstyledButton w={40}>
+                <Text
+                  size="xs"
+                  mt={7}
+                  c="black"
+                  fw={800}
+                  ta={'center'}
+                  style={{ transform: 'translate(5px, 0px)' }}
+                >
+                  {totalCart ? totalCart : null}
+                </Text>
+                <a.icon
+                  color={a.color}
+                  style={{ transform: 'scale(1.5) translate(11.5px, -2px)' }}
+                />
+              </UnstyledButton>
+            </Link>
           </Group>
 
           <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
@@ -146,6 +170,9 @@ const Header = () => {
               {linkComponents}
               {buttonComponents}
               {logoutButton}
+              <Link to="/cart" className={classes.button} onClick={toggle}>
+                Корзина({totalCart})
+              </Link>
             </Flex>
           </Modal>
         </Box>
