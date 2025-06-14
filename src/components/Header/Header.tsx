@@ -48,8 +48,8 @@ const Header = () => {
   const theme = useMantineTheme();
 
   const isLargeScreen = useMediaQuery(`(max-width: ${theme.breakpoints.lg})`);
-  const isBetweenSmAndMd = useMediaQuery(
-    `(min-width: ${theme.breakpoints.sm}) and (max-width: ${theme.breakpoints.md})`
+  const isBetweenSmAndLg = useMediaQuery(
+    `(min-width: ${theme.breakpoints.sm}) and (max-width: ${theme.breakpoints.lg})`
   );
 
   const a = { title: 'Taxes', icon: IconBasket, color: '#d4b300' };
@@ -73,7 +73,7 @@ const Header = () => {
 
   const linkComponents = links.map((link) => {
     if (
-      isBetweenSmAndMd &&
+      isBetweenSmAndLg &&
       [
         '/catalog/sur-ron-hyper-bee',
         '/catalog/sur-ron-light-bee-2025',
