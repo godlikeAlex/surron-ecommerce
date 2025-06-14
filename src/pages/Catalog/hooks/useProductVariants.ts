@@ -22,17 +22,20 @@ export const useProductVariants = ({ masterVariant, variants }: Params) => {
     return matchedVariants;
   }, [variants]);
 
-  const variantPrices = useMemo(() => {
+  const [variantPrices, variantID] = useMemo(() => {
     const targetVariant = typesOfSupply?.find(
       ({ variantKey }) => variantKey === selectedVariant
     );
 
-    if (targetVariant) return targetVariant.prices;
-  }, [typesOfSupply, selectedVariant]);
+    if (targetVariant) return [targetVariant.prices, targetVariant.variantID];
+
+    return [undefined, masterVariant.id];
+  }, [typesOfSupply, selectedVariant, masterVariant]);
 
   return {
     selectedVariant,
     setSelectedVariant,
+    selectedVariantID: variantID,
     typesOfSupply: typesOfSupply?.map((type) => ({
       value: type.variantKey,
       label: type.variantLabel,

@@ -4,10 +4,7 @@ import { z } from 'zod/v4';
 const AttributeSchema = z.discriminatedUnion('name', [
   z.object({
     name: z.literal('tip-postavki'),
-    value: z.discriminatedUnion('key', [
-      z.object({ key: z.literal('v-nalichii'), label: z.string() }),
-      z.object({ key: z.literal('pod-zakaz'), label: z.string() }),
-    ]),
+    value: z.object({ key: z.string(), label: z.string() }),
   }),
   z.object({
     name: z.literal('color'),
@@ -46,6 +43,7 @@ export const extractVariantsWithAttributeTypeOfSupply = (
     if (!typeOfSupplyAttribute) continue;
 
     acceptedVariants.push({
+      variantID: variant.id,
       variantKey: typeOfSupplyAttribute.value.key,
       variantLabel: typeOfSupplyAttribute.value.label,
       prices: variant.prices,
