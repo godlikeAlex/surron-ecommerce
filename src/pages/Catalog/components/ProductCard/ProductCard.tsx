@@ -1,5 +1,6 @@
 import { ProductProjection } from '@commercetools/platform-sdk';
 import {
+  Button,
   Card,
   Divider,
   Flex,
@@ -10,17 +11,21 @@ import {
   Skeleton,
   Text,
 } from '@mantine/core';
-import { useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import classes from './ProductCard.module.scss';
 import { Link } from 'react-router';
 import { useProductVariants } from '../../hooks/useProductVariants';
+import { IconCheck, IconShoppingBag, IconX } from '@tabler/icons-react';
+import { useCart } from '@/pages/ProductDetail/hooks/useCart';
+import { notifications } from '@mantine/notifications';
 
 export type ProductCardProps = Pick<
   ProductProjection,
-  'name' | 'masterVariant' | 'description' | 'variants'
+  'name' | 'masterVariant' | 'description' | 'variants' | 'id'
 > & { productKey: ProductProjection['key'] };
 
 export const ProductCard = ({
+  id,
   name,
   masterVariant,
   description,
@@ -30,16 +35,53 @@ export const ProductCard = ({
   const productName = name['ru'];
   const productDescription = description ? description['ru'] : undefined;
   const [image] = masterVariant.images || [];
+  const { addLineItem } = useCart();
 
   const [isImageLoading, setImageLoading] = useState(Boolean(image));
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-  const { selectedVariant, setSelectedVariant, variantPrices, typesOfSupply } =
-    useProductVariants({
-      variants,
-      masterVariant,
-    });
-
+  const {
+    selectedVariant,
+    selectedVariantID,
+    setSelectedVariant,
+    variantPrices,
+    typesOfSupply,
+  } = useProductVariants({
+    variants,
+    masterVariant,
+  });
   const [price] = variantPrices || [];
+
+  const handleAddToCart = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    if (!selectedVariantID) return;
+
+    setIsAddingToCart(true);
+
+    addLineItem(id, selectedVariantID, 1)
+      .then(() => {
+        notifications.show({
+          title: 'Успешно!',
+          message: `Товар "${productName}" добавлен в корзину`,
+          color: 'green',
+          icon: <IconCheck />,
+          withCloseButton: true,
+          autoClose: 3000,
+        });
+      })
+      .catch(() => {
+        notifications.show({
+          title: 'Ой!',
+          message: `Не получилось добавить товар "${productName}" в корзину`,
+          color: 'red',
+          icon: <IconX />,
+          withCloseButton: true,
+          autoClose: 3000,
+        });
+      })
+      .finally(() => setIsAddingToCart(false));
+  };
 
   return (
     <Card
@@ -65,11 +107,6 @@ export const ProductCard = ({
         </Skeleton>
       </Card.Section>
 
-      {/* <Group mt="md" onClick={(e) => e.stopPropagation()}>
-        <Radio size="xs" checked label="В наличии" value="react" />
-        <Radio size="xs" label="Под заказ" value="nu" />
-      </Group> */}
-
       {typesOfSupply && (
         <SegmentedControl
           size="xs"
@@ -82,7 +119,7 @@ export const ProductCard = ({
         />
       )}
 
-      <Group justify="space-between" mt="md" mb="xs">
+      <Group justify="space-between" mt="md">
         <Text fw={500} fz={'sm'}>
           {productName}
         </Text>
@@ -116,6 +153,18 @@ export const ProductCard = ({
           </Text>
         </Flex>
       )}
+
+      <Button
+        size="xs"
+        color="yellow"
+        rightSection={<IconShoppingBag />}
+        mt="xs"
+        variant="light"
+        onClick={handleAddToCart}
+        loading={isAddingToCart}
+      >
+        Добавить в корзину
+      </Button>
 
       <Divider my={'md'} />
 

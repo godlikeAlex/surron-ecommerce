@@ -34,6 +34,7 @@ const priceWithDiscountMock: Price = {
 };
 
 const productCardPropsMock = {
+  id: '1',
   name: { ru: 'Surron Bike' },
   description: { ru: 'Example Description' },
   productKey: 'surron-bike',
