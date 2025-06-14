@@ -43,7 +43,9 @@ export const CartCard = ({
     (attr) => attr.name === 'tip-postavki'
   )?.value;
   const labelDelivery = isAttribute(attrDelivery) ? attrDelivery.label : null;
-  const price = data.price.value.centAmount;
+  const price = data.price.discounted
+    ? data.price.discounted.value.centAmount
+    : data.price.value.centAmount;
   const totalPrice = data.totalPrice.centAmount;
   const quantity = data.quantity;
   const id = data.id;
