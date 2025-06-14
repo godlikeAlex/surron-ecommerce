@@ -12,6 +12,7 @@ export const useGetCart = () => {
       apiRootStore().setTotalCart(
         response.body.results?.[0]?.totalLineItemQuantity ?? 0
       );
+      apiRootStore().setCartId(response.body.results?.[0]?.id ?? '');
       return response.body.results;
     },
   });

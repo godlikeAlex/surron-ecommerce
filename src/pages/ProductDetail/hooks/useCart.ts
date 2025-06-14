@@ -38,6 +38,9 @@ export const useCart = () => {
           apiRootStore().setTotalCart(
             result?.body?.results?.[0]?.totalLineItemQuantity ?? 0
           );
+          console.log('here');
+          console.log(result.body.results?.[0]?.id ?? '');
+          apiRootStore().setCartId(result.body.results?.[0]?.id ?? '');
           return result;
         });
     },
