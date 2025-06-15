@@ -12,14 +12,14 @@ import {
   IconMinus,
   IconPlus,
   IconShoppingCart,
+  IconX,
 } from '@tabler/icons-react';
 import { useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { ProductType } from '@/pages/ProductDetail/utils/parseProductData';
-import { useCart } from '@/pages/ProductDetail/hooks/useCart';
 import { ProductVariant } from '@commercetools/platform-sdk';
-import { getVariantInCart } from '@/pages/ProductDetail/utils/getVariantInCart';
 import { getVariantsWithTipPostavki } from '@/pages/ProductDetail/utils/variant';
+import { useCart } from '@/hooks/cart/useCart';
 
 type AddToCartProps = {
   product: ProductType;
@@ -29,12 +29,10 @@ type AddToCartProps = {
 export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
   const [quantity, setQuantity] = useState(1);
 
-  const { cart, addLineItem, removeLineItem } = useCart();
+  const cart = useCart();
 
   const variantInCart =
-    cart &&
-    selectedVariant &&
-    getVariantInCart(cart, product.id, selectedVariant.id);
+    selectedVariant && cart.get(product.id, selectedVariant.id);
 
   const isVariantInCart = !!variantInCart;
 
@@ -47,7 +45,11 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
 
   const handleAddToCart = async () => {
     if (selectedVariant) {
-      await addLineItem(product.id, selectedVariant?.id, quantity);
+      await cart.addLineItem({
+        productId: product.id,
+        variantId: selectedVariant.id,
+        quantity,
+      });
     }
 
     notifications.show({
@@ -60,23 +62,35 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
     });
   };
 
-  const handleRemoveFromCart = async () => {
+  const handleRemoveFromCart = () => {
     if (variantInCart) {
       const itemId = variantInCart.id;
 
       if (itemId) {
-        await removeLineItem(itemId);
+        cart
+          .deleteItem(itemId)
+          .then(() => {
+            notifications.show({
+              title: 'Успешно!',
+              message: `Товар "${product.name}" удален из корзины.)`,
+              color: 'green',
+              icon: <IconCheck size="1.1rem" />,
+              withCloseButton: true,
+              autoClose: 3000,
+            });
+          })
+          .catch(() => {
+            notifications.show({
+              title: 'Ой!',
+              message: `Не получилось удалить товар "${product.name}" из корзину`,
+              color: 'red',
+              icon: <IconX />,
+              withCloseButton: true,
+              autoClose: 3000,
+            });
+          });
       }
     }
-
-    notifications.show({
-      title: 'Успешно!',
-      message: `Товар "${product.name}" удален из корзины.)`,
-      color: 'green',
-      icon: <IconCheck size="1.1rem" />,
-      withCloseButton: true,
-      autoClose: 3000,
-    });
   };
 
   return (

@@ -3,6 +3,8 @@ import {
   getPasswordApiRoot,
   getRefreshTokenRoot,
 } from '@/api/commercetools-api';
+import { CART_KEY } from '@/hooks/cart/queries/useActiveCart';
+import { queryClient } from '@/main';
 import { AuthFormValues } from '@/pages/Login/components';
 import {
   ByProjectKeyRequestBuilder,
@@ -87,6 +89,7 @@ export const useApiRootStore = create<ApiRootState>()(
         });
         try {
           void get().apiRoot.categories().get().execute();
+          queryClient.removeQueries({ queryKey: CART_KEY });
         } catch (error) {
           if (error) console.log();
         }
@@ -102,6 +105,9 @@ export const useApiRootStore = create<ApiRootState>()(
           isLoggedIn: true,
           customer: customerResponse.body,
         });
+
+        queryClient.removeQueries({ queryKey: CART_KEY });
+
         return customerResponse.body;
       },
 

@@ -16,7 +16,7 @@ import 'dayjs/locale/ru';
 import './main.scss';
 import '@mantine/carousel/styles.css';
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

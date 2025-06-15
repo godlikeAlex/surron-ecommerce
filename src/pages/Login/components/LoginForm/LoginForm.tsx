@@ -37,7 +37,7 @@ const errorMessages: Record<string, string> = {
 };
 
 export const LoginForm = () => {
-  const { logIn } = useApiRootStore();
+  const { logIn, apiRoot } = useApiRootStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -56,6 +56,18 @@ export const LoginForm = () => {
     setIsSubmitting(true);
 
     try {
+      await apiRoot
+        .me()
+        .login()
+        .post({
+          body: {
+            email: values.email,
+            password: values.password,
+            activeCartSignInMode: 'MergeWithExistingCustomerCart',
+          },
+        })
+        .execute();
+
       const me = await logIn(values);
       notifications.show({
         title: '👋🏻 С возвращением!',

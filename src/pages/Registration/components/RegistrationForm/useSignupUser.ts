@@ -6,9 +6,12 @@ import { getCommercetoolsErrors } from '@/utils/errors/getCommercetoolsErrorMess
 import { ServerErrorValidation } from '@/errors/ServerErrorValidation';
 import { ClientResponse } from '@commercetools/ts-client';
 import { CustomerSignInResult } from '@commercetools/platform-sdk';
+import { useCart } from '@/hooks/cart/useCart';
 
 export const useSignupUser = () => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
+
+  const { cart } = useCart();
 
   const { isPending, error, isError, mutateAsync } = useMutation<
     ClientResponse<CustomerSignInResult>,
@@ -39,6 +42,7 @@ export const useSignupUser = () => {
               defaultBillingAddress: values.billing.useAsDefault
                 ? billingAddressID
                 : undefined,
+              anonymousCart: cart ? { typeId: 'cart', id: cart.id } : undefined,
             },
           })
           .execute();

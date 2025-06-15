@@ -16,9 +16,8 @@ import classes from './ProductCard.module.scss';
 import { Link } from 'react-router';
 import { useProductVariants } from '../../hooks/useProductVariants';
 import { IconCheck, IconShoppingBag, IconX } from '@tabler/icons-react';
-import { useCart } from '@/pages/ProductDetail/hooks/useCart';
 import { notifications } from '@mantine/notifications';
-import { getVariantInCart } from '@/pages/ProductDetail/utils/getVariantInCart';
+import { useCart } from '@/hooks/cart/useCart';
 
 export type ProductCardProps = Pick<
   ProductProjection,
@@ -36,7 +35,7 @@ export const ProductCard = ({
   const productName = name['ru'];
   const productDescription = description ? description['ru'] : undefined;
   const [image] = masterVariant.images || [];
-  const { addLineItem, cart } = useCart();
+  const cart = useCart();
 
   const [isImageLoading, setImageLoading] = useState(Boolean(image));
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -53,7 +52,7 @@ export const ProductCard = ({
   });
   const [price] = variantPrices || [];
 
-  const variantInCart = cart && getVariantInCart(cart, id, selectedVariantID);
+  const variantInCart = cart.has(id, selectedVariantID);
 
   const handleAddToCart = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -62,7 +61,8 @@ export const ProductCard = ({
 
     setIsAddingToCart(true);
 
-    addLineItem(id, selectedVariantID, 1)
+    cart
+      .addLineItem({ productId: id, variantId: selectedVariantID, quantity: 1 })
       .then(() => {
         notifications.show({
           title: 'Успешно!',
