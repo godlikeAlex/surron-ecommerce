@@ -58,7 +58,6 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
       const id = response.data?.body.results?.[0].id || '';
       const version = response.data?.body.results?.[0].version || 1;
       await addLineItem(product.id, selectedVariant?.id, quantity, id, version);
-      console.log(Date.now());
     }
 
     notifications.show({
