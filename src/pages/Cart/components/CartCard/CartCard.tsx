@@ -76,7 +76,7 @@ export const CartCard = ({
         withBorder
         className={classes.card}
       >
-        <Skeleton visible={isImageLoading} w={100}>
+        <Skeleton visible={isImageLoading} className={classes.imageContainer}>
           {image ? (
             <Image
               src={image.url}

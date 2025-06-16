@@ -12,13 +12,49 @@
 
     background-color: var(--mantine-color-body);
 
-    .image {
-      width: 100px;
-      height: 100%;
-      object-fit: cover;
+    .image-container {
+      width: 200px;
+
+      @media screen and (width <= 900px) {
+        width: 140px;
+      }
+
+      @media screen and (width < 768px) {
+        width: 250px;
+      }
+
+      @media screen and (width <= 500px) {
+        width: 150px;
+      }
+
+      @media screen and (width <= 420px) {
+        width: calc(100vw - 80px);
+      }
     }
 
-    @media screen and (width <= 255px) {
+    .image {
+      width: 200px;
+      height: 100%;
+      object-fit: cover;
+
+      @media screen and (width <= 900px) {
+        width: 140px;
+      }
+
+      @media screen and (width < 768px) {
+        width: 250px;
+      }
+
+      @media screen and (width <= 500px) {
+        width: 150px;
+      }
+
+      @media screen and (width <= 420px) {
+        width: calc(100vw - 80px);
+      }
+    }
+
+    @media screen and (width <= 420px) {
       flex-direction: column;
     }
   }

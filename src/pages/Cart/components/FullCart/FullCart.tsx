@@ -17,7 +17,7 @@ export const FullCart = ({
   const { isPending, mutateAsync } = useUpdateCart(refetch);
   return (
     <Skeleton visible={isPending}>
-      <Container py="xl" className={classes.fullCartContainer}>
+      <Container py="xl" className={classes.fullCartContainer} size={1200}>
         <SimpleGrid
           cols={{ base: 1, sm: 2 }}
           spacing={{ base: 'sm', sm: 'md' }}
