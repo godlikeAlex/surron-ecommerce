@@ -33,7 +33,7 @@ export const FullCart = ({
     usePromo(refetch);
   const { deleteCart, isPending: isPendingDelete } = useCartDelete();
   const [value, setValue] = useState('');
-
+  const isDiscounted = Boolean('discountOnTotalPrice' in data[0]);
   const handleMutation = async () => {
     const response = await refetch();
     const id = response.data?.[0].id || '';
@@ -74,16 +74,54 @@ export const FullCart = ({
         </SimpleGrid>
         <Divider my="sm" label="Общие сведения о корзине" />
         <Box className={classes.fullCartBox}>
-          <Flex justify="flex-start" align="baseline" gap={5}>
-            <Text mt="xs" mb="md">
-              Общая стоимость:
-            </Text>
-            <NumberFormatter
-              value={data[0].totalPrice.centAmount / 100 || 0}
-              thousandSeparator
-              suffix="₽"
-            />
-          </Flex>
+          {isDiscounted ? (
+            <>
+              <Text mt="xs" mb="md" fw={800}>
+                Общая стоимость:
+              </Text>
+              <Flex
+                justify="flex-start"
+                align="baseline"
+                gap={5}
+                className={classes.withoutPromo}
+              >
+                <Text mt="xs" mb="md">
+                  Без промо:
+                </Text>
+                <NumberFormatter
+                  value={
+                    (data[0].discountOnTotalPrice?.discountedAmount
+                      .centAmount || 0) / 10 || 0
+                  }
+                  thousandSeparator
+                  suffix="₽"
+                />
+              </Flex>
+              <Flex justify="flex-start" align="baseline" gap={5}>
+                <Text mt="xs" mb="md" fw={600}>
+                  С промо:
+                </Text>
+                <NumberFormatter
+                  value={data[0].totalPrice.centAmount / 100 || 0}
+                  thousandSeparator
+                  suffix="₽"
+                  className={classes.withPromo}
+                />
+              </Flex>
+            </>
+          ) : (
+            <Flex justify="flex-start" align="baseline" gap={5}>
+              <Text mt="xs" mb="md" fw={800}>
+                Общая стоимость:
+              </Text>
+              <NumberFormatter
+                value={data[0].totalPrice.centAmount / 100 || 0}
+                thousandSeparator
+                suffix="₽"
+              />
+            </Flex>
+          )}
+
           <Flex>
             <Button onClick={() => void handleMutation()} color="red">
               Очистить корзину
@@ -94,12 +132,17 @@ export const FullCart = ({
               label="Промокод"
               placeholder="Введите промокод"
               value={value}
+              disabled={isDiscounted}
               onChange={(e) => {
                 setValue(e.target.value);
               }}
             />
-            <Button onClick={() => void applyPromo()} color="yellow">
-              Применить
+            <Button
+              onClick={() => void applyPromo()}
+              color="yellow"
+              disabled={isDiscounted}
+            >
+              {isDiscounted ? 'Применён' : 'Применить'}
             </Button>
           </Flex>
         </Box>

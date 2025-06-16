@@ -1,5 +1,6 @@
 import { useApiRootStore } from '@/store/apiRootStore';
 import { Cart, CartUpdateAction } from '@commercetools/platform-sdk';
+import { notifications } from '@mantine/notifications';
 import {
   QueryObserverResult,
   RefetchOptions,
@@ -36,6 +37,24 @@ export const usePromo = (
     },
     onSuccess: async () => {
       await refetch();
+      notifications.show({
+        title: 'Поздравляем!',
+        message: 'Промокод применён',
+        autoClose: 7000,
+        withCloseButton: true,
+        withBorder: true,
+        color: 'green',
+      });
+    },
+    onError: () => {
+      notifications.show({
+        title: 'Упс!',
+        message: 'Данный промокод не найден',
+        autoClose: 7000,
+        withCloseButton: true,
+        withBorder: true,
+        color: 'red',
+      });
     },
   });
 
