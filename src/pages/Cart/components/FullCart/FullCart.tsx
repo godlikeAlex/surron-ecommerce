@@ -26,9 +26,8 @@ export const FullCart = ({
             <CartCard
               key={item.id}
               data={item}
-              cartId={data[0].id}
-              cartVersion={data[0].version}
               mutateAsync={mutateAsync}
+              refetch={refetch}
             />
           ))}
         </SimpleGrid>

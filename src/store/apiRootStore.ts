@@ -73,7 +73,6 @@ export const useApiRootStore = create<ApiRootState>()(
 
       setCartId: (newId) => {
         set({ cartId: newId });
-        console.log(newId);
       },
 
       setCart: (cart) => {
