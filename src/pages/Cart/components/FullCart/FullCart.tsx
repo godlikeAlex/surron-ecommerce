@@ -1,4 +1,13 @@
-import { Container, SimpleGrid, Skeleton } from '@mantine/core';
+import {
+  Box,
+  Container,
+  Divider,
+  Flex,
+  NumberFormatter,
+  SimpleGrid,
+  Skeleton,
+  Text,
+} from '@mantine/core';
 import classes from './FullCart.module.scss';
 import { Cart } from '@commercetools/platform-sdk';
 import { CartCard } from '../CartCard/CartCard';
@@ -31,6 +40,19 @@ export const FullCart = ({
             />
           ))}
         </SimpleGrid>
+        <Divider my="sm" label="Общие сведения о корзине" />
+        <Box className={classes.fullCartBox}>
+          <Flex justify="flex-start" align="baseline" gap={5}>
+            <Text mt="xs" mb="md">
+              Общая стоимость:
+            </Text>
+            <NumberFormatter
+              value={data[0].totalPrice.centAmount / 100 || 0}
+              thousandSeparator
+              suffix="₽"
+            />
+          </Flex>
+        </Box>
       </Container>
     </Skeleton>
   );
