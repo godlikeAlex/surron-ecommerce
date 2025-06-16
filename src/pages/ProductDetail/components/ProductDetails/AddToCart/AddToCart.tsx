@@ -29,7 +29,14 @@ type AddToCartProps = {
 export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
   const [quantity, setQuantity] = useState(1);
 
-  const { cart, addLineItem, removeLineItem } = useCart();
+  const {
+    cart,
+    addLineItem,
+    removeLineItem,
+    refetch,
+    isPending,
+    pendingUpdate,
+  } = useCart();
 
   const variantInCart =
     cart &&
@@ -47,7 +54,10 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
 
   const handleAddToCart = async () => {
     if (selectedVariant) {
-      await addLineItem(product.id, selectedVariant?.id, quantity);
+      const response = await refetch();
+      const id = response.data?.body.results?.[0].id || '';
+      const version = response.data?.body.results?.[0].version || 1;
+      await addLineItem(product.id, selectedVariant?.id, quantity, id, version);
     }
 
     notifications.show({
@@ -65,7 +75,10 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
       const itemId = variantInCart.id;
 
       if (itemId) {
-        await removeLineItem(itemId);
+        const response = await refetch();
+        const id = response.data?.body.results?.[0].id || '';
+        const version = response.data?.body.results?.[0].version || 1;
+        await removeLineItem(itemId, id, version);
       }
     }
 
@@ -140,7 +153,7 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
             onClick={() => {
               void handleAddToCart();
             }}
-            disabled={disabled}
+            disabled={disabled || isPending || pendingUpdate}
             styles={{
               root: {
                 '&:disabled': {
@@ -161,6 +174,7 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
           variant="gradient"
           gradient={{ from: 'red', to: 'gray', deg: 114 }}
           leftSection={<IconShoppingCart size={20} />}
+          disabled={isPending || pendingUpdate}
           onClick={() => {
             void handleRemoveFromCart();
           }}

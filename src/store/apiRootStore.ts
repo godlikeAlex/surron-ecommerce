@@ -29,6 +29,10 @@ type ApiRootState = {
   customer?: Customer;
   cart?: Cart;
   setCart: (cart: Cart) => void;
+  totalCart: number;
+  setTotalCart: (total: number) => void;
+  cartId: string;
+  setCartId: (cardId: string) => void;
 };
 
 export const LOCAL_STORAGE_KEY = 'surronc-commerce';
@@ -44,6 +48,8 @@ export const useApiRootStore = create<ApiRootState>()(
       version: 1,
       customer: undefined,
       cart: undefined,
+      totalCart: 0,
+      cartId: '',
 
       handleRehydrateStorage: () => {
         const token = get().refreshToken;
@@ -61,18 +67,52 @@ export const useApiRootStore = create<ApiRootState>()(
         set({ version: newVersion });
       },
 
+      setTotalCart: (newTotal) => {
+        set({ totalCart: newTotal });
+      },
+
+      setCartId: (newId) => {
+        set({ cartId: newId });
+      },
+
       setCart: (cart) => {
         set({ cart });
       },
 
       setLogin: (email, password) => {
-        set({
-          isLoggedIn: true,
-          refreshToken: undefined,
-          apiRoot: getPasswordApiRoot({ username: email, password }),
-        });
         try {
-          void get().apiRoot.categories().get().execute();
+          const login = async () => {
+            if (get().cartId)
+              await get()
+                .apiRoot.login()
+                .post({
+                  body: {
+                    email,
+                    password,
+                    anonymousCartSignInMode: 'MergeWithExistingCustomerCart',
+                    anonymousCart: {
+                      id: get().cartId,
+                      typeId: 'cart',
+                    },
+                  },
+                  headers: {},
+                })
+                .execute();
+            set({
+              isLoggedIn: true,
+              refreshToken: undefined,
+              apiRoot: getPasswordApiRoot({ username: email, password }),
+            });
+            const cart = async () => {
+              const response = await get().apiRoot.me().carts().get().execute();
+              set({
+                totalCart:
+                  response.body.results?.[0]?.totalLineItemQuantity ?? 0,
+              });
+            };
+            await cart();
+          };
+          void login();
         } catch (error) {
           if (error) console.log();
         }
@@ -84,6 +124,8 @@ export const useApiRootStore = create<ApiRootState>()(
           refreshToken: undefined,
           apiRoot: getAnonymousApiRoot(),
           customer: undefined,
+          totalCart: 0,
+          cartId: '',
         });
         try {
           void get().apiRoot.categories().get().execute();
@@ -93,6 +135,22 @@ export const useApiRootStore = create<ApiRootState>()(
       },
 
       logIn: async ({ email, password }: AuthFormValues): Promise<Customer> => {
+        if (get().cartId)
+          await get()
+            .apiRoot.login()
+            .post({
+              body: {
+                email,
+                password,
+                anonymousCartSignInMode: 'MergeWithExistingCustomerCart',
+                anonymousCart: {
+                  id: get().cartId,
+                  typeId: 'cart',
+                },
+              },
+              headers: {},
+            })
+            .execute();
         const passwordApiRoot = getPasswordApiRoot({
           username: email,
           password,
@@ -102,6 +160,13 @@ export const useApiRootStore = create<ApiRootState>()(
           isLoggedIn: true,
           customer: customerResponse.body,
         });
+        const cart = async () => {
+          const response = await get().apiRoot.me().carts().get().execute();
+          set({
+            totalCart: response.body.results?.[0]?.totalLineItemQuantity ?? 0,
+          });
+        };
+        void cart();
         return customerResponse.body;
       },
 
@@ -115,6 +180,8 @@ export const useApiRootStore = create<ApiRootState>()(
         isLoggedIn: state.isLoggedIn,
         refreshToken: state.refreshToken,
         version: state.version,
+        totalCart: state.totalCart,
+        cartId: state.cartId,
       }),
       onRehydrateStorage: (state) => {
         return () => state.handleRehydrateStorage();

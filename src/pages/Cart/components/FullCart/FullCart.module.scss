@@ -1,0 +1,24 @@
+:root {
+  --color-yellow-surron-darker: #d4b300;
+}
+
+.full-cart-container {
+  margin-top: 56px;
+}
+
+.full-cart-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.without-promo {
+  color: var(--mantine-color-dimmed);
+  text-decoration: line-through;
+}
+
+.with-promo {
+  font-weight: 600;
+  color: red;
+}
