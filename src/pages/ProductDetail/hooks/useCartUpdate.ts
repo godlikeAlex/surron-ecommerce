@@ -7,7 +7,7 @@ import { useCallback } from 'react';
 export const useCartUpdate = () => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
 
-  const { mutateAsync: updateCart } = useMutation({
+  const { mutateAsync: updateCart, isPending: pendingUpdate } = useMutation({
     mutationFn: ({
       actions,
       id,
@@ -76,5 +76,5 @@ export const useCartUpdate = () => {
     [updateCart]
   );
 
-  return { addLineItem, removeLineItem };
+  return { addLineItem, removeLineItem, pendingUpdate };
 };

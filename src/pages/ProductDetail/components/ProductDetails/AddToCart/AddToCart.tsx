@@ -29,7 +29,14 @@ type AddToCartProps = {
 export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
   const [quantity, setQuantity] = useState(1);
 
-  const { cart, addLineItem, removeLineItem, refetch } = useCart();
+  const {
+    cart,
+    addLineItem,
+    removeLineItem,
+    refetch,
+    isPending,
+    pendingUpdate,
+  } = useCart();
 
   const variantInCart =
     cart &&
@@ -147,7 +154,7 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
             onClick={() => {
               void handleAddToCart();
             }}
-            disabled={disabled}
+            disabled={disabled || isPending || pendingUpdate}
             styles={{
               root: {
                 '&:disabled': {
@@ -168,6 +175,7 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
           variant="gradient"
           gradient={{ from: 'red', to: 'gray', deg: 114 }}
           leftSection={<IconShoppingCart size={20} />}
+          disabled={isPending || pendingUpdate}
           onClick={() => {
             void handleRemoveFromCart();
           }}
