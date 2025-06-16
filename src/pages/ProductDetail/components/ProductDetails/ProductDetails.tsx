@@ -30,11 +30,10 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
     } else {
       setSelectedVariant(variantsWithTipPostavki[0]);
     }
-  }, []);
+  }, [isVariantWithTipPostavki, product.variant, variantsWithTipPostavki]);
 
   return (
     <Stack
-      className={classes.detailsContainer}
       gap="md"
       style={{
         justifyContent: 'space-between',
@@ -48,13 +47,7 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
 
       {/* Price */}
       <div>
-        <Text
-          size="sm"
-          c="dimmed"
-          className={classes.priceLabel}
-          mb="4px"
-          fw={500}
-        >
+        <Text size="sm" c="dimmed" mb="4px" fw={500}>
           Цена
         </Text>
 
