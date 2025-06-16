@@ -36,7 +36,7 @@ export const ProductCard = ({
   const productName = name['ru'];
   const productDescription = description ? description['ru'] : undefined;
   const [image] = masterVariant.images || [];
-  const { addLineItem, cart } = useCart();
+  const { addLineItem, cart, refetch } = useCart();
 
   const [isImageLoading, setImageLoading] = useState(Boolean(image));
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -62,28 +62,35 @@ export const ProductCard = ({
 
     setIsAddingToCart(true);
 
-    addLineItem(id, selectedVariantID, 1)
-      .then(() => {
-        notifications.show({
-          title: 'Успешно!',
-          message: `Товар "${productName}" добавлен в корзину`,
-          color: 'green',
-          icon: <IconCheck />,
-          withCloseButton: true,
-          autoClose: 3000,
-        });
-      })
-      .catch(() => {
-        notifications.show({
-          title: 'Ой!',
-          message: `Не получилось добавить товар "${productName}" в корзину`,
-          color: 'red',
-          icon: <IconX />,
-          withCloseButton: true,
-          autoClose: 3000,
-        });
-      })
-      .finally(() => setIsAddingToCart(false));
+    const handleAddLineItem = async () => {
+      const response = await refetch();
+      const idCart = response.data?.body.results?.[0].id || '';
+      const version = response.data?.body.results?.[0].version || 1;
+
+      addLineItem(id, selectedVariantID, 1, idCart, version)
+        .then(() => {
+          notifications.show({
+            title: 'Успешно!',
+            message: `Товар "${productName}" добавлен в корзину`,
+            color: 'green',
+            icon: <IconCheck />,
+            withCloseButton: true,
+            autoClose: 3000,
+          });
+        })
+        .catch(() => {
+          notifications.show({
+            title: 'Ой!',
+            message: `Не получилось добавить товар "${productName}" в корзину`,
+            color: 'red',
+            icon: <IconX />,
+            withCloseButton: true,
+            autoClose: 3000,
+          });
+        })
+        .finally(() => setIsAddingToCart(false));
+    };
+    void handleAddLineItem();
   };
 
   return (
