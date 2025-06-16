@@ -8,13 +8,16 @@ import {
   SimpleGrid,
   Skeleton,
   Text,
+  TextInput,
 } from '@mantine/core';
 import classes from './FullCart.module.scss';
-import { Cart } from '@commercetools/platform-sdk';
+import { Cart, CartUpdateAction } from '@commercetools/platform-sdk';
 import { CartCard } from '../CartCard/CartCard';
 import { useUpdateCart } from '../../hooks/useUpdateCart';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { useCartDelete } from '@/pages/ProductDetail/hooks/useCartDelete';
+import { usePromo } from '../../hooks/usePromo';
+import { useState } from 'react';
 
 export const FullCart = ({
   data,
@@ -26,7 +29,10 @@ export const FullCart = ({
   ) => Promise<QueryObserverResult<Cart[], Error>>;
 }) => {
   const { isPending, mutateAsync } = useUpdateCart(refetch);
+  const { isPending: isPendingPromo, mutateAsync: promoAsync } =
+    usePromo(refetch);
   const { deleteCart, isPending: isPendingDelete } = useCartDelete();
+  const [value, setValue] = useState('');
 
   const handleMutation = async () => {
     const response = await refetch();
@@ -36,8 +42,22 @@ export const FullCart = ({
     await refetch();
   };
 
+  const applyPromo = async () => {
+    const response = await refetch();
+    const id = response.data?.[0].id || '';
+    const version = response.data?.[0].version || 1;
+    const actions: CartUpdateAction[] = [
+      { action: 'addDiscountCode', code: value },
+    ];
+    try {
+      await promoAsync({ actions, cartId: id, cartVersion: version });
+    } catch (e) {
+      if (e) console.log();
+    }
+  };
+
   return (
-    <Skeleton visible={isPending || isPendingDelete}>
+    <Skeleton visible={isPending || isPendingDelete || isPendingPromo}>
       <Container py="xl" className={classes.fullCartContainer} size={1200}>
         <SimpleGrid
           cols={{ base: 1, sm: 2 }}
@@ -64,9 +84,24 @@ export const FullCart = ({
               suffix="₽"
             />
           </Flex>
-          <Button onClick={() => void handleMutation()} color="red">
-            Очистить корзину
-          </Button>
+          <Flex>
+            <Button onClick={() => void handleMutation()} color="red">
+              Очистить корзину
+            </Button>
+          </Flex>
+          <Flex justify="flex-start" align="flex-end" gap={10}>
+            <TextInput
+              label="Промокод"
+              placeholder="Введите промокод"
+              value={value}
+              onChange={(e) => {
+                setValue(e.target.value);
+              }}
+            />
+            <Button onClick={() => void applyPromo()} color="yellow">
+              Применить
+            </Button>
+          </Flex>
         </Box>
       </Container>
     </Skeleton>
