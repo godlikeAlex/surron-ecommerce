@@ -1,13 +1,12 @@
-import { Cart, ProductVariant } from '@commercetools/platform-sdk';
-import { ProductType } from './parseProductData';
+import { Cart } from '@commercetools/platform-sdk';
 
 export const getVariantInCart = (
   cart: Cart,
-  product: ProductType,
-  variant: ProductVariant
+  productID: string,
+  variantID: number
 ) => {
   const matchingItem = cart.lineItems.find(
-    (item) => item.productId === product.id && item.variant.id === variant.id
+    (item) => item.productId === productID && item.variant.id === variantID
   );
   return matchingItem;
 };

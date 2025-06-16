@@ -34,6 +34,7 @@ const priceWithDiscountMock: Price = {
 };
 
 const productCardPropsMock = {
+  id: '1',
   name: { ru: 'Surron Bike' },
   description: { ru: 'Example Description' },
   productKey: 'surron-bike',
@@ -42,6 +43,7 @@ const productCardPropsMock = {
     prices: [basicPriceMock],
     images: [{ url: 'https://example.com', dimensions: { w: 120, h: 120 } }],
   },
+  variants: [],
 };
 
 describe('product card component', () => {

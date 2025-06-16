@@ -32,7 +32,9 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
   const { cart, addLineItem, removeLineItem } = useCart();
 
   const variantInCart =
-    cart && selectedVariant && getVariantInCart(cart, product, selectedVariant);
+    cart &&
+    selectedVariant &&
+    getVariantInCart(cart, product.id, selectedVariant.id);
 
   const isVariantInCart = !!variantInCart;
 
