@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Container,
   Divider,
   Flex,
@@ -13,6 +14,7 @@ import { Cart } from '@commercetools/platform-sdk';
 import { CartCard } from '../CartCard/CartCard';
 import { useUpdateCart } from '../../hooks/useUpdateCart';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
+import { useCartDelete } from '@/pages/ProductDetail/hooks/useCartDelete';
 
 export const FullCart = ({
   data,
@@ -24,8 +26,18 @@ export const FullCart = ({
   ) => Promise<QueryObserverResult<Cart[], Error>>;
 }) => {
   const { isPending, mutateAsync } = useUpdateCart(refetch);
+  const { deleteCart, isPending: isPendingDelete } = useCartDelete();
+
+  const handleMutation = async () => {
+    const response = await refetch();
+    const id = response.data?.[0].id || '';
+    const version = response.data?.[0].version || 1;
+    await deleteCart({ id, version });
+    await refetch();
+  };
+
   return (
-    <Skeleton visible={isPending}>
+    <Skeleton visible={isPending || isPendingDelete}>
       <Container py="xl" className={classes.fullCartContainer} size={1200}>
         <SimpleGrid
           cols={{ base: 1, sm: 2 }}
@@ -52,6 +64,9 @@ export const FullCart = ({
               suffix="₽"
             />
           </Flex>
+          <Button onClick={() => void handleMutation()} color="red">
+            Очистить корзину
+          </Button>
         </Box>
       </Container>
     </Skeleton>

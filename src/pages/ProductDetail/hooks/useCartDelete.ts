@@ -1,8 +1,7 @@
 import { useApiRootStore } from '@/store/apiRootStore';
-import { Cart } from '@commercetools/platform-sdk';
 import { useMutation } from '@tanstack/react-query';
 
-export const useCartDelete = (cart?: Cart) => {
+export const useCartDelete = () => {
   const apiRoot = useApiRootStore((state) => state.apiRoot);
 
   const {
@@ -10,14 +9,14 @@ export const useCartDelete = (cart?: Cart) => {
     mutateAsync: deleteCart,
     isPending,
   } = useMutation({
-    mutationFn: () =>
+    mutationFn: ({ id, version }: { id: string; version: number }) =>
       apiRoot
         .me()
         .carts()
-        .withId({ ID: cart?.id ?? '' })
+        .withId({ ID: id })
         .delete({
           queryArgs: {
-            version: cart?.version || 1,
+            version: version,
           },
         })
         .execute(),
