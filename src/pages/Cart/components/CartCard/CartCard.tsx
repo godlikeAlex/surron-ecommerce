@@ -11,21 +11,29 @@ import {
   Text,
 } from '@mantine/core';
 import classes from './CartCard.module.scss';
-import { LineItem, MyCartUpdateAction } from '@commercetools/platform-sdk';
+import {
+  Cart,
+  LineItem,
+  MyCartUpdateAction,
+} from '@commercetools/platform-sdk';
 import { useState } from 'react';
 import { IconMinus, IconPlus } from '@tabler/icons-react';
 import { isAttribute } from '../utils/typePredicate';
-import { UseMutateAsyncFunction } from '@tanstack/react-query';
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  UseMutateAsyncFunction,
+} from '@tanstack/react-query';
 
 export const CartCard = ({
   data,
-  cartId,
-  cartVersion,
   mutateAsync,
+  refetch,
 }: {
   data: LineItem;
-  cartId: string;
-  cartVersion: number;
+  refetch: (
+    options?: RefetchOptions
+  ) => Promise<QueryObserverResult<Cart[], Error>>;
   mutateAsync: UseMutateAsyncFunction<
     void,
     Error,
@@ -51,6 +59,13 @@ export const CartCard = ({
   const id = data.id;
 
   const [isImageLoading, setImageLoading] = useState(Boolean(image));
+
+  const handleMutation = async (actions: MyCartUpdateAction[]) => {
+    const response = await refetch();
+    const id = response.data?.[0].id || '';
+    const version = response.data?.[0].version || 1;
+    await mutateAsync({ actions, cartId: id, cartVersion: version });
+  };
 
   return (
     <Box className={classes.cartCard}>
@@ -106,7 +121,7 @@ export const CartCard = ({
                       quantity: quantity - 1,
                     },
                   ];
-                  void mutateAsync({ actions, cartId, cartVersion });
+                  void handleMutation(actions);
                 }}
               >
                 <IconMinus />
@@ -124,7 +139,7 @@ export const CartCard = ({
                       quantity: quantity + 1,
                     },
                   ];
-                  void mutateAsync({ actions, cartId, cartVersion });
+                  void handleMutation(actions);
                 }}
               >
                 <IconPlus />
@@ -150,7 +165,7 @@ export const CartCard = ({
                   lineItemId: id,
                 },
               ];
-              void mutateAsync({ actions, cartId, cartVersion });
+              void handleMutation(actions);
             }}
           >
             Удалить
