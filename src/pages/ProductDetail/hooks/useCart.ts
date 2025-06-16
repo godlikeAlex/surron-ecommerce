@@ -44,7 +44,7 @@ export const useCart = () => {
   }, [customerId]);
 
   const cart = cartResponse?.body?.results?.[0];
-  const { addLineItem, removeLineItem } = useCartUpdate();
+  const { addLineItem, removeLineItem, pendingUpdate } = useCartUpdate();
 
   const addLineItemAndRefetch = useCallback(
     async (
@@ -104,5 +104,6 @@ export const useCart = () => {
     addLineItem: addLineItemAndRefetch,
     removeLineItem: removeLineItemAndRefetch,
     refetch,
+    pendingUpdate,
   };
 };
