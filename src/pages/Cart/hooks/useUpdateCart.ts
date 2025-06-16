@@ -1,5 +1,6 @@
 import { useApiRootStore } from '@/store/apiRootStore';
 import { Cart, MyCartUpdateAction } from '@commercetools/platform-sdk';
+import { notifications } from '@mantine/notifications';
 import {
   QueryObserverResult,
   RefetchOptions,
@@ -37,6 +38,24 @@ export const useUpdateCart = (
     },
     onSuccess: async () => {
       await refetch();
+      notifications.show({
+        title: 'Поздравляем!',
+        message: 'Корзина успешно обновлена',
+        autoClose: 7000,
+        withCloseButton: true,
+        withBorder: true,
+        color: 'green',
+      });
+    },
+    onError: () => {
+      notifications.show({
+        title: 'Упс!',
+        message: 'Корзину обновить не удалось',
+        autoClose: 7000,
+        withCloseButton: true,
+        withBorder: true,
+        color: 'red',
+      });
     },
   });
 
