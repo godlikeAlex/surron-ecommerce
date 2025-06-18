@@ -18,6 +18,7 @@ import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { useCartDelete } from '@/pages/ProductDetail/hooks/useCartDelete';
 import { usePromo } from '../../hooks/usePromo';
 import { useState } from 'react';
+import { notifications } from '@mantine/notifications';
 
 export const FullCart = ({
   data,
@@ -35,11 +36,38 @@ export const FullCart = ({
   const [value, setValue] = useState('');
   const isDiscounted = Boolean('discountOnTotalPrice' in data[0]);
   const handleMutation = async () => {
-    const response = await refetch();
-    const id = response.data?.[0].id || '';
-    const version = response.data?.[0].version || 1;
-    await deleteCart({ id, version });
-    await refetch();
+    try {
+      const response = await refetch();
+      const id = response.data?.[0].id || '';
+      const version = response.data?.[0].version || 1;
+      await deleteCart({ id, version });
+      const newResponse = await refetch();
+      while (
+        newResponse.data?.length &&
+        newResponse.data?.[0].lineItems.length > 0
+      ) {
+        await handleMutation();
+      }
+      notifications.show({
+        title: 'Поздравляем!',
+        message: 'Корзина успешно удалена',
+        autoClose: 7000,
+        withCloseButton: true,
+        withBorder: true,
+        color: 'green',
+      });
+    } catch (error) {
+      if (error) {
+        notifications.show({
+          title: 'Упс!',
+          message: 'Не удалось удалить корзину',
+          autoClose: 7000,
+          withCloseButton: true,
+          withBorder: true,
+          color: 'red',
+        });
+      }
+    }
   };
 
   const applyPromo = async () => {
