@@ -30,7 +30,7 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
     } else {
       setSelectedVariant(variantsWithTipPostavki[0]);
     }
-  }, [isVariantWithTipPostavki, product.variant, variantsWithTipPostavki]);
+  }, []);
 
   return (
     <Stack
