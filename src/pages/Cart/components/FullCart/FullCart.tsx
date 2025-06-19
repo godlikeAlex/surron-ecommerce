@@ -4,6 +4,7 @@ import {
   Container,
   Divider,
   Flex,
+  Modal,
   NumberFormatter,
   SimpleGrid,
   Skeleton,
@@ -19,6 +20,7 @@ import { useCartDelete } from '@/pages/ProductDetail/hooks/useCartDelete';
 import { usePromo } from '../../hooks/usePromo';
 import { useState } from 'react';
 import { notifications } from '@mantine/notifications';
+import { useDisclosure } from '@mantine/hooks';
 
 export const FullCart = ({
   data,
@@ -29,6 +31,7 @@ export const FullCart = ({
     options?: RefetchOptions
   ) => Promise<QueryObserverResult<Cart[], Error>>;
 }) => {
+  const [opened, { open, close }] = useDisclosure(false);
   const { isPending, mutateAsync } = useUpdateCart(refetch);
   const { isPending: isPendingPromo, mutateAsync: promoAsync } =
     usePromo(refetch);
@@ -86,6 +89,23 @@ export const FullCart = ({
 
   return (
     <Skeleton visible={isPending || isPendingDelete || isPendingPromo}>
+      <Modal opened={opened} onClose={close} title="Подтверждение удаления">
+        <Text>Вы действительно хотите очитстить корзину?</Text>
+        <Flex gap={20}>
+          <Button
+            color="red"
+            onClick={() => {
+              close();
+              void handleMutation();
+            }}
+          >
+            Очистить
+          </Button>
+          <Button color="grey" onClick={() => close()}>
+            Отмена
+          </Button>
+        </Flex>
+      </Modal>
       <Container py="xl" className={classes.fullCartContainer} size={1200}>
         <SimpleGrid
           cols={{ base: 1, sm: 2 }}
@@ -151,7 +171,7 @@ export const FullCart = ({
           )}
 
           <Flex>
-            <Button onClick={() => void handleMutation()} color="red">
+            <Button onClick={() => open()} color="red">
               Очистить корзину
             </Button>
           </Flex>
