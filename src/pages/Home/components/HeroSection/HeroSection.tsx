@@ -12,6 +12,7 @@ const links = [
   { path: '/ultra-bee', label: 'ULTRA BEE' },
   { path: '/catalog', label: 'Магазин' },
   { path: '/about', label: 'О нас' },
+  { path: '/profile', label: 'Профиль' },
 ];
 
 const linkItems = links.map((link) => {
@@ -27,7 +28,7 @@ export const HeroSection = () => {
   const isLargeScreen = useMediaQuery(`(min-width: ${theme.breakpoints.lg})`);
 
   return (
-    <Container className={classes.heroContainer}>
+    <Container className={classes.heroContainer} style={{ maxWidth: '1280px' }}>
       <Center>
         <Text
           size={isLargeScreen ? '34' : '24'}

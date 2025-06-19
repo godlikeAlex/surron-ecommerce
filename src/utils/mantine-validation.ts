@@ -98,3 +98,28 @@ export const validatePassword = (value: string) => {
     return 'Добавьте хотя бы один спецсимвол (!@#$%^&*)';
   return null;
 };
+
+export const validateConfirmedPassword = (
+  newPassword: string,
+  confirmedPassword: string
+) => {
+  const trimmed = newPassword.trim();
+
+  if (
+    confirmedPassword !== newPassword &&
+    confirmedPassword.length > 0 &&
+    newPassword.length > 0
+  )
+    return 'Введённые пароли не совпадают';
+  if (trimmed !== newPassword)
+    return 'Уберите пробелы в начале или конце пароля';
+  if (newPassword.length < 8) return 'Пароль должен быть не менее 8 символов';
+  if (!/[A-Z]/.test(newPassword))
+    return 'Добавьте хотя бы одну заглавную букву (A-Z)';
+  if (!/[a-z]/.test(newPassword))
+    return 'Добавьте хотя бы одну строчную букву (a-z)';
+  if (!/[0-9]/.test(newPassword)) return 'Добавьте хотя бы одну цифру (0-9)';
+  if (!/[!@#$%^&*]/.test(newPassword))
+    return 'Добавьте хотя бы один спецсимвол (!@#$%^&*)';
+  return null;
+};

@@ -11,7 +11,7 @@
 
 .header {
   position: fixed;
-  z-index: 888;
+  z-index: 88;
   top: 0;
   left: 0;
 
@@ -75,7 +75,6 @@
       opacity var(--transition);
   }
 
-  /* Ховер-эффект */
   &:hover {
     color: var(--color-yellow-surron-darker);
 
@@ -149,7 +148,7 @@
 
 .header .logout-button,
 .fullscreen-menu .logout-button {
-  height: 32px;
+  height: 40px;
   padding: 8px 12px;
 
   font-size: var(--mantine-font-size-md);

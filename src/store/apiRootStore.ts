@@ -6,7 +6,9 @@ import {
 import { AuthFormValues } from '@/pages/Login/components';
 import {
   ByProjectKeyRequestBuilder,
+  ClientResponse,
   Customer,
+  Product,
 } from '@commercetools/platform-sdk';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -19,7 +21,10 @@ type ApiRootState = {
   setLogin: (email: string, password: string) => void;
   setLogout: () => void;
   logIn: (user: { email: string; password: string }) => Promise<Customer>;
+  getProductByKey: (productKey: string) => Promise<ClientResponse<Product>>;
   handleRehydrateStorage: () => void;
+  version: number;
+  setVersion: (version: number) => void;
 };
 
 export const LOCAL_STORAGE_KEY = 'surronc-commerce';
@@ -32,6 +37,7 @@ export const useApiRootStore = create<ApiRootState>()(
       apiRoot: initialAnonymousApiRoot,
       isLoggedIn: false,
       refreshToken: undefined,
+      version: 1,
 
       handleRehydrateStorage: () => {
         const token = get().refreshToken;
@@ -43,6 +49,10 @@ export const useApiRootStore = create<ApiRootState>()(
       setRefreshToken: (token) => {
         if (token && token !== get().refreshToken)
           set({ refreshToken: token, apiRoot: getRefreshTokenRoot(token) });
+      },
+
+      setVersion: (newVersion) => {
+        set({ version: newVersion });
       },
 
       setLogin: (email, password) => {
@@ -72,19 +82,19 @@ export const useApiRootStore = create<ApiRootState>()(
       },
 
       logIn: async ({ email, password }: AuthFormValues): Promise<Customer> => {
-        // 1. Получение рефреш токена через пассворд флоу
         const passwordApiRoot = getPasswordApiRoot({
           username: email,
           password,
         });
-        // пробуем сделать запрос с заданными логином и паролем, если всё получится, через tokenCache произойдет обновление refreshToken и мы его заберем из стейта
         const customerResponse = await passwordApiRoot.me().get().execute();
         set({
           isLoggedIn: true,
         });
-        // 5. Вернуть клиент? Может быть возвращать не клиент, а пользователя, а клиент брать отдельным вызовом
         return customerResponse.body;
       },
+
+      getProductByKey: (productKey: string) =>
+        get().apiRoot.products().withKey({ key: productKey }).get().execute(),
     }),
 
     {
@@ -92,6 +102,7 @@ export const useApiRootStore = create<ApiRootState>()(
       partialize: (state) => ({
         isLoggedIn: state.isLoggedIn,
         refreshToken: state.refreshToken,
+        version: state.version,
       }),
       onRehydrateStorage: (state) => {
         return () => state.handleRehydrateStorage();

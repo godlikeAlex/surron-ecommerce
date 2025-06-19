@@ -15,7 +15,8 @@
 
     /* Aliases */
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@modules-mocks/*": ["./__mocks__/*"]
     },
 
     /* Bundler mode */
@@ -33,5 +34,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src", "__mocks__"]
 }

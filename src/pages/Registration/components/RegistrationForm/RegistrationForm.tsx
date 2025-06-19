@@ -131,7 +131,7 @@ const RegistrationForm = () => {
 
   const handleSubmit = async (values: FormValues) => {
     try {
-      const result = await signupUser.handleSignup(values);
+      await signupUser.handleSignup(values);
       setLogin(values.email, values.password);
       notifications.show({
         title: '👋🏻 Добро пожаловать!',
@@ -140,7 +140,6 @@ const RegistrationForm = () => {
         withCloseButton: true,
         withBorder: true,
       });
-      console.log('SIGNUP USER RESULT', result);
     } catch (error) {
       if (error instanceof ServerErrorValidation) {
         error.response.errors.forEach(({ field, message }) => {
