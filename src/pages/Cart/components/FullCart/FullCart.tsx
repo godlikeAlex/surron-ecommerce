@@ -146,8 +146,9 @@ export const FullCart = ({
                 </Text>
                 <NumberFormatter
                   value={
-                    (data[0].discountOnTotalPrice?.discountedAmount
-                      .centAmount || 0) / 10 || 0
+                    ((data[0].discountOnTotalPrice?.discountedAmount
+                      .centAmount || 0) / 100 || 0) +
+                    (data[0].totalPrice.centAmount / 100 || 0)
                   }
                   thousandSeparator
                   suffix="₽"
