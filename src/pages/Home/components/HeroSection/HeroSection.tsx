@@ -1,33 +1,27 @@
-import { Center, Text, useMantineTheme, Container } from '@mantine/core';
+import { Text, Container, Title, Button, Box } from '@mantine/core';
 import classes from './HeroSection.module.scss';
-import { useMediaQuery } from '@mantine/hooks';
+import { Link } from 'react-router';
 
 export const HeroSection = () => {
-  const theme = useMantineTheme();
-  const isLargeScreen = useMediaQuery(`(min-width: ${theme.breakpoints.lg})`);
-
   return (
-    <Container className={classes.heroContainer} style={{ maxWidth: '1280px' }}>
-      <Center>
-        <Text
-          size={isLargeScreen ? '34' : '24'}
-          fw={900}
-          variant="gradient"
-          gradient={{ from: 'pink', to: 'yellow', deg: 90 }}
-        >
-          Добро пожаловать на сайт
+    <Box className={classes.heroSection}>
+      <Container className={classes.heroSectionContent} size="xl">
+        <Title order={2}>
+          Максимальная скорость и полный контроль в твоих руках.
+        </Title>
+        <Title order={2}>
+          Скидка — до 20%{' '}
+          <span style={{ color: '#FAB007' }}>только сегодня.</span>
+        </Title>
+        <Text mt={'xs'} style={{ maxWidth: '50%' }} opacity={0.8}>
+          Легкий, мощный, бесшумный — твой байк готов к любому маршруту. И
+          сейчас ты можешь получить его по лучшей цене года. Осталось лишь
+          нажать на газ.
         </Text>
-      </Center>
-      <Center>
-        <Text size={'16'} fw={600} c="black">
-          Воспользуйтесь нашим промокодом:
-        </Text>
-      </Center>
-      <Center>
-        <Text size={'36'} fw={600} c="red">
-          PROMO
-        </Text>
-      </Center>
-    </Container>
+        <Button component={Link} to={'/catalog'} mt={'lg'} color="yellow">
+          Забрать свой байк
+        </Button>
+      </Container>
+    </Box>
   );
 };

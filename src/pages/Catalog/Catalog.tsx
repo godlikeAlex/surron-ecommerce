@@ -76,7 +76,7 @@ export const Catalog = () => {
   if (isIncorectCategoriesPath && !isProductsLoading) return <NotFound />;
 
   return (
-    <Container className={classes.catalogContainer} size="xl">
+    <Container className={classes.catalogContainer} size="xl" mb={'xl'}>
       <Grid>
         <Grid.Col span={12} mb="lg">
           {categoriesIsPending ? (
