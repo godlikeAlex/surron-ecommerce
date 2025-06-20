@@ -83,7 +83,15 @@ export const FullCart = ({
     try {
       await promoAsync({ actions, cartId: id, cartVersion: version });
     } catch (e) {
-      if (e) console.log();
+      if (e)
+        notifications.show({
+          title: 'Упс!',
+          message: 'Данный промокод не найден',
+          autoClose: 7000,
+          withCloseButton: true,
+          withBorder: true,
+          color: 'red',
+        });
     }
   };
 
