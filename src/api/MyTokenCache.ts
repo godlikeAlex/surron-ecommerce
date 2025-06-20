@@ -18,6 +18,9 @@ export class MyTokenCache implements TokenCache {
 
   public set(tokenStore: TokenStore) {
     this.#tokenStore = tokenStore;
-    apiRootStore().setRefreshToken(tokenStore.refreshToken);
+    apiRootStore().setRefreshToken(
+      tokenStore.refreshToken,
+      Date.now() + tokenStore.expirationTime * 1000
+    );
   }
 }
