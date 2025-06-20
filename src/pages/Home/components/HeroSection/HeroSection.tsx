@@ -10,8 +10,8 @@ export const HeroSection = () => {
           Максимальная скорость и полный контроль в твоих руках.
         </Title>
         <Title order={2}>
-          Скидка — до 20%{' '}
-          <span style={{ color: '#FAB007' }}>только сегодня.</span>
+          Скидка — 10% По промокоду{' '}
+          <span style={{ color: '#FAB007' }}>PROMO</span>
         </Title>
         <Text mt={'xs'} style={{ maxWidth: '50%' }} opacity={0.8}>
           Легкий, мощный, бесшумный — твой байк готов к любому маршруту. И
