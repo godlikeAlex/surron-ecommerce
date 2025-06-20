@@ -52,7 +52,7 @@ const Header = () => {
     `(min-width: ${theme.breakpoints.sm}) and (max-width: ${theme.breakpoints.lg})`
   );
 
-  const a = { title: 'Taxes', icon: IconBasket, color: '#d4b300' };
+  const cartIcon = { title: 'Корзина', icon: IconBasket, color: '#d4b300' };
 
   const getLinkComponent = (
     link: LinkType,
@@ -141,8 +141,8 @@ const Header = () => {
                 >
                   {totalCart ? totalCart : null}
                 </Text>
-                <a.icon
-                  color={a.color}
+                <cartIcon.icon
+                  color={cartIcon.color}
                   style={{ transform: 'scale(1.5) translate(11.5px, -2px)' }}
                 />
               </UnstyledButton>
