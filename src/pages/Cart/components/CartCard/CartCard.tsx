@@ -130,7 +130,7 @@ export const CartCard = ({
               <ActionIcon
                 size={21}
                 variant="default"
-                disabled={quantity >= 10}
+                disabled={quantity >= 100}
                 onClick={() => {
                   const actions: MyCartUpdateAction[] = [
                     {
