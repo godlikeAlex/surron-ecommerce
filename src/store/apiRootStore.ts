@@ -11,6 +11,7 @@ import {
   Customer,
   Product,
 } from '@commercetools/platform-sdk';
+import { notifications } from '@mantine/notifications';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -61,6 +62,14 @@ export const useApiRootStore = create<ApiRootState>()(
         }
         if (!tokenExpTime || Date.now() >= tokenExpTime) {
           get().setLogout();
+          notifications.show({
+            title: 'Упс!',
+            message: 'Время сессии истекло',
+            autoClose: 7000,
+            withCloseButton: true,
+            withBorder: true,
+            color: 'red',
+          });
         }
       },
 
