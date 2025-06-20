@@ -1,0 +1,11 @@
+.base-section {
+  padding-block: 5rem;
+
+  &:nth-child(odd) {
+    background-color: rgb(251 251 251);
+  }
+
+  &__info {
+    text-align: center;
+  }
+}

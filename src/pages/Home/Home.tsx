@@ -1,5 +1,11 @@
-import { HeroSection } from './components';
+import { BestProductsSection, HeroSection, OurAdvantages } from './components';
 
-const Home = () => <HeroSection />;
+const Home = () => (
+  <>
+    <HeroSection />
+    <OurAdvantages />
+    <BestProductsSection />
+  </>
+);
 
 export default Home;
