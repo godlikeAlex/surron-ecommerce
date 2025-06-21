@@ -13,7 +13,8 @@
   align-items: center;
   justify-content: center;
 
-  height: 75vh;
+  min-height: 75vh;
+  padding-block: 50px;
 
   background: url('/src/assets/backgrounds/bg-3.webp');
   background-position: bottom;
@@ -35,5 +36,13 @@
   &__content {
     position: relative;
     z-index: 1;
+  }
+
+  &__description {
+    max-width: 50%;
+
+    @media (width <= 720px) {
+      max-width: 100%;
+    }
   }
 }
