@@ -57,19 +57,21 @@ export const useApiRootStore = create<ApiRootState>()(
       handleRehydrateStorage: () => {
         const token = get().refreshToken;
         const tokenExpTime = get().refreshTokenExpTime;
+        const wasLoggedIn = get().isLoggedIn;
         if (token) {
           set({ apiRoot: getRefreshTokenRoot(token) });
         }
         if (!tokenExpTime || Date.now() >= tokenExpTime) {
           get().setLogout();
-          notifications.show({
-            title: 'Упс!',
-            message: 'Время сессии истекло',
-            autoClose: 7000,
-            withCloseButton: true,
-            withBorder: true,
-            color: 'red',
-          });
+          if (wasLoggedIn)
+            notifications.show({
+              title: 'Упс!',
+              message: 'Время сессии истекло',
+              autoClose: 7000,
+              withCloseButton: true,
+              withBorder: true,
+              color: 'red',
+            });
         }
       },
 
