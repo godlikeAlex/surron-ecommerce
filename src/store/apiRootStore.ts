@@ -11,6 +11,7 @@ import {
   Customer,
   Product,
 } from '@commercetools/platform-sdk';
+import { notifications } from '@mantine/notifications';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -18,7 +19,8 @@ type ApiRootState = {
   apiRoot: ByProjectKeyRequestBuilder;
   isLoggedIn: boolean;
   refreshToken?: string;
-  setRefreshToken: (token?: string) => void;
+  setRefreshToken: (token?: string, time?: number) => void;
+  refreshTokenExpTime?: number;
   setLogin: (email: string, password: string) => void;
   setLogout: () => void;
   logIn: (user: { email: string; password: string }) => Promise<Customer>;
@@ -45,6 +47,7 @@ export const useApiRootStore = create<ApiRootState>()(
       apiRoot: initialAnonymousApiRoot,
       isLoggedIn: false,
       refreshToken: undefined,
+      refreshTokenExpTime: 0,
       version: 1,
       customer: undefined,
       cart: undefined,
@@ -53,14 +56,33 @@ export const useApiRootStore = create<ApiRootState>()(
 
       handleRehydrateStorage: () => {
         const token = get().refreshToken;
+        const tokenExpTime = get().refreshTokenExpTime;
+        const wasLoggedIn = get().isLoggedIn;
         if (token) {
           set({ apiRoot: getRefreshTokenRoot(token) });
         }
+        if (!tokenExpTime || Date.now() >= tokenExpTime) {
+          get().setLogout();
+          if (wasLoggedIn)
+            notifications.show({
+              title: 'Упс!',
+              message: 'Время сессии истекло',
+              autoClose: 7000,
+              withCloseButton: true,
+              withBorder: true,
+              color: 'red',
+            });
+        }
       },
 
-      setRefreshToken: (token) => {
-        if (token && token !== get().refreshToken)
-          set({ refreshToken: token, apiRoot: getRefreshTokenRoot(token) });
+      setRefreshToken: (token, time) => {
+        if (token && token !== get().refreshToken) {
+          set({
+            refreshToken: token,
+            apiRoot: getRefreshTokenRoot(token),
+            refreshTokenExpTime: time,
+          });
+        }
       },
 
       setVersion: (newVersion) => {
@@ -182,6 +204,7 @@ export const useApiRootStore = create<ApiRootState>()(
         version: state.version,
         totalCart: state.totalCart,
         cartId: state.cartId,
+        refreshTokenExpTime: state.refreshTokenExpTime,
       }),
       onRehydrateStorage: (state) => {
         return () => state.handleRehydrateStorage();
