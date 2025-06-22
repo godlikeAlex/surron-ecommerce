@@ -46,17 +46,6 @@ export const usePromo = (
         color: 'green',
       });
     },
-    onError: () => {
-      notifications.show({
-        title: 'Упс!',
-        message: 'Данный промокод не найден',
-        autoClose: 7000,
-        withCloseButton: true,
-        withBorder: true,
-        color: 'red',
-      });
-    },
   });
-
   return { isPending, mutateAsync };
 };

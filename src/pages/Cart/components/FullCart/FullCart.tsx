@@ -83,7 +83,15 @@ export const FullCart = ({
     try {
       await promoAsync({ actions, cartId: id, cartVersion: version });
     } catch (e) {
-      if (e) console.log();
+      if (e)
+        notifications.show({
+          title: 'Упс!',
+          message: 'Данный промокод не найден',
+          autoClose: 7000,
+          withCloseButton: true,
+          withBorder: true,
+          color: 'red',
+        });
     }
   };
 
@@ -138,8 +146,9 @@ export const FullCart = ({
                 </Text>
                 <NumberFormatter
                   value={
-                    (data[0].discountOnTotalPrice?.discountedAmount
-                      .centAmount || 0) / 10 || 0
+                    ((data[0].discountOnTotalPrice?.discountedAmount
+                      .centAmount || 0) / 100 || 0) +
+                    (data[0].totalPrice.centAmount / 100 || 0)
                   }
                   thousandSeparator
                   suffix="₽"

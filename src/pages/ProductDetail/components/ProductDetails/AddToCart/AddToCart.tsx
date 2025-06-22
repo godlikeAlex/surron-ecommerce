@@ -35,7 +35,7 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
     removeLineItem,
     refetch,
     isPending,
-    pendingUpdate,
+    isPendingUpdate,
   } = useCart();
 
   const variantInCart =
@@ -153,7 +153,7 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
             onClick={() => {
               void handleAddToCart();
             }}
-            disabled={disabled || isPending || pendingUpdate}
+            disabled={disabled || isPending || isPendingUpdate}
             styles={{
               root: {
                 '&:disabled': {
@@ -174,7 +174,7 @@ export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
           variant="gradient"
           gradient={{ from: 'red', to: 'gray', deg: 114 }}
           leftSection={<IconShoppingCart size={20} />}
-          disabled={isPending || pendingUpdate}
+          disabled={isPending || isPendingUpdate}
           onClick={() => {
             void handleRemoveFromCart();
           }}
