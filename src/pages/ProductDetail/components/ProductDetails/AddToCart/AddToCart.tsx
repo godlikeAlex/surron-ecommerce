@@ -16,24 +16,76 @@ import {
 import { useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { ProductType } from '@/pages/ProductDetail/utils/parseProductData';
+import { useCart } from '@/pages/ProductDetail/hooks/useCart';
+import { ProductVariant } from '@commercetools/platform-sdk';
+import { getVariantInCart } from '@/pages/ProductDetail/utils/getVariantInCart';
+import { getVariantsWithTipPostavki } from '@/pages/ProductDetail/utils/variant';
 
 type AddToCartProps = {
   product: ProductType;
-  disabled: boolean;
+  selectedVariant: ProductVariant | null;
 };
 
-export const AddToCart = ({ product, disabled }: AddToCartProps) => {
+export const AddToCart = ({ product, selectedVariant }: AddToCartProps) => {
   const [quantity, setQuantity] = useState(1);
 
-  const handleAddToCart = (qty: number) => {
-    //addToCart(product.id, qty);
+  const {
+    cart,
+    addLineItem,
+    removeLineItem,
+    refetch,
+    isPending,
+    isPendingUpdate,
+  } = useCart();
 
-    console.log(`Добавлено ${qty} товара(ов)`);
+  const variantInCart =
+    cart &&
+    selectedVariant &&
+    getVariantInCart(cart, product.id, selectedVariant.id);
+
+  const isVariantInCart = !!variantInCart;
+
+  const isVariantWithTipPostavki =
+    getVariantsWithTipPostavki(product).length > 0;
+
+  const disabled = !selectedVariant && isVariantWithTipPostavki;
+
+  const displayQuantity = variantInCart ? variantInCart.quantity : quantity;
+
+  const handleAddToCart = async () => {
+    if (selectedVariant) {
+      const response = await refetch();
+      const id = response.data?.body.results?.[0].id || '';
+      const version = response.data?.body.results?.[0].version || 1;
+      await addLineItem(product.id, selectedVariant?.id, quantity, id, version);
+    }
 
     notifications.show({
       title: 'Успешно!',
-      message: `Товар "${product.name}" добавлен в корзину (${qty} шт.)`,
-      color: 'teal',
+      message: `Товар "${product.name}" добавлен в корзину (${quantity} шт.)`,
+      color: 'green',
+      icon: <IconCheck size="1.1rem" />,
+      withCloseButton: true,
+      autoClose: 3000,
+    });
+  };
+
+  const handleRemoveFromCart = async () => {
+    if (variantInCart) {
+      const itemId = variantInCart.id;
+
+      if (itemId) {
+        const response = await refetch();
+        const id = response.data?.body.results?.[0].id || '';
+        const version = response.data?.body.results?.[0].version || 1;
+        await removeLineItem(itemId, id, version);
+      }
+    }
+
+    notifications.show({
+      title: 'Успешно!',
+      message: `Товар "${product.name}" удален из корзины.)`,
+      color: 'green',
       icon: <IconCheck size="1.1rem" />,
       withCloseButton: true,
       autoClose: 3000,
@@ -51,13 +103,13 @@ export const AddToCart = ({ product, disabled }: AddToCartProps) => {
             size={42}
             variant="default"
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            disabled={quantity <= 1}
+            disabled={quantity <= 1 || isVariantInCart}
           >
             <IconMinus />
           </ActionIcon>
 
           <NumberInput
-            value={quantity}
+            value={displayQuantity}
             onChange={(value) => setQuantity(Number(value) || 1)}
             min={1}
             max={100}
@@ -73,45 +125,63 @@ export const AddToCart = ({ product, disabled }: AddToCartProps) => {
                 borderRight: 'none',
               },
             }}
+            disabled={isVariantInCart}
           />
 
           <ActionIcon
             size={42}
             variant="default"
-            onClick={() => setQuantity((q) => Math.min(100, q + 1))}
-            disabled={quantity >= 100}
+            onClick={() => setQuantity((q) => Math.min(10, q + 1))}
+            disabled={quantity >= 10 || isVariantInCart}
           >
             <IconPlus />
           </ActionIcon>
         </Group>
       </div>
 
-      <Tooltip
-        label="Необходимо выбрать тип поставки"
-        color="gray"
-        disabled={!disabled}
-      >
+      {!isVariantInCart ? (
+        <Tooltip
+          label="Необходимо выбрать тип поставки"
+          color="gray"
+          disabled={!disabled}
+        >
+          <Button
+            size="md"
+            variant="gradient"
+            gradient={{ from: 'cyan', to: 'yellow', deg: 114 }}
+            leftSection={<IconShoppingCart size={20} />}
+            onClick={() => {
+              void handleAddToCart();
+            }}
+            disabled={disabled || isPending || isPendingUpdate}
+            styles={{
+              root: {
+                '&:disabled': {
+                  background:
+                    'linear-gradient(114deg, var(--mantine-color-cyan-6), var(--mantine-color-yellow-6))',
+                  opacity: 0.6,
+                  cursor: 'not-allowed',
+                },
+              },
+            }}
+          >
+            В корзину
+          </Button>
+        </Tooltip>
+      ) : (
         <Button
           size="md"
           variant="gradient"
-          gradient={{ from: 'cyan', to: 'yellow', deg: 114 }}
+          gradient={{ from: 'red', to: 'gray', deg: 114 }}
           leftSection={<IconShoppingCart size={20} />}
-          onClick={() => handleAddToCart(quantity)}
-          disabled={disabled}
-          styles={{
-            root: {
-              '&:disabled': {
-                background:
-                  'linear-gradient(114deg, var(--mantine-color-cyan-6), var(--mantine-color-yellow-6))',
-                opacity: 0.6,
-                cursor: 'not-allowed',
-              },
-            },
+          disabled={isPending || isPendingUpdate}
+          onClick={() => {
+            void handleRemoveFromCart();
           }}
         >
-          В корзину
+          Удалить из корзины
         </Button>
-      </Tooltip>
+      )}
     </Group>
   );
 };

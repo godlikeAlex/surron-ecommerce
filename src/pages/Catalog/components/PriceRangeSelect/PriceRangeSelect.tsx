@@ -81,6 +81,7 @@ const PriceRangeSelect = ({ min, max, initialValues, onChange }: Props) => {
       </Flex>
       <RangeSlider
         mt="xs"
+        color="yellow"
         name="price-slider"
         label={null}
         minRange={100}
