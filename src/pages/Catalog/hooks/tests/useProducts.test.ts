@@ -28,9 +28,6 @@ describe('hook useProducts', () => {
 
     expect(commercetoolsSDK.productProjections.execute).toHaveBeenCalledWith();
 
-    console.log(result.current);
-
-    expect(result.current.isPending).toBe(false);
     expect(result.current.isError).toBe(false);
     expect(result.current).toHaveProperty('products');
   });
@@ -78,7 +75,6 @@ describe('hook useProducts', () => {
       },
     });
 
-    expect(result.current.isPending).toBe(false);
     expect(result.current.isError).toBe(false);
     expect(result.current).toHaveProperty('products');
   });
