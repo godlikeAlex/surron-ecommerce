@@ -70,7 +70,7 @@ export const SidebarFilters = ({
                 size="compact-xs"
                 variant="light"
                 disabled={priceRange === undefined}
-                onClick={() => deleteCatalogQueryParams(['rangePrice'])}
+                onClick={() => deleteCatalogQueryParams(['priceRange'])}
                 color="red"
               >
                 Сбросить
@@ -78,9 +78,7 @@ export const SidebarFilters = ({
             }
           >
             <PriceRangeSelect
-              onChange={({ from, to }) =>
-                setCatalogQueryParams({ rangePrice: [from, to] })
-              }
+              onChange={(priceRange) => setCatalogQueryParams({ priceRange })}
               initialValues={
                 priceRange ?? { from: filters.price.min, to: filters.price.max }
               }

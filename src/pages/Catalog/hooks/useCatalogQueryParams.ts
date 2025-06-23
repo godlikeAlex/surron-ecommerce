@@ -1,48 +1,82 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router';
+import { z } from 'zod/v4';
 
-type CatalogQueryParams = {
-  page?: number;
-  sort?: string;
-  rangePrice?: [number, number];
-  colors?: string[];
-  chargeTime?: string[];
-  search?: string;
-};
+export const SortSchema = z
+  .literal(['price desc', 'price asc', 'name.ru asc'])
+  .nullable()
+  .transform((sort) => sort ?? 'name.ru asc');
+
+const CalagQueryParamsSchema = z.object({
+  page: z
+    .preprocess(
+      (page) => (typeof page === 'string' ? Number(page) : undefined),
+      z.int().min(1)
+    )
+    .optional()
+    .nullable(),
+  sort: SortSchema,
+  search: z
+    .string()
+    .nullable()
+    .optional()
+    .transform((search) => search ?? ''),
+  colors: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((colors) => {
+      if (!colors) return [];
+
+      return colors.split(',');
+    }),
+  chargeTime: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((chargeTime) => {
+      if (!chargeTime) return [];
+
+      return chargeTime.split(',');
+    }),
+  priceRange: z
+    .string()
+    .refine((priceRange) => {
+      const [from, to] = priceRange.split('-');
+
+      return from && to && Number(from) && Number(to);
+    })
+    .optional()
+    .nullable()
+    .transform((priceRange) => {
+      if (!priceRange) return;
+
+      const [from, to] = priceRange.split('-');
+
+      if (!from || !to) {
+        return;
+      }
+
+      return { from: Number(from), to: Number(to) };
+    }),
+});
+
+type CatalogQueryParams = Partial<z.infer<typeof CalagQueryParamsSchema>>;
 
 export const useCatalogQueryParams = () => {
-  const [searchParmas, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const didValidateSearchParamsRef = useRef(false);
 
-  const page = searchParmas.get('page') || 1;
-  const priceRange = searchParmas.get('price-range');
-  const sort = searchParmas.get('sort') || 'name.ru asc';
-  const colors = searchParmas.get('colors');
-  const chargeTime = searchParmas.get('chargeTime');
-  const search = searchParmas.get('search') || undefined;
+  const parsedSearchParams = CalagQueryParamsSchema.safeParse({
+    page: searchParams.get('page'),
+    priceRange: searchParams.get('priceRange'),
+    sort: searchParams.get('sort'),
+    colors: searchParams.get('colors'),
+    chargeTime: searchParams.get('chargeTime'),
+    search: searchParams.get('search'),
+  });
 
-  const parsedPriceRange = useMemo(() => {
-    if (!priceRange) return;
-
-    const [from, to] = priceRange.split('-');
-
-    if (!from || !to) {
-      return;
-    }
-
-    return { from: Number(from), to: Number(to) };
-  }, [priceRange]);
-
-  const parsedColors = useMemo(() => {
-    if (!colors) return [];
-
-    return colors.split(',');
-  }, [colors]);
-
-  const parsedChargeTime = useMemo(() => {
-    if (!chargeTime) return [];
-
-    return chargeTime.split(',');
-  }, [chargeTime]);
+  const page = parsedSearchParams.data?.page ?? 1;
 
   const setCatalogQueryParams = useCallback(
     (catalogQueryParms: CatalogQueryParams) => {
@@ -53,10 +87,10 @@ export const useCatalogQueryParams = () => {
           currentParams.delete('page');
         }
 
-        if (catalogQueryParms.rangePrice) {
-          const [from, to] = catalogQueryParms.rangePrice;
+        if (catalogQueryParms.priceRange) {
+          const { from, to } = catalogQueryParms.priceRange;
 
-          currentParams.set('price-range', `${from}-${to}`);
+          currentParams.set('priceRange', `${from}-${to}`);
         }
 
         if (catalogQueryParms.sort) {
@@ -92,9 +126,6 @@ export const useCatalogQueryParams = () => {
     (catalogQueryParams: Array<keyof CatalogQueryParams>) => {
       setSearchParams((currentParams) => {
         for (const queryParam of catalogQueryParams) {
-          if (queryParam === 'rangePrice') {
-            currentParams.delete('price-range');
-          }
           currentParams.delete(queryParam);
         }
 
@@ -105,18 +136,36 @@ export const useCatalogQueryParams = () => {
   );
 
   const resetAllFilters = () => {
-    deleteCatalogQueryParams(['colors', 'rangePrice', 'chargeTime', 'search']);
+    deleteCatalogQueryParams(['colors', 'priceRange', 'chargeTime', 'search']);
   };
 
+  useEffect(() => {
+    if (didValidateSearchParamsRef.current) return;
+
+    didValidateSearchParamsRef.current = true;
+
+    if (parsedSearchParams.success) return;
+
+    const errorInputs = parsedSearchParams.error.issues.map((issue) => {
+      const [errorKey] = issue.path;
+
+      return errorKey.toString();
+    });
+
+    setSearchParams((searchParams) => {
+      errorInputs.forEach((errorInput) => searchParams.delete(errorInput));
+
+      return searchParams;
+    });
+  }, [parsedSearchParams, setSearchParams]);
+
   return {
-    page: Number(page),
-    priceRange: parsedPriceRange,
+    ...(parsedSearchParams.success
+      ? parsedSearchParams.data
+      : CalagQueryParamsSchema.parse({ page: '1', sort: null })),
+    page,
     setCatalogQueryParams,
     deleteCatalogQueryParams,
     resetAllFilters,
-    sort,
-    search,
-    colors: parsedColors,
-    chargeTime: parsedChargeTime,
   };
 };

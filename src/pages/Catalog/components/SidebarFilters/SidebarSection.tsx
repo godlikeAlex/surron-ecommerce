@@ -35,7 +35,7 @@ const SidebarSection = ({
 );
 
 const SidebarSectionSkeleton = ({ children }: { children: ReactNode }) => (
-  <SidebarSection title="">
+  <SidebarSection>
     <Skeleton w={145} h={25} mb={10} role="presentation" />
 
     {children}
